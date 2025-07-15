@@ -12,16 +12,18 @@ rustPlatform.buildRustPackage rec {
     fetchSubmodules = true;
   };
 
-  cargoSha256 = "sha256-9BIHEMxyeZyrxGdptw4otveg6B7OJwT5G3tkeeJGZ2I=";
+  cargoHash = "sha256-/U7icE4r/R1aPy5/m4Jahg0mfcqUxsFUUFGM3LNY2Ok=";
 
   nativeBuildInputs = [ pkg-config ];
   buildInputs = [ openssl ] ++ lib.optionals stdenv.isDarwin [ Security AppKit ];
+
+  # Disable grammar build which requires missing config directory
+  ZEE_DISABLE_GRAMMAR_BUILD = "1";
 
   meta = with lib; {
     description = "A modern text editor for the terminal";
     homepage = "https://github.com/mcobzarenco/zee";
     license = licenses.asl20;
     maintainers = with maintainers; [ siraben ];
-    broken = true;
   };
 }
