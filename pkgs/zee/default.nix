@@ -2,17 +2,17 @@
 
 rustPlatform.buildRustPackage rec {
   pname = "zee";
-  version = "unstable-2022-04-11";
+  version = "unstable-2025-02-06";
 
   src = fetchFromGitHub {
     owner = "mcobzarenco";
     repo = "zee";
-    rev = "a8979be0819a7140648315c1e5fac052933f9b57";
-    sha256 = "sha256-qCslkvur8aHAveYsX9i7DGpqySbVr4uOHDh3G/VnCco=";
+    rev = "613377e79278068316f3c257fa6566688cac6a2a";
+    sha256 = "sha256-r/BpTzAI50da5Upy14mJHaGRQq9j1rgmdbk6BqOU/ck=";
     fetchSubmodules = true;
   };
 
-  cargoSha256 = "sha256-R8fYeZhEKracVAUvPsw690ZngKzncCarq0arfD8ZPyM=";
+  cargoSha256 = "sha256-9BIHEMxyeZyrxGdptw4otveg6B7OJwT5G3tkeeJGZ2I=";
 
   nativeBuildInputs = [ pkg-config ];
   buildInputs = [ openssl ] ++ lib.optionals stdenv.isDarwin [ Security AppKit ];
@@ -22,5 +22,6 @@ rustPlatform.buildRustPackage rec {
     homepage = "https://github.com/mcobzarenco/zee";
     license = licenses.asl20;
     maintainers = with maintainers; [ siraben ];
+    broken = true;
   };
 }
