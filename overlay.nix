@@ -47,5 +47,4 @@ in
   zee = callPackage ./pkgs/zee {
     inherit (darwin.apple_sdk.frameworks) Security AppKit;
   };
-  zkeme80 = callPackage ./pkgs/zkeme80 { };
 }
