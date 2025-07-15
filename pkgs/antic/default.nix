@@ -11,7 +11,14 @@ stdenv.mkDerivation rec {
     sha256 = "sha256-FQlahjNhFBV4XGzxmjhcVoAo3iyZXVh4+dZtAy/ZzVM=";
   };
 
-  buildInputs = [ flint ];
+  buildInputs = [ gmp mpfr flint ];
+  enableParallelBuilding = true;
+
+  configureFlags = [
+    "--with-gmp=${gmp}"
+    "--with-mpfr=${mpfr}"
+    "--with-flint=${flint}"
+  ];
 
   meta = with lib; {
     description = "Algebraic Number Theory In C";
