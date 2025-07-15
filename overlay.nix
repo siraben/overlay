@@ -37,7 +37,6 @@ in
   oxide = callPackage ./pkgs/oxide { };
   PortableGL = callPackage ./pkgs/PortableGL { };
   regit = callPackage ./pkgs/regit { };
-  remarkable-linux-client = prev.qt5.callPackage ./pkgs/remarkable-linux-client { };
   rmview = prev.libsForQt5.callPackage ./pkgs/rmview { };
   runpodctl = callPackage ./pkgs/runpodctl { };
   simple-vm = callPackage ./pkgs/simple-vm { };
