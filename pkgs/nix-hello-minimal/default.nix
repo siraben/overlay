@@ -1,7 +1,7 @@
-{ dockerTools, pkgsMusl }:
+{ dockerTools, pkgsStatic }:
 
 dockerTools.buildImage {
   name = "nix-hello-minimal";
   tag = "latest";
-  contents = [ pkgsMusl.hello ];
+  copyToRoot = [ pkgsStatic.hello ];
 }
