@@ -1,0 +1,27 @@
+diff --git a/Cargo.toml b/Cargo.toml
+index 1234567..8901234 100644
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -11,4 +11,4 @@ num_cpus = "1.13.1"
+ image = "0.24.0"
+ ndarray = "0.15.4"
+ rayon = "1.5.1"
+-thread = "0.1.0"
++thread = "0.0.1"
+diff --git a/Cargo.lock b/Cargo.lock
+index 1234567..8901234 100644
+--- a/Cargo.lock
++++ b/Cargo.lock
+@@ -744,9 +744,9 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
+ checksum = "b1141d4d61095b28419e22cb0bbf02755f5e54e0526f97f1e3d1d160e60885fb"
+ 
+ [[package]]
+ name = "thread"
+-version = "0.1.0"
++version = "0.0.1"
+ source = "registry+https://github.com/rust-lang/crates.io-index"
+-checksum = "afe9c0e959dd1e7b871071b51bc674380d1889cd4fed9f4b3b1f5c1772d9f796"
++checksum = "0f06beb703bd1c46f3cc8afdf4e3d0f932ec413289204f9f74715023da8acb5f"
+ 
+ [[package]]
+ name = "tiff"

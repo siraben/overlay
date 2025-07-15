@@ -11,7 +11,11 @@ rustPlatform.buildRustPackage rec {
     sha256 = "sha256-0v4sCSCPJvWLy8Y8yPzucxtg2yk1+G4BNBGZNWfKgrs=";
   };
 
-  cargoSha256 = "sha256-Jxvy4QAJ+Lk+RPsum2ZSDD4deVLpSj81q1IuZfoGtBA=";
+  cargoPatches = [
+    ./thread-version.patch
+  ];
+
+  cargoHash = "sha256-j07zSblqY+qHHBccDfbw5raWGemXx/YnT7ss1BkDz24=";
 
   meta = with lib; {
     description = "Takes a folder of images (as a palette), and an image, then tiles the palette to resemble the image";
