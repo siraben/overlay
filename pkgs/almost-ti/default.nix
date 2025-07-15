@@ -1,4 +1,4 @@
-{ stdenv, lib, fetchurl, libX11, pkg-config, SDL, zlib, tree }:
+{ stdenv, lib, fetchurl, xorg, pkg-config, SDL, zlib, tree }:
 
 stdenv.mkDerivation rec {
   pname = "almost-ti";
@@ -10,16 +10,17 @@ stdenv.mkDerivation rec {
   };
 
   nativeBuildInputs = [ pkg-config ];
-  buildInputs = [ libX11 SDL zlib ];
+  buildInputs = [ xorg.libX11 xorg.libXext SDL zlib ];
 
+  NIX_CFLAGS_COMPILE = "-Wno-implicit-function-declaration -Wno-incompatible-pointer-types -fcommon -Wno-implicit-int";
 
   postPatch = lib.optionalString stdenv.isDarwin ''
     substituteInPlace EMULib/Rules.gcc --replace SndUnix.o SndSDL.o
     substituteInPlace EMULib/Unix/SndSDL.c --replace '#include "SDL.h"' '#include <SDL/SDL.h>'
-    substituteInPlace EMULib/Rules.Unix --replace '-I/usr/X11R6/include' '-I${libX11.dev} -lSDL -lX11 -lXext'
+    substituteInPlace EMULib/Rules.Unix --replace '-I/usr/X11R6/include' '-I${xorg.libX11.dev} -lSDL -lX11 -lXext'
   '';
 
-  makeFlags = [ "--directory=ATI85/Unix" "DESTDIR=$out" ] ++ lib.optional stdenv.isDarwin "CC=cc";
+  makeFlags = [ "--directory=ATI85/Unix" "DESTDIR=$out" ] ++ lib.optional stdenv.isDarwin "CC=${stdenv.cc.targetPrefix}cc";
 
   installPhase = ''
     install -Dm755 ATI85/Unix/ati85 -t $out/bin
