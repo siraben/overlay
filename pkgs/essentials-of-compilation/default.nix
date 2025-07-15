@@ -7,13 +7,13 @@
 
 stdenv.mkDerivation rec {
   pname = "essentials-of-compilation";
-  version = "2022-01-26";
+  version = "2025-05-22";
 
   src = fetchFromGitHub {
     owner = "IUCompilerCourse";
     repo = "essentials-of-compilation";
-    rev = "ed54729c01e3baf5cd39014812cd5ea250e03c26";
-    sha256 = "sha256-PTflvdO+46F3dg1xK3n2PhkJPsgAShTL43WKRm0kQuU=";
+    rev = "abb2d88b9bc2792b6bc060f1503fe30d9f866018";
+    sha256 = "sha256-/fYpKdUF1eO4437rNtTEIuIUHFrnbEx5D3EHAviWta0=";
   };
 
   nativeBuildInputs = [ texlive.combined.scheme-full ];
