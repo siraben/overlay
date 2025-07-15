@@ -1,4 +1,4 @@
-{ stdenv, lib, fetchurl, libX11, pkg-config, SDL, zlib, darwin, tree }:
+{ stdenv, lib, fetchurl, libX11, pkg-config, SDL, zlib, tree }:
 
 stdenv.mkDerivation rec {
   pname = "almost-ti";
@@ -10,7 +10,7 @@ stdenv.mkDerivation rec {
   };
 
   nativeBuildInputs = [ pkg-config ];
-  buildInputs = [ libX11 SDL zlib ] ++ lib.optional stdenv.isDarwin darwin.IOKit;
+  buildInputs = [ libX11 SDL zlib ];
 
 
   postPatch = lib.optionalString stdenv.isDarwin ''

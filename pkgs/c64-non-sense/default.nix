@@ -14,7 +14,7 @@ stdenv.mkDerivation rec {
   nativeBuildInputs = [ cc65 ];
   buildInputs = [  ];
 
-  makeFlags = [ "CC=cc" ];
+  makeFlags = [ "CC=${cc65}/bin/cc65" ];
 
   meta = with lib; {
     description = "C64 NonSense Game Engine";

@@ -1,6 +1,6 @@
 { lib, mkDerivation, stdenv, fetchurl, glibc, qtbase, qtdeclarative,
   qtsvg, qtwebsockets, qtquickcontrols, qtquickcontrols2,
-  qtgraphicaleffects, libsForQt512, libGLU, libGL }:
+  qtgraphicaleffects, karchive, libGLU, libGL }:
 
 mkDerivation rec {
   pname = "reMarkable-client";
@@ -11,7 +11,7 @@ mkDerivation rec {
     sha256 = "1305scjyi4b1wh4vr8ccszz11dvgwyka9hivyzv5j8ynqsnij58s";
   };
 
-  buildInputs = [ stdenv.cc.cc.lib libGLU libGL libsForQt512.karchive
+  buildInputs = [ stdenv.cc.cc.lib libGLU libGL karchive
                   qtbase qtdeclarative qtsvg qtbase qtwebsockets
                   qtquickcontrols qtquickcontrols2 qtgraphicaleffects ];
 
@@ -26,7 +26,7 @@ mkDerivation rec {
 
     patchelf \
       --set-rpath \
-      "$out/lib:${libsForQt512.karchive}/lib:${qtdeclarative}/lib:${qtsvg}/lib:${qtbase.out}/lib:${qtwebsockets}/lib:${libGLU}/lib:${stdenv.cc.cc.lib}/lib:${libGL}/lib" \
+      "$out/lib:${karchive}/lib:${qtdeclarative}/lib:${qtsvg}/lib:${qtbase.out}/lib:${qtwebsockets}/lib:${libGLU}/lib:${stdenv.cc.cc.lib}/lib:${libGL}/lib" \
       "$out/bin/reMarkable"
   '';
   meta = with lib; {
