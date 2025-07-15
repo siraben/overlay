@@ -21,7 +21,6 @@ in
   crchack = callPackage ./pkgs/crchack { };
   double-pendulum-simulation = prev.haskellPackages.callPackage ./pkgs/double-pendulum-simulation { };
   essentials-of-compilation = callPackage ./pkgs/essentials-of-compilation { };
-  ezengine = callPackage ./pkgs/ezengine { };
   fe = callPackage ./pkgs/fe { };
   flint = callPackage ./pkgs/flint { };
   git2graph = callPackage ./pkgs/git2graph { };
