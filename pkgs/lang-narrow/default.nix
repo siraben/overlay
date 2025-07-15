@@ -11,7 +11,7 @@ buildDunePackage rec {
     sha256 = "1afd93cd6yj7yzhn0rd5rf0mz04h3f16hpgylwbjp3brjga4vprf";
   };
 
-  buildInputs = [ menhir ];
+  nativeBuildInputs = [ menhir ];
 
   buildPhase = ''
     dune build src/main.exe
