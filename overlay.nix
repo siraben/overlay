@@ -34,7 +34,6 @@ in
   nix-hello = callPackage ./pkgs/nix-hello { };
   nix-hello-minimal = callPackage ./pkgs/nix-hello-minimal { };
   ostools = callPackage ./pkgs/ostools { };
-  oxide = callPackage ./pkgs/oxide { };
   PortableGL = callPackage ./pkgs/PortableGL { };
   regit = callPackage ./pkgs/regit { };
   rmview = prev.libsForQt5.callPackage ./pkgs/rmview { };
