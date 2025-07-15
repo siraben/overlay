@@ -1,4 +1,4 @@
-{ lib, buildGoModule, fetchFromGitHub }:
+{ lib, stdenv, buildGoModule, fetchFromGitHub }:
 
 buildGoModule rec {
   pname = "regit";
@@ -11,6 +11,8 @@ buildGoModule rec {
     sha256 = "sha256-oYzDU2E5tpHmDBTv2jv6vVHpuSZ6eYm1JnrL+Hrmxb8=";
   };
 
+  patches = lib.optional stdenv.isLinux ./fix-linux-build.patch;
+
   vendorHash = null;
 
   meta = with lib; {
@@ -18,5 +20,6 @@ buildGoModule rec {
     homepage = "https://github.com/WithGJR/regit-go";
     license = licenses.mit;
     maintainers = with maintainers; [ siraben ];
+    platforms = platforms.linux ++ platforms.darwin;
   };
 }

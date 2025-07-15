@@ -1,0 +1,17 @@
+--- a/core/index.go
++++ b/core/index.go
+@@ -295,10 +295,10 @@ func (idx *Index) updateEntryCache() error {
+ 		}
+ 		stat := fileInfo.Sys().(*syscall.Stat_t)
+ 		entry := new(IndexEntry)
+-		entry.Ctime_sec = uint32(stat.Ctimespec.Sec)
+-		entry.Ctime_nanosec = uint32(stat.Ctimespec.Nsec)
+-		entry.Mtime_sec = uint32(stat.Mtimespec.Sec)
+-		entry.Mtime_nanosec = uint32(stat.Mtimespec.Nsec)
++		entry.Ctime_sec = uint32(stat.Ctim.Sec)
++		entry.Ctime_nanosec = uint32(stat.Ctim.Nsec)
++		entry.Mtime_sec = uint32(stat.Mtim.Sec)
++		entry.Mtime_nanosec = uint32(stat.Mtim.Nsec)
+ 		entry.Dev = uint32(stat.Dev)
+ 		entry.Ino = uint32(stat.Ino)
+ 		entry.Mode = uint32(stat.Mode)
