@@ -11,7 +11,7 @@ buildGoModule rec {
     sha256 = "sha256-FY6ZQbc5JOaqkGWyMDER2+V/kFxiJYZc6dfIWvkgraE=";
   };
 
-  vendorSha256 = "sha256-RCGUVnJl2XbSJ/L/PGLC7g9x5Pnvdaz3NlVE2XHdQYE=";
+  vendorHash = "sha256-RCGUVnJl2XbSJ/L/PGLC7g9x5Pnvdaz3NlVE2XHdQYE=";
 
   meta = with lib; {
     description = "RunPod CLI for pod management";

@@ -3,6 +3,8 @@
 python3Packages.buildPythonApplication rec {
   pname = "rmview";
   version = "unstable-2022-03-02";
+  pyproject = true;
+  build-system = with python3Packages; [ setuptools ];
 
   src = fetchFromGitHub {
     owner = "bordaigorl";

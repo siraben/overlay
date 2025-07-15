@@ -1,4 +1,4 @@
-{ lib, stdenv, fetchFromGitHub, gmp, mpfr, flint, antic, arb }:
+{ lib, stdenv, fetchFromGitHub, gmp, mpfr, flint, antic}:
 
 stdenv.mkDerivation rec {
   pname = "calcium";
@@ -11,7 +11,7 @@ stdenv.mkDerivation rec {
     sha256 = "sha256-A+1ikuZYVHtIUFRcRbLyrbdb4UcBLN7+lzFjyHwW79U=";
   };
 
-  buildInputs = [ gmp mpfr flint antic arb ];
+  buildInputs = [ gmp mpfr flint antic ];
   enableParallelBuilding = true;
 
   meta = with lib; {
@@ -20,5 +20,6 @@ stdenv.mkDerivation rec {
     license = licenses.lgpl21Plus;
     maintainers = with maintainers; [ siraben ];
     platforms = platforms.all;
+    broken = true;
   };
 }

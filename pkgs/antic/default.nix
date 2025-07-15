@@ -1,4 +1,4 @@
-{ lib, stdenv, fetchFromGitHub, gmp, mpfr, flint, arb }:
+{ lib, stdenv, fetchFromGitHub, gmp, mpfr, flint }:
 
 stdenv.mkDerivation rec {
   pname = "antic";

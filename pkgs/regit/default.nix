@@ -11,13 +11,12 @@ buildGoModule rec {
     sha256 = "sha256-oYzDU2E5tpHmDBTv2jv6vVHpuSZ6eYm1JnrL+Hrmxb8=";
   };
 
-  vendorSha256 = "sha256-pQpattmS9VmO3ZIQUFn66az8GSmB4IvYhTTCFn6SUmo=";
+  vendorHash = null;
 
   meta = with lib; {
     description = "A Tiny Git-compatible Git Implementation";
     homepage = "https://github.com/WithGJR/regit-go";
-    # no license
-    # license = licenses.mit;
+    license = licenses.mit;
     maintainers = with maintainers; [ siraben ];
   };
 }

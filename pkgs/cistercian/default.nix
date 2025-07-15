@@ -11,7 +11,7 @@ buildGoModule rec {
     sha256 = "sha256-hDyf4T123elMsC012wQFrwH7hjXBFLRInVyPKHNaRWo=";
   };
 
-  vendorSha256 = "sha256-XL4MIP67jbR+EOI3fhZ62LMnPdLXI1bG0ptgznd3REk";
+  vendorHash = "sha256-XL4MIP67jbR+EOI3fhZ62LMnPdLXI1bG0ptgznd3REk";
 
   meta = with lib; {
     description = "Command line tool to generate Cistercian numerals";

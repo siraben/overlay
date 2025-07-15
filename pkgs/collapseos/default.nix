@@ -1,4 +1,4 @@
-{ stdenv, fetchgit, ncurses, pkg-config, x11, makeWrapper }:
+{ stdenv, fetchgit, ncurses, pkg-config, xorg, makeWrapper }:
 
 stdenv.mkDerivation rec {
   name = "collapseos";
@@ -8,7 +8,7 @@ stdenv.mkDerivation rec {
     sha256 = "0nxgwgqnhcz37fpk885sykjzd644lm8nzpr0v77pwid4qhy8c3sj";
   };
   nativeBuildInputs = [ pkg-config makeWrapper ];
-  buildInputs = [ ncurses x11 ];
+  buildInputs = [ ncurses xorg.libX11 ];
   postPatch = ''
     substituteInPlace cvm/Makefile --replace '-lcurses' '-lncurses'
   '';

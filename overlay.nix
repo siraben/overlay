@@ -9,7 +9,6 @@ in
   algebraic = callPackage ./pkgs/algebraic { };
   almost-ti = callPackage ./pkgs/almost-ti { };
   antic = callPackage ./pkgs/antic { };
-  archivebox = prev.python3Packages.callPackage ./pkgs/archivebox { };
   attoforth = callPackage ./pkgs/attoforth { };
   blynn = callPackage ./pkgs/blynn { };
   bootstrap-scheme = callPackage ./pkgs/bootstrap-scheme { };
@@ -35,10 +34,8 @@ in
   nix-hello = callPackage ./pkgs/nix-hello { };
   nix-hello-minimal = callPackage ./pkgs/nix-hello-minimal { };
   ostools = callPackage ./pkgs/ostools { };
-  oxide = callPackage ./pkgs/oxide { };
   PortableGL = callPackage ./pkgs/PortableGL { };
   regit = callPackage ./pkgs/regit { };
-  remarkable-linux-client = prev.qt5.callPackage ./pkgs/remarkable-linux-client { };
   rmview = prev.libsForQt5.callPackage ./pkgs/rmview { };
   runpodctl = callPackage ./pkgs/runpodctl { };
   simple-vm = callPackage ./pkgs/simple-vm { };
@@ -50,5 +47,4 @@ in
   zee = callPackage ./pkgs/zee {
     inherit (darwin.apple_sdk.frameworks) Security AppKit;
   };
-  zkeme80 = callPackage ./pkgs/zkeme80 { };
 }

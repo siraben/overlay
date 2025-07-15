@@ -15,7 +15,12 @@
         overlay = import ./overlay.nix;
         pkgs = import nixpkgs { inherit system; overlays = [ overlay ]; };
       in {
-        inherit overlay pkgs;
-        packages = pkgs;
-      });
+        packages = builtins.listToAttrs (map (name: {
+          inherit name;
+          value = pkgs.${name};
+        }) (builtins.attrNames (overlay {} {})));
+      }
+    ) // {
+      overlays.default = import ./overlay.nix;
+    };
 }
