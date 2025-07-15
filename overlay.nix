@@ -9,7 +9,6 @@ in
   algebraic = callPackage ./pkgs/algebraic { };
   almost-ti = callPackage ./pkgs/almost-ti { };
   antic = callPackage ./pkgs/antic { };
-  archivebox = prev.python3Packages.callPackage ./pkgs/archivebox { };
   attoforth = callPackage ./pkgs/attoforth { };
   blynn = callPackage ./pkgs/blynn { };
   bootstrap-scheme = callPackage ./pkgs/bootstrap-scheme { };
