@@ -34,7 +34,6 @@ in
   rmview = prev.libsForQt5.callPackage ./pkgs/rmview { };
   runpodctl = callPackage ./pkgs/runpodctl { };
   simple-vm = callPackage ./pkgs/simple-vm { };
-  stage0 = callPackage ./pkgs/stage0 { };
   ti84-forth = callPackage ./pkgs/ti84-forth { };
   twin = callPackage ./pkgs/twin { };
   urscheme = callPackage ./pkgs/urscheme { };
