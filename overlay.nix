@@ -16,6 +16,7 @@ in
   cistercian = callPackage ./pkgs/cistercian { };
   cc65 = callPackage ./pkgs/cc65 { };
   collapseos = callPackage ./pkgs/collapseos { };
+  collapseos-ti84 = callPackage ./pkgs/collapseos-ti84 { };
   crchack = callPackage ./pkgs/crchack { };
   double-pendulum-simulation = prev.haskellPackages.callPackage ./pkgs/double-pendulum-simulation { };
   essentials-of-compilation = callPackage ./pkgs/essentials-of-compilation { };

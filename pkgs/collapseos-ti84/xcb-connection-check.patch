@@ -1,0 +1,36 @@
+--- a/emul/ti84.c
++++ b/emul/ti84.c
+@@ -193,8 +193,19 @@ bool get_pixel(int x, int y)
+ 
+ void draw_pixels()
+ {
++    // Check if XCB connection is valid
++    if (xcb_connection_has_error(conn)) {
++        fprintf(stderr, "XCB connection error\n");
++        return;
++    }
++
+     xcb_get_geometry_reply_t *geom;
+ 
+     geom = xcb_get_geometry_reply(conn, xcb_get_geometry(conn, win), NULL);
++    
++    if (geom == NULL) {
++        fprintf(stderr, "Failed to get window geometry\n");
++        return;
++    }
+ 
+     xcb_clear_area(
+         conn, 0, win, 0, 0, geom->width, geom->height);
+@@ -304,6 +315,12 @@ int main(int argc, char *argv[])
+     m->iowr[LCD_CMD_PORT] = iowr_lcd_cmd;
+     m->iowr[LCD_DATA_PORT] = iowr_lcd_data;
+     conn = xcb_connect(NULL, NULL);
++    
++    // Check if XCB connection was successful
++    if (xcb_connection_has_error(conn)) {
++        fprintf(stderr, "Cannot connect to X server\n");
++        return 1;
++    }
+     screen = xcb_setup_roots_iterator(xcb_get_setup(conn)).data;
+     create_window();
+     draw_pixels();
