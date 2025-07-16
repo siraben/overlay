@@ -13,6 +13,17 @@ stdenv.mkDerivation rec {
 
   sourceRoot = "source/demos";
   buildInputs = [ SDL2 assimp ];
+  
+  # The upstream build system uses -Werror, which causes issues with modern compilers
+  # We need to patch the makefiles to remove -Werror or override CFLAGS
+  preBuild = ''
+    # Find and patch any makefiles to remove -Werror
+    find . -name "*.make" -o -name "Makefile" | while read -r file; do
+      sed -i 's/-Werror//g' "$file"
+    done
+  '';
+  
+  NIX_CFLAGS_COMPILE = "-Wno-strict-prototypes -Wno-error";
 
   installPhase= ''
     runHook preInstall
