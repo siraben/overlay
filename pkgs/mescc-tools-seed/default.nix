@@ -1,4 +1,4 @@
-{ stdenvNoCC, fetchFromGitHub }:
+{ lib, stdenvNoCC, fetchFromGitHub }:
 
 stdenvNoCC.mkDerivation rec {
   name = "mescc-tools-seed";
@@ -16,4 +16,12 @@ stdenvNoCC.mkDerivation rec {
     mkdir -p $out/bin
     cp ./bin/* $out/bin
   '';
+
+  meta = with lib; {
+    description = "Collection of tools for the bootstrap process of creating a C compiler from a minimal seed";
+    homepage = "https://github.com/oriansj/mescc-tools-seed";
+    license = licenses.gpl3Plus;
+    maintainers = with maintainers; [ siraben ];
+    platforms = platforms.unix;
+  };
 }

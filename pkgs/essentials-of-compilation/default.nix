@@ -22,7 +22,7 @@ stdenv.mkDerivation rec {
 
 
   meta = with lib; {
-    description = "";
+    description = "A book about compiling Racket and Python to x86-64 assembly";
     homepage = "https://github.com/IUCompilerCourse/essentials-of-compilation";
     maintainers = with maintainers; [ siraben ];
     license = licenses.cc-by-30;

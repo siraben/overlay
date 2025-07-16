@@ -25,5 +25,6 @@ rustPlatform.buildRustPackage rec {
     homepage = "https://github.com/mcobzarenco/zee";
     license = licenses.asl20;
     maintainers = with maintainers; [ siraben ];
+    platforms = platforms.unix;
   };
 }

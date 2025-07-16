@@ -19,7 +19,11 @@ stdenv.mkDerivation rec {
   hardeningDisable = [ "all" ];
   
   meta = with lib; {
-    broken = stdenv.isDarwin && stdenv.isAarch64;
+    description = "Minimal Scheme interpreter and C compiler for bootstrapping purposes";
+    homepage = "https://www.gnu.org/software/mes/";
+    license = licenses.gpl3Plus;
+    maintainers = with maintainers; [ siraben ];
     platforms = platforms.unix;
+    broken = stdenv.isDarwin && stdenv.isAarch64;
   };
 }

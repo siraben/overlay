@@ -25,7 +25,7 @@ buildGoModule rec {
     description = "A tool to generate a graph of commits and branches from a git repository";
     homepage = "https://github.com/alaingilbert/git2graph";
     license = licenses.mit;
-    maintainers = [ ];
+    maintainers = with maintainers; [ siraben ];
     mainProgram = "git2graph";
   };
 }

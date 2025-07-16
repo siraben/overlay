@@ -1,4 +1,4 @@
-{ stdenv, fetchgit, ncurses, pkg-config, xorg, makeWrapper }:
+{ lib, stdenv, fetchgit, ncurses, pkg-config, xorg, makeWrapper }:
 
 stdenv.mkDerivation rec {
   name = "collapseos";
@@ -20,4 +20,11 @@ stdenv.mkDerivation rec {
     cp tools/{blkpack,blkunpack,blkup,memdump,pingpong,ttysafe,upload} $out/bin
     cp cvm/{blkfs,forth,forth.bin,stage} $out/bin
   '';
+
+  meta = with lib; {
+    description = "Bootstrap post-collapse technology - an operating system designed for resource-constrained environments";
+    homepage = "https://git.sr.ht/~vdupras/collapseos";
+    maintainers = with maintainers; [ siraben ];
+    platforms = platforms.unix;
+  };
 }

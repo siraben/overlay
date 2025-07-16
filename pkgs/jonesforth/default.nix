@@ -1,4 +1,4 @@
-{ stdenv, fetchFromGitHub }:
+{ lib, stdenv, fetchFromGitHub }:
 
 stdenv.mkDerivation rec {
   name = "jonesforth";
@@ -14,4 +14,11 @@ stdenv.mkDerivation rec {
     cp jonesforth.f $out/share
   '';
   # TODO: write shell wrapper
+
+  meta = with lib; {
+    description = "Mirror of Richard WM Jones's excellent literate x86 assembly implementation of Forth";
+    homepage = "https://github.com/nornagon/jonesforth";
+    maintainers = with maintainers; [ siraben ];
+    platforms = platforms.unix;
+  };
 }

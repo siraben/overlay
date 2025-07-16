@@ -25,10 +25,11 @@ stdenv.mkDerivation rec {
     cp micro-lisp mlisp89 $out/bin
   '';
 
-  meta = {
+  meta = with lib; {
     description = "A very small Lisp interpreter in under 200 lines of C";
     homepage = "https://web.archive.org/web/20230526073728/https://carld.github.io/2017/06/20/lisp-in-less-than-200-lines-of-c.html";
-    license = lib.licenses.mit;
-    platforms = lib.platforms.all;
+    license = licenses.mit;
+    maintainers = with maintainers; [ siraben ];
+    platforms = platforms.all;
   };
 }

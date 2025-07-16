@@ -23,5 +23,6 @@ rustPlatform.buildRustPackage rec {
     homepage = "https://github.com/ethereum/fe";
     license = licenses.asl20;
     maintainers = with maintainers; [ siraben ];
+    platforms = platforms.unix;
   };
 }

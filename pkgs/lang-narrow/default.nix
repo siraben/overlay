@@ -20,4 +20,11 @@ buildDunePackage rec {
   installPhase = ''
     cp _build/default/src/main.exe $out
   '';
+
+  meta = with lib; {
+    description = "A language with flow typing and structural type narrowing";
+    homepage = "https://github.com/ayazhafiz/lang_narrow";
+    maintainers = with maintainers; [ siraben ];
+    platforms = platforms.unix;
+  };
 }

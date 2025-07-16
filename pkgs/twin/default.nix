@@ -20,7 +20,7 @@ stdenv.mkDerivation rec {
   '';
 
   meta = with lib; {
-    description = "";
+    description = "Text-based windowing environment with mouse support, window manager, terminal emulator, networked clients and the ability to attach/detach mode displays on-the-fly";
     homepage = "https://github.com/cosmos72/twin";
     license = licenses.gpl2;
     maintainers = with maintainers; [ siraben ];

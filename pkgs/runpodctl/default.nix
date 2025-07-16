@@ -18,6 +18,7 @@ buildGoModule rec {
     homepage = "https://github.com/runpod/runpodctl";
     license = licenses.gpl3Plus;
     maintainers = with maintainers; [ siraben ];
+    platforms = platforms.unix;
     mainProgram = "runpodctl";
   };
 }

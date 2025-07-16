@@ -21,6 +21,7 @@ stdenv.mkDerivation rec {
     description = "C in four functions";
     homepage = "https://github.com/rswier/c4";
     license = licenses.gpl2;
+    maintainers = with maintainers; [ siraben ];
     platforms = platforms.all;
   };
 }
