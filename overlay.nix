@@ -24,7 +24,6 @@ in
   jonesforth = callPackage ./pkgs/jonesforth { };
   lang-narrow = prev.ocamlPackages.callPackage ./pkgs/lang-narrow { };
   mes = callPackage ./pkgs/mes { };
-  mescc-tools-seed = callPackage ./pkgs/mescc-tools-seed { };
   micro-lisp = callPackage ./pkgs/micro-lisp { };
   mosaic = callPackage ./pkgs/mosaic { };
   nix-hello = callPackage ./pkgs/nix-hello { };
