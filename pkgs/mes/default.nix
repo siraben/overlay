@@ -1,21 +1,25 @@
-{ stdenv, lib, darwin, fetchFromGitLab, mescc-tools-seed, guile }:
+{ stdenv, lib, darwin, fetchurl, guile }:
 
 stdenv.mkDerivation rec {
   pname = "mes";
-  version = "unstable-2020-12-13";
+  version = "0.27";
   
-  src = fetchFromGitLab {
-    owner = "janneke";
-    repo = pname;
-    rev = "b601eb64af6d10f3462e5d480f972b65b6c01808";
-    sha256 = "1pjihnncszxhfbgx656qiic6sf9z31wd9gsrk76m5nqnj55p6wrb";
+  src = fetchurl {
+    url = "mirror://gnu/mes/${pname}-${version}.tar.gz";
+    sha256 = "sha256-Az7mVtmM/ASoJuqyfu1uaidtFbu5gKfNcdAPMCJ6qqg=";
   };
 
-  configureFlags = [ "--with-courage" "--with-system-libc" ];
+  configureFlags = [ "--with-courage" "--with-system-libc" ]
+    ++ lib.optionals stdenv.isDarwin [ "--build=x86_64-apple-darwin" ];
 
-  nativeBuildInputs = [ mescc-tools-seed guile ];
+  nativeBuildInputs = [ guile ];
 
   buildInputs = lib.optional stdenv.isDarwin darwin.cctools;
 
   hardeningDisable = [ "all" ];
+  
+  meta = with lib; {
+    broken = stdenv.isDarwin && stdenv.isAarch64;
+    platforms = platforms.unix;
+  };
 }
