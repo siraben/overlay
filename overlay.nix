@@ -29,6 +29,7 @@ in
   mosaic = callPackage ./pkgs/mosaic { };
   nix-hello = callPackage ./pkgs/nix-hello { };
   nix-hello-minimal = callPackage ./pkgs/nix-hello-minimal { };
+  opencode = callPackage ./pkgs/opencode { };
   ostools = callPackage ./pkgs/ostools { };
   PortableGL = callPackage ./pkgs/PortableGL { };
   regit = callPackage ./pkgs/regit { };
