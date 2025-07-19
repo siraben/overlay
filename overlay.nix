@@ -6,6 +6,7 @@ let
 in
 {
   acme = callPackage ./pkgs/acme { };
+  aider = callPackage ./pkgs/aider { };
   algebraic = callPackage ./pkgs/algebraic { };
   almost-ti = callPackage ./pkgs/almost-ti { };
   attoforth = callPackage ./pkgs/attoforth { };
