@@ -24,6 +24,7 @@ in
   fe = callPackage ./pkgs/fe { };
   git2graph = callPackage ./pkgs/git2graph { };
   jonesforth = callPackage ./pkgs/jonesforth { };
+  kawa = callPackage ./pkgs/kawa { };
   lang-narrow = prev.ocamlPackages.callPackage ./pkgs/lang-narrow { };
   mes = callPackage ./pkgs/mes { };
   micro-lisp = callPackage ./pkgs/micro-lisp { };
