@@ -40,6 +40,16 @@ in
   runpodctl = callPackage ./pkgs/runpodctl { };
   simple-vm = callPackage ./pkgs/simple-vm { };
   ti84-forth = callPackage ./pkgs/ti84-forth { };
+  ts_sms = callPackage ./pkgs/ts_sms { };
+  ts_sms-cuda = callPackage ./pkgs/ts_sms { 
+    cudaSupport = true;
+    cudaPackages = prev.cudaPackages;
+  };
+  ts_zip = callPackage ./pkgs/ts_zip { };
+  ts_zip-cuda = callPackage ./pkgs/ts_zip {
+    cudaSupport = true;
+    cudaPackages = prev.cudaPackages;
+  };
   twin = callPackage ./pkgs/twin { };
   urscheme = callPackage ./pkgs/urscheme { };
   zchaff = callPackage ./pkgs/zchaff { };
