@@ -57,6 +57,7 @@ in
     cudaSupport = true;
     cudaPackages = prev.cudaPackages;
   };
+  treeos = callPackage ./pkgs/treeos { };
   twin = callPackage ./pkgs/twin { };
   urscheme = callPackage ./pkgs/urscheme { };
   xnedit = callPackage ./pkgs/xnedit { };
