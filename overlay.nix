@@ -26,6 +26,7 @@ in
   fe = callPackage ./pkgs/fe { };
   git2graph = callPackage ./pkgs/git2graph { };
   jonesforth = callPackage ./pkgs/jonesforth { };
+  kickthemout = prev.python3Packages.callPackage ./pkgs/kickthemout { };
   lang-narrow = prev.ocamlPackages.callPackage ./pkgs/lang-narrow { };
   lue = callPackage ./pkgs/lue { };
   mapscii = callPackage ./pkgs/mapscii { };
