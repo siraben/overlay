@@ -42,6 +42,7 @@ in
   PortableGL = callPackage ./pkgs/PortableGL { };
   regit = callPackage ./pkgs/regit { };
   relay-outer = callPackage ./pkgs/relayouter { };
+  rmrl = callPackage ./pkgs/rmrl { };
   rmview = prev.libsForQt5.callPackage ./pkgs/rmview { };
   runpodctl = callPackage ./pkgs/runpodctl { };
   simple-vm = callPackage ./pkgs/simple-vm { };
