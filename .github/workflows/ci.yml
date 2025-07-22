@@ -63,7 +63,7 @@ jobs:
     - name: Build ${{ matrix.package }}
       run: |
         echo "Building ${{ matrix.package }} for ${{ matrix.system }}..."
-        nix build .#${{ matrix.package }} --print-build-logs
+        NIXPKGS_ALLOW_UNFREE=1 nix build --impure .#${{ matrix.package }} --print-build-logs
     
     - name: Push to Cachix
       run: |
