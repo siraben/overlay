@@ -10,12 +10,12 @@
 
 rustPlatform.buildRustPackage rec {
   pname = "fe";
-  version = "v0.26.0";
+  version = "0.26.0";
 
   src = fetchFromGitHub {
     owner = "ethereum";
     repo = "fe";
-    rev = version;
+    rev = "v${version}";
     sha256 = "sha256-zWwxcW3Osx5tKbl+6y8Tup4SfS+G7svqtooW82WycXE=";
   };
 
