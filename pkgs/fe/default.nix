@@ -1,4 +1,12 @@
-{ lib, stdenv, fetchFromGitHub, rustPlatform, libiconv, pkg-config, openssl }:
+{
+  lib,
+  stdenv,
+  fetchFromGitHub,
+  rustPlatform,
+  libiconv,
+  pkg-config,
+  openssl,
+}:
 
 rustPlatform.buildRustPackage rec {
   pname = "fe";
@@ -12,7 +20,10 @@ rustPlatform.buildRustPackage rec {
   };
 
   nativeBuildInputs = [ pkg-config ];
-  buildInputs = [ libiconv openssl ];
+  buildInputs = [
+    libiconv
+    openssl
+  ];
 
   cargoHash = "sha256-9cNCIlTGbkDtx7yzXtOszsjXCSLki2JQFIGG24p38EA=";
 

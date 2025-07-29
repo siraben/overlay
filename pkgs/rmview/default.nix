@@ -1,4 +1,10 @@
-{ lib, stdenv, fetchFromGitHub, python3Packages, wrapQtAppsHook }:
+{
+  lib,
+  stdenv,
+  fetchFromGitHub,
+  python3Packages,
+  wrapQtAppsHook,
+}:
 
 python3Packages.buildPythonApplication rec {
   pname = "rmview";
@@ -13,8 +19,18 @@ python3Packages.buildPythonApplication rec {
     sha256 = "sha256-wXGCoDiRvbFAB9MY8R9MevGhiZUcAzkNo7KNQQM0nFk=";
   };
 
-  nativeBuildInputs = with python3Packages; [ pyqt5 wrapQtAppsHook ];
-  propagatedBuildInputs = with python3Packages; [ pyqt5 paramiko twisted service-identity pyopenssl pyjwt ];
+  nativeBuildInputs = with python3Packages; [
+    pyqt5
+    wrapQtAppsHook
+  ];
+  propagatedBuildInputs = with python3Packages; [
+    pyqt5
+    paramiko
+    twisted
+    service-identity
+    pyopenssl
+    pyjwt
+  ];
 
   preBuild = ''
     pyrcc5 -o src/rmview/resources.py resources.qrc

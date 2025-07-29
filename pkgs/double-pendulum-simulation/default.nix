@@ -1,4 +1,12 @@
-{ lib, mkDerivation, fetchFromGitHub, base, gloss, stdenv, vector-space }:
+{
+  lib,
+  mkDerivation,
+  fetchFromGitHub,
+  base,
+  gloss,
+  stdenv,
+  vector-space,
+}:
 
 mkDerivation rec {
   pname = "double-pendulum-simulation";
@@ -11,8 +19,14 @@ mkDerivation rec {
   };
   isLibrary = true;
   isExecutable = true;
-  libraryHaskellDepends = [ base vector-space ];
-  executableHaskellDepends = [ base gloss ];
+  libraryHaskellDepends = [
+    base
+    vector-space
+  ];
+  executableHaskellDepends = [
+    base
+    gloss
+  ];
   homepage = "https://github.com/lotz84/double-pendulum-simulation#readme";
   license = lib.licenses.bsd3;
   mainProgram = "double-pendulum-simulation-exe";

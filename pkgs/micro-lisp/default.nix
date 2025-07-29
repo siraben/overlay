@@ -1,4 +1,9 @@
-{ lib, stdenv, fetchFromGitHub, libbsd }:
+{
+  lib,
+  stdenv,
+  fetchFromGitHub,
+  libbsd,
+}:
 
 stdenv.mkDerivation rec {
   name = "micro-lisp";
@@ -11,7 +16,10 @@ stdenv.mkDerivation rec {
   };
 
   buildInputs = [ libbsd ];
-  makeFlags = [ "mlisp89-non-bsd" "micro-lisp" ];
+  makeFlags = [
+    "mlisp89-non-bsd"
+    "micro-lisp"
+  ];
 
   doCheck = stdenv.targetPlatform == stdenv.buildPlatform;
 

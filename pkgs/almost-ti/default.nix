@@ -1,4 +1,13 @@
-{ stdenv, lib, fetchurl, xorg, pkg-config, SDL, zlib, tree }:
+{
+  stdenv,
+  lib,
+  fetchurl,
+  xorg,
+  pkg-config,
+  SDL,
+  zlib,
+  tree,
+}:
 
 stdenv.mkDerivation rec {
   pname = "almost-ti";
@@ -10,7 +19,12 @@ stdenv.mkDerivation rec {
   };
 
   nativeBuildInputs = [ pkg-config ];
-  buildInputs = [ xorg.libX11 xorg.libXext SDL zlib ];
+  buildInputs = [
+    xorg.libX11
+    xorg.libXext
+    SDL
+    zlib
+  ];
 
   NIX_CFLAGS_COMPILE = "-Wno-implicit-function-declaration -Wno-incompatible-pointer-types -fcommon -Wno-implicit-int";
 
@@ -20,7 +34,10 @@ stdenv.mkDerivation rec {
     substituteInPlace EMULib/Rules.Unix --replace '-I/usr/X11R6/include' '-I${xorg.libX11.dev} -lSDL -lX11 -lXext'
   '';
 
-  makeFlags = [ "--directory=ATI85/Unix" "DESTDIR=$out" ] ++ lib.optional stdenv.isDarwin "CC=${stdenv.cc.targetPrefix}cc";
+  makeFlags = [
+    "--directory=ATI85/Unix"
+    "DESTDIR=$out"
+  ] ++ lib.optional stdenv.isDarwin "CC=${stdenv.cc.targetPrefix}cc";
 
   installPhase = ''
     install -Dm755 ATI85/Unix/ati85 -t $out/bin

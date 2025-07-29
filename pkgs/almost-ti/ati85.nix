@@ -1,5 +1,7 @@
 # { pkgs ? import <nixpkgs> { system = "x86_64-linux"; }}:
-{ pkgs ? import <nixpkgs> { } }:
+{
+  pkgs ? import <nixpkgs> { },
+}:
 with pkgs;
 
 stdenv.mkDerivation rec {
@@ -29,6 +31,10 @@ stdenv.mkDerivation rec {
   '';
 
   nativeBuildInputs = [ unzip ];
-  buildInputs = [ x11 SDL SDL_sound ];
+  buildInputs = [
+    x11
+    SDL
+    SDL_sound
+  ];
 
 }

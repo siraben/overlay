@@ -1,4 +1,9 @@
-{ lib, stdenv, fetchFromGitHub, texlive }:
+{
+  lib,
+  stdenv,
+  fetchFromGitHub,
+  texlive,
+}:
 
 stdenv.mkDerivation rec {
   pname = "essentials-of-compilation";
@@ -13,13 +18,12 @@ stdenv.mkDerivation rec {
 
   nativeBuildInputs = [ texlive.combined.scheme-full ];
 
-  installPhase= ''
+  installPhase = ''
     runHook preInstall
     mkdir -p $out/share
     cp book.pdf $out/share
     runHook postInstall
   '';
-
 
   meta = with lib; {
     description = "A book about compiling Racket and Python to x86-64 assembly";

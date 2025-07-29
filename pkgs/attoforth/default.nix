@@ -1,4 +1,8 @@
-{ lib, stdenv, fetchFromGitHub }:
+{
+  lib,
+  stdenv,
+  fetchFromGitHub,
+}:
 
 stdenv.mkDerivation rec {
   pname = "attoforth";
@@ -11,7 +15,10 @@ stdenv.mkDerivation rec {
     sha256 = "sha256-cSiClCyI+awT27ewL8UFpXb/BWbPF5HxzmvtWhMH1lk=";
   };
 
-  makeFlags = [ "CC=${stdenv.cc.targetPrefix}cc" "PREFIX=$(out)" ];
+  makeFlags = [
+    "CC=${stdenv.cc.targetPrefix}cc"
+    "PREFIX=$(out)"
+  ];
 
   meta = with lib; {
     description = "A pre-emptive multitasking POSIX Forth";

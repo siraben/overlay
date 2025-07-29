@@ -1,4 +1,11 @@
-{ lib, stdenv, fetchurl, jdk11, ant, makeWrapper }:
+{
+  lib,
+  stdenv,
+  fetchurl,
+  jdk11,
+  ant,
+  makeWrapper,
+}:
 
 stdenv.mkDerivation rec {
   pname = "kawa";
@@ -9,26 +16,30 @@ stdenv.mkDerivation rec {
     sha256 = "sha256-jJpQzWsQAVTJAb0ZCzrNL7g1PzNiLEos6Po5Kn8J4Bk=";
   };
 
-  nativeBuildInputs = [ jdk11 ant makeWrapper ];
+  nativeBuildInputs = [
+    jdk11
+    ant
+    makeWrapper
+  ];
 
   buildPhase = ''
     runHook preBuild
-    
+
     ant -Denable-java-frontend=yes
-    
+
     runHook postBuild
   '';
 
   installPhase = ''
     runHook preInstall
-    
+
     mkdir -p $out/share/java
     cp lib/kawa.jar $out/share/java/kawa.jar
-    
+
     mkdir -p $out/bin
     makeWrapper ${jdk11}/bin/java $out/bin/kawa \
       --add-flags "-jar $out/share/java/kawa.jar"
-    
+
     runHook postInstall
   '';
 
@@ -44,6 +55,6 @@ stdenv.mkDerivation rec {
     homepage = "https://www.gnu.org/software/kawa/";
     license = licenses.mit;
     maintainers = with maintainers; [ siraben ];
-    platforms = platforms.all;
+    platforms = platforms.unix;
   };
 }

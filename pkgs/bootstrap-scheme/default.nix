@@ -1,16 +1,22 @@
-{ stdenv, lib, fetchFromGitHub, gmp, withGmp ? true }:
+{
+  stdenv,
+  lib,
+  fetchFromGitHub,
+  gmp,
+  withGmp ? true,
+}:
 
 stdenv.mkDerivation rec {
   name = "bootstrap-scheme";
   src =
     if withGmp then
-      fetchFromGitHub
-        {
-          owner = "siraben";
-          repo = name;
-          rev = "994e41ca773c14558c69ae2c4c9967d9d7895b6d";
-          sha256 = "0b4a3j1m5f8620hz8nhw6my36y4r8cr9i120k4awqxhhm8az7kh8";
-        } else
+      fetchFromGitHub {
+        owner = "siraben";
+        repo = name;
+        rev = "994e41ca773c14558c69ae2c4c9967d9d7895b6d";
+        sha256 = "0b4a3j1m5f8620hz8nhw6my36y4r8cr9i120k4awqxhhm8az7kh8";
+      }
+    else
       fetchFromGitHub {
         owner = "petermichaux";
         repo = name;

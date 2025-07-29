@@ -1,4 +1,10 @@
-{ lib, buildGoModule, fetchFromGitHub, makeWrapper, fzf }:
+{
+  lib,
+  buildGoModule,
+  fetchFromGitHub,
+  makeWrapper,
+  fzf,
+}:
 
 buildGoModule rec {
   pname = "opencode";
@@ -15,7 +21,10 @@ buildGoModule rec {
 
   nativeBuildInputs = [ makeWrapper ];
 
-  ldflags = [ "-s" "-w" ];
+  ldflags = [
+    "-s"
+    "-w"
+  ];
 
   doCheck = false;
 

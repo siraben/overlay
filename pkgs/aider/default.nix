@@ -1,4 +1,10 @@
-{ lib, python3Packages, fetchFromGitHub, git, makeWrapper }:
+{
+  lib,
+  python3Packages,
+  fetchFromGitHub,
+  git,
+  makeWrapper,
+}:
 
 let
   # Missing dependencies not in nixpkgs
@@ -43,9 +49,13 @@ let
     };
 
     build-system = [ python3Packages.setuptools ];
-    propagatedBuildInputs = [ python3Packages.tree-sitter python3Packages.pathspec tree-sitter-languages ];
+    propagatedBuildInputs = [
+      python3Packages.tree-sitter
+      python3Packages.pathspec
+      tree-sitter-languages
+    ];
     doCheck = false;
-    pythonImportsCheck = [];
+    pythonImportsCheck = [ ];
     dontCheckRuntimeDeps = true;
   };
 
@@ -60,7 +70,11 @@ let
     };
 
     build-system = [ python3Packages.setuptools ];
-    propagatedBuildInputs = [ python3Packages.requests python3Packages.urllib3 python3Packages.six ];
+    propagatedBuildInputs = [
+      python3Packages.requests
+      python3Packages.urllib3
+      python3Packages.six
+    ];
     doCheck = false;
   };
 
@@ -77,12 +91,12 @@ let
       fetchSubmodules = true;
     };
 
-    build-system = [ 
+    build-system = [
       python3Packages.setuptools
       python3Packages.wheel
     ];
 
-    nativeBuildInputs = [ 
+    nativeBuildInputs = [
       python3Packages.cython
     ];
 
@@ -241,7 +255,7 @@ python3Packages.buildPythonApplication rec {
       --replace-fail "from grep_ast.tsl import get_parser" "from tree_sitter_languages import get_parser"
     substituteInPlace aider/repomap.py \
       --replace-fail "from grep_ast.tsl import USING_TSL_PACK, get_language, get_parser" "from tree_sitter_languages import get_language, get_parser; USING_TSL_PACK = True"
-    
+
     # Fix other tsl imports if they exist
     find . -name "*.py" -exec sed -i 's/from grep_ast\.tsl import/from tree_sitter_languages import/g' {} \;
     find . -name "*.py" -exec sed -i 's/grep_ast\.tsl\./tree_sitter_languages./g' {} \;
@@ -251,7 +265,6 @@ python3Packages.buildPythonApplication rec {
     wrapProgram $out/bin/aider \
       --set-default AIDER_NO_AUTO_UPDATE 1
   '';
-
 
   doCheck = false;
   dontCheckRuntimeDeps = true;

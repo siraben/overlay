@@ -1,4 +1,12 @@
-{ lib, stdenv, fetchFromGitHub, zlib, libX11, libXpm, ncurses }:
+{
+  lib,
+  stdenv,
+  fetchFromGitHub,
+  zlib,
+  libX11,
+  libXpm,
+  ncurses,
+}:
 
 stdenv.mkDerivation rec {
   pname = "twin";
@@ -11,7 +19,12 @@ stdenv.mkDerivation rec {
     sha256 = "sha256-SDb1e2cQkZGi3uCezNLXji8YLMC5vul5z9EtHEDuwvc=";
   };
 
-  buildInputs = [ zlib libX11 libXpm ncurses ];
+  buildInputs = [
+    zlib
+    libX11
+    libXpm
+    ncurses
+  ];
   enableParallelBuilding = true;
   hardeningDisable = [ "all" ];
 

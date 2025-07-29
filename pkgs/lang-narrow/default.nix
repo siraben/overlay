@@ -1,4 +1,9 @@
-{ buildDunePackage, lib, fetchFromGitHub, menhir }:
+{
+  buildDunePackage,
+  lib,
+  fetchFromGitHub,
+  menhir,
+}:
 
 buildDunePackage rec {
   pname = "lang_narrow";
@@ -16,7 +21,7 @@ buildDunePackage rec {
   buildPhase = ''
     dune build src/main.exe
   '';
-  
+
   installPhase = ''
     cp _build/default/src/main.exe $out
   '';

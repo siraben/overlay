@@ -41,7 +41,7 @@ in
   simple-vm = callPackage ./pkgs/simple-vm { };
   ti84-forth = callPackage ./pkgs/ti84-forth { };
   ts_sms = callPackage ./pkgs/ts_sms { };
-  ts_sms-cuda = callPackage ./pkgs/ts_sms { 
+  ts_sms-cuda = callPackage ./pkgs/ts_sms {
     cudaSupport = true;
     cudaPackages = prev.cudaPackages;
   };

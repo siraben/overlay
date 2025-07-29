@@ -1,4 +1,9 @@
-{ lib, stdenv, fetchgit, python3Packages }:
+{
+  lib,
+  stdenv,
+  fetchgit,
+  python3Packages,
+}:
 
 python3Packages.buildPythonApplication rec {
   pname = "algebraic";
@@ -11,7 +16,10 @@ python3Packages.buildPythonApplication rec {
   };
   format = "other";
 
-  propagatedBuildInputs = with python3Packages; [ numpy pycairo ];
+  propagatedBuildInputs = with python3Packages; [
+    numpy
+    pycairo
+  ];
 
   dontBuild = true;
   doCheck = false;

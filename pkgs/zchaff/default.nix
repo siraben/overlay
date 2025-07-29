@@ -1,4 +1,8 @@
-{ lib, gcc9Stdenv, fetchurl }:
+{
+  lib,
+  gcc9Stdenv,
+  fetchurl,
+}:
 
 gcc9Stdenv.mkDerivation rec {
   pname = "zchaff";
@@ -11,7 +15,7 @@ gcc9Stdenv.mkDerivation rec {
 
   patches = [ ./sat_solver.patch ];
   makeFlags = [ "CC=${gcc9Stdenv.cc.targetPrefix}c++" ];
-  installPhase= ''
+  installPhase = ''
     runHook preInstall
     install -Dm755 -t $out/bin zchaff
     runHook postInstall
