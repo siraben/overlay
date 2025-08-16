@@ -20,12 +20,14 @@ in
   collapseos-ti84 = callPackage ./pkgs/collapseos-ti84 { };
   crchack = callPackage ./pkgs/crchack { };
   double-pendulum-simulation = prev.haskellPackages.callPackage ./pkgs/double-pendulum-simulation { };
+  edge-tts = callPackage ./pkgs/edge-tts { };
   essentials-of-compilation = callPackage ./pkgs/essentials-of-compilation { };
   fe = callPackage ./pkgs/fe { };
   git2graph = callPackage ./pkgs/git2graph { };
   jonesforth = callPackage ./pkgs/jonesforth { };
   kawa = callPackage ./pkgs/kawa { };
   lang-narrow = prev.ocamlPackages.callPackage ./pkgs/lang-narrow { };
+  lue = callPackage ./pkgs/lue { };
   mes = callPackage ./pkgs/mes { };
   micro-lisp = callPackage ./pkgs/micro-lisp { };
   mosaic = callPackage ./pkgs/mosaic { };
