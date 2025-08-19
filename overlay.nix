@@ -33,12 +33,15 @@ in
   mosaic = callPackage ./pkgs/mosaic { };
   nix-hello = callPackage ./pkgs/nix-hello { };
   nix-hello-minimal = callPackage ./pkgs/nix-hello-minimal { };
+  opencc = callPackage ./pkgs/opencc { };
   opencode = callPackage ./pkgs/opencode { };
   ostools = callPackage ./pkgs/ostools { };
   PortableGL = callPackage ./pkgs/PortableGL { };
   regit = callPackage ./pkgs/regit { };
+  relay-outer = callPackage ./pkgs/relayouter { };
   rmview = prev.libsForQt5.callPackage ./pkgs/rmview { };
   runpodctl = callPackage ./pkgs/runpodctl { };
+  sakura = callPackage ./pkgs/sakura { };
   simple-vm = callPackage ./pkgs/simple-vm { };
   ti84-forth = callPackage ./pkgs/ti84-forth { };
   ts_sms = callPackage ./pkgs/ts_sms { };
