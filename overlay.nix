@@ -30,6 +30,7 @@ in
   lue = callPackage ./pkgs/lue { };
   mes = callPackage ./pkgs/mes { };
   micro-lisp = callPackage ./pkgs/micro-lisp { };
+  microhs = callPackage ./pkgs/microhs { };
   mosaic = callPackage ./pkgs/mosaic { };
   nix-hello = callPackage ./pkgs/nix-hello { };
   nix-hello-minimal = callPackage ./pkgs/nix-hello-minimal { };
