@@ -24,12 +24,13 @@ rustPlatform.buildRustPackage rec {
   cargoHash = "sha256-/U7icE4r/R1aPy5/m4Jahg0mfcqUxsFUUFGM3LNY2Ok=";
 
   nativeBuildInputs = [ pkg-config ];
-  buildInputs =
-    [ openssl ]
-    ++ lib.optionals stdenv.isDarwin [
-      Security
-      AppKit
-    ];
+  buildInputs = [
+    openssl
+  ]
+  ++ lib.optionals stdenv.isDarwin [
+    Security
+    AppKit
+  ];
 
   # Disable grammar build which requires missing config directory
   ZEE_DISABLE_GRAMMAR_BUILD = "1";

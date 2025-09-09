@@ -18,7 +18,8 @@ stdenv.mkDerivation rec {
   configureFlags = [
     "--with-courage"
     "--with-system-libc"
-  ] ++ lib.optionals stdenv.isDarwin [ "--build=x86_64-apple-darwin" ];
+  ]
+  ++ lib.optionals stdenv.isDarwin [ "--build=x86_64-apple-darwin" ];
 
   nativeBuildInputs = [ guile ];
 

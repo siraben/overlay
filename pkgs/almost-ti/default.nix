@@ -37,7 +37,8 @@ stdenv.mkDerivation rec {
   makeFlags = [
     "--directory=ATI85/Unix"
     "DESTDIR=$out"
-  ] ++ lib.optional stdenv.isDarwin "CC=${stdenv.cc.targetPrefix}cc";
+  ]
+  ++ lib.optional stdenv.isDarwin "CC=${stdenv.cc.targetPrefix}cc";
 
   installPhase = ''
     install -Dm755 ATI85/Unix/ati85 -t $out/bin
