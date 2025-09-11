@@ -42,7 +42,6 @@ in
   relay-outer = callPackage ./pkgs/relayouter { };
   rmview = prev.libsForQt5.callPackage ./pkgs/rmview { };
   runpodctl = callPackage ./pkgs/runpodctl { };
-  sakura = callPackage ./pkgs/sakura { };
   simple-vm = callPackage ./pkgs/simple-vm { };
   ti84-forth = callPackage ./pkgs/ti84-forth { };
   ts_sms = callPackage ./pkgs/ts_sms { };
