@@ -57,6 +57,7 @@ in
   };
   twin = callPackage ./pkgs/twin { };
   urscheme = callPackage ./pkgs/urscheme { };
+  xnedit = callPackage ./pkgs/xnedit { };
   zchaff = callPackage ./pkgs/zchaff { };
   zee = callPackage ./pkgs/zee {
     inherit (darwin.apple_sdk.frameworks) Security AppKit;
