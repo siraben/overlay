@@ -59,4 +59,5 @@ in
   zee = callPackage ./pkgs/zee {
     inherit (darwin.apple_sdk.frameworks) Security AppKit;
   };
+  mapscii = callPackage ./pkgs/mapscii { };
 }
