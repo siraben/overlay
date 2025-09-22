@@ -32,6 +32,11 @@
             value = pkgs.${name};
           }) (builtins.attrNames (overlay { } { }))
         );
+        devShells.default = pkgs.mkShell {
+          packages = [
+            (pkgs.python3.withPackages (ps: [ pkgs.oipd ]))
+          ];
+        };
       }
     )
     // {

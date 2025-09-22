@@ -60,4 +60,7 @@ in
     inherit (darwin.apple_sdk.frameworks) Security AppKit;
   };
   mapscii = callPackage ./pkgs/mapscii { };
+  # Options-implied-probability (oipd)
+  oipd = callPackage ./pkgs/oipd { };
+  options-implied-probability = final.oipd;
 }
