@@ -61,11 +61,20 @@ jobs:
         authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
     
     - name: Build ${{ matrix.package }}
+      id: build
+      continue-on-error: true
       run: |
         echo "Building ${{ matrix.package }} for ${{ matrix.system }}..."
-        NIXPKGS_ALLOW_UNFREE=1 nix build --impure .#${{ matrix.package }} --print-build-logs
-    
+        # First check if the package is available for this system
+        if nix eval --impure .#packages.${{ matrix.system }}.${{ matrix.package }} &>/dev/null; then
+          NIXPKGS_ALLOW_UNFREE=1 nix build --impure .#${{ matrix.package }} --print-build-logs
+        else
+          echo "Package ${{ matrix.package }} is not available for ${{ matrix.system }}"
+          exit 1
+        fi
+
     - name: Push to Cachix
+      if: steps.build.outcome == 'success'
       run: |
         nix build .#${{ matrix.package }} | cachix push siraben
 
