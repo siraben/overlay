@@ -28,13 +28,16 @@ in
   jonesforth = callPackage ./pkgs/jonesforth { };
   lang-narrow = prev.ocamlPackages.callPackage ./pkgs/lang-narrow { };
   lue = callPackage ./pkgs/lue { };
+  mapscii = callPackage ./pkgs/mapscii { };
   mes = callPackage ./pkgs/mes { };
   micro-lisp = callPackage ./pkgs/micro-lisp { };
   microhs = callPackage ./pkgs/microhs { };
   mosaic = callPackage ./pkgs/mosaic { };
   nix-hello = callPackage ./pkgs/nix-hello { };
   nix-hello-minimal = callPackage ./pkgs/nix-hello-minimal { };
+  oipd = callPackage ./pkgs/oipd { };
   opencode = callPackage ./pkgs/opencode { };
+  options-implied-probability = final.oipd;
   ostools = callPackage ./pkgs/ostools { };
   PortableGL = callPackage ./pkgs/PortableGL { };
   regit = callPackage ./pkgs/regit { };
@@ -60,8 +63,4 @@ in
   zee = callPackage ./pkgs/zee {
     inherit (darwin.apple_sdk.frameworks) Security AppKit;
   };
-  mapscii = callPackage ./pkgs/mapscii { };
-  # Options-implied-probability (oipd)
-  oipd = callPackage ./pkgs/oipd { };
-  options-implied-probability = final.oipd;
 }
