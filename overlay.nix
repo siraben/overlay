@@ -5,6 +5,7 @@ let
   darwin = prev.darwin;
 in
 {
+  abs = callPackage ./pkgs/abs { };
   acme = callPackage ./pkgs/acme { };
   aider = callPackage ./pkgs/aider { };
   algebraic = callPackage ./pkgs/algebraic { };
