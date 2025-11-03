@@ -59,6 +59,7 @@ in
     cudaPackages = prev.cudaPackages;
   };
   treeos = callPackage ./pkgs/treeos { };
+  tmux-rs = callPackage ./pkgs/tmux-rs { };
   twin = callPackage ./pkgs/twin { };
   urscheme = callPackage ./pkgs/urscheme { };
   xnedit = callPackage ./pkgs/xnedit { };
