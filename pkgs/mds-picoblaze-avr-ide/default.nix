@@ -21,12 +21,8 @@ in oldPkgs.stdenv.mkDerivation rec {
 
   sourceRoot = "source/IDE";
 
-  postPatch = let
-    postPatchScript = ./post-patch.py;
-    fixDialogScript = ./fix-dialog-includes.py;
-  in ''
-    ${oldPkgs.python3}/bin/python3 ${postPatchScript} \
-      --fix-dialog-script ${fixDialogScript}
+  postPatch = ''
+    ${oldPkgs.python3}/bin/python3 ${./post-patch.py}
   '';
 
   nativeBuildInputs = with oldPkgs; [ cmake flex bison python3 patchelf ];

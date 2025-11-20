@@ -1,8 +1,5 @@
 #!/usr/bin/env python3
 
-import argparse
-import subprocess
-import sys
 from pathlib import Path
 
 ROOT = Path.cwd()
@@ -75,7 +72,7 @@ def update_include_blocks():
         ensure_qt_ui_includes(cmake)
 
 
-def propagate_widget_includes(fix_dialog_script):
+def propagate_widget_includes():
     replace(
         ROOT / "GUI/widgets/CMakeLists.txt",
         'set(CMAKE_VERBOSE_MAKEFILE OFF)\n\n',
@@ -104,8 +101,7 @@ def propagate_widget_includes(fix_dialog_script):
             'set(CMAKE_VERBOSE_MAKEFILE OFF)\n\ninclude_directories ( "${CMAKE_SOURCE_DIR}/GUI/project" "${CMAKE_BINARY_DIR}/GUI/project" )\n\n',
         )
 
-    if fix_dialog_script is not None:
-        subprocess.run([sys.executable, str(fix_dialog_script)], check=True, cwd=str(ROOT))
+    patch_dialog_and_mainform_includes()
 
 
 def patch_widget_dependencies():
@@ -230,9 +226,58 @@ def disable_auxiliary_generators():
         write(demo_path, text)
 
 
-def run(fix_dialog_script):
+def insert_after_marker(path, marker, addition):
+    text = read(path)
+    if addition in text:
+        return
+    if marker not in text:
+        raise SystemExit("marker not found in {}".format(path))
+    write(path, text.replace(marker, marker + addition, 1))
+
+
+def patch_dialog_and_mainform_includes():
+    dialogs_path = ROOT / "GUI/dialogs/CMakeLists.txt"
+    dialogs_marker = (
+        "# ------------------------------------------------------------------------------\n"
+        "# GENERAL OPTIONS\n"
+        "# ------------------------------------------------------------------------------\n\n"
+    )
+    dialogs_addition = (
+        'file(GLOB DIALOG_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/*")\n'
+        "foreach(dialog_dir ${DIALOG_INCLUDE_DIRS})\n"
+        "    if (IS_DIRECTORY ${dialog_dir})\n"
+        "        get_filename_component(dialog_name ${dialog_dir} NAME)\n"
+        '        include_directories("${dialog_dir}")\n'
+        '        include_directories("${CMAKE_BINARY_DIR}/GUI/dialogs/${dialog_name}")\n'
+        "    endif()\n"
+        "endforeach()\n\n"
+    )
+    insert_after_marker(dialogs_path, dialogs_marker, dialogs_addition)
+
+    mainform_path = ROOT / "GUI/mainform/CMakeLists.txt"
+    mainform_marker = "project ( Mainform )\n\n"
+    tools_dir = ROOT / "GUI/widgets/Tools"
+    tool_lines = []
+    if tools_dir.is_dir():
+        for subdir in sorted(p for p in tools_dir.iterdir() if p.is_dir()):
+            name = subdir.name
+            tool_lines.append(
+                'include_directories ( "${CMAKE_SOURCE_DIR}/GUI/widgets/Tools/%s" '
+                '"${CMAKE_BINARY_DIR}/GUI/widgets/Tools/%s" )\n' % (name, name)
+            )
+
+    mainform_addition = (
+        'include_directories ( "${CMAKE_SOURCE_DIR}/GUI/project" "${CMAKE_BINARY_DIR}/GUI/project" )\n'
+        'include_directories ( "${CMAKE_SOURCE_DIR}/GUI/dialogs/projectdlg" "${CMAKE_BINARY_DIR}/GUI/dialogs/projectdlg" )\n'
+        + "".join(tool_lines)
+        + "\n"
+    )
+    insert_after_marker(mainform_path, mainform_marker, mainform_addition)
+
+
+def run():
     update_include_blocks()
-    propagate_widget_includes(fix_dialog_script)
+    propagate_widget_includes()
     patch_widget_dependencies()
     adjust_project_configuration()
     patch_boost_filesystem()
@@ -240,11 +285,8 @@ def run(fix_dialog_script):
     disable_auxiliary_generators()
 
 
-def main(argv=None):
-    parser = argparse.ArgumentParser(description="Apply MDS post-patch adjustments")
-    parser.add_argument("--fix-dialog-script", type=Path, default=None)
-    args = parser.parse_args(argv)
-    run(args.fix_dialog_script)
+def main():
+    run()
 
 
 if __name__ == "__main__":

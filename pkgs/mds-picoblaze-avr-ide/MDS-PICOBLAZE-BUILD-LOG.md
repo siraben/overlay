@@ -156,21 +156,24 @@ QT4_WRAP_CPP( SAMPLE_MOC_SRCS ${SAMPLE_MOC_HDRS} )'
 **Issue**: NixOS refused to run the ELF binaries because they were linked against `/lib64/ld-linux-x86-64.so.2`.
 **Fix**: Added a `patchelf` post-install step that rewrites the interpreter to `${oldPkgs.glibc}/lib/ld-linux-x86-64.so.2` and seeds RPATH with `$out/lib/mds` plus Qt4/Boost paths.
 
-**Final Output**: `result -> /nix/store/c88qsa8bwbssa9mbvbsgkzcs7hbj2p4s-mds-picoblaze-avr-ide-unstable-2024-11-18`
+**Final Output**: `result -> /nix/store/7qx689j1ak39vdh33lpxwssscfhnigrx-mds-picoblaze-avr-ide-unstable-2024-11-18`
 - Executables (`mds-ide`, `mds-compiler`, `mds-translator`, etc.) now start correctly on NixOS (after ensuring an X server is available for the GUI).
 
 ---
 
 ### 14. Python-driven postPatch refactor (2025-11-20)
 - Collapsed the 300+ line inline `postPatch` shell snippet into a reusable `post-patch.py`, grouping each logical fix (include propagation, flex/bison macros, install-dir rewrites, license disable) into small helpers.
-- The derivation now simply runs ``${oldPkgs.python3}/bin/python3 ${postPatchScript} --fix-dialog-script ${fixDialogScript}``, which keeps the Nix expression readable while still executing every historical adjustment.
-- The helper also invokes `fix-dialog-includes.py`, so dialog/widget wiring lives outside of raw `substituteInPlace` calls.
-- Verified the refactor via `NIXPKGS_ALLOW_UNFREE=1 nix build -L --impure .#mds-picoblaze-avr-ide`, producing `/nix/store/c88qsa8bwbssa9mbvbsgkzcs7hbj2p4s-mds-picoblaze-avr-ide-unstable-2024-11-18`.
+- Initially the derivation called the helper plus a separate `fix-dialog-includes.py`, but all logic now lives in `post-patch.py` directly.
+- Verified the refactor via `NIXPKGS_ALLOW_UNFREE=1 nix build -L --impure .#mds-picoblaze-avr-ide`, producing `/nix/store/7qx689j1ak39vdh33lpxwssscfhnigrx-mds-picoblaze-avr-ide-unstable-2024-11-18`.
 
 ### 15. Demo project sources missing at runtime (2025-11-20)
 - Disabling the tutorial project build prevented any `Example*.psm` files from landing in `$out/share/mds/demoproject`, so the IDE could not open files like `Example5.psm`.
 - Updated `post-patch.py` to append `install ( FILES ${PSM_FILES} DESTINATION ${INSTALL_DIR_DEMOPROJECT} )`, copying the raw tutorial sources without invoking the legacy compiler.
 - Rebuilt with `NIXPKGS_ALLOW_UNFREE=1 nix build …mds-picoblaze-avr-ide`, confirming `Example1.psm` through `Example6.psm` exist alongside `MDSExample.mds-project`.
+
+### 16. Inlined dialog/mainform hooks (2025-11-20)
+- Added `insert_after_marker`/`patch_dialog_and_mainform_includes` helpers to `post-patch.py`, mirroring what `fix-dialog-includes.py` previously injected.
+- `postPatch` now runs a single Python file (`${oldPkgs.python3}/bin/python3 ${./post-patch.py}`), simplifying the patch phase and keeping all transformations together.
 
 ---
 
@@ -290,7 +293,7 @@ new line 3'
 
 **Build Progress**: 100% complete
 **Last Successful Target**: Install + wrapping (fontconfig + patchelf)
-**Current Error**: None — final derivation `/nix/store/c88qsa8bwbssa9mbvbsgkzcs7hbj2p4s-mds-picoblaze-avr-ide-unstable-2024-11-18` builds successfully.
+**Current Error**: None — final derivation `/nix/store/7qx689j1ak39vdh33lpxwssscfhnigrx-mds-picoblaze-avr-ide-unstable-2024-11-18` builds successfully.
 **Next Steps**:
 1. Smoke-test `mds-ide` and its helper binaries on the target workstation (fonts + license bypass).
 2. Evaluate which Python-driven replacements can be upstreamed as patch files to reduce maintenance burden.
@@ -349,5 +352,5 @@ Build artifacts location (in Nix sandbox):
 
 ---
 
-**Last Updated**: 2025-11-20 19:53 UTC
-**Build Status**: 100% (result -> /nix/store/c88qsa8bwbssa9mbvbsgkzcs7hbj2p4s-mds-picoblaze-avr-ide-unstable-2024-11-18)
+**Last Updated**: 2025-11-20 20:16 UTC
+**Build Status**: 100% (result -> /nix/store/7qx689j1ak39vdh33lpxwssscfhnigrx-mds-picoblaze-avr-ide-unstable-2024-11-18)
