@@ -156,7 +156,7 @@ QT4_WRAP_CPP( SAMPLE_MOC_SRCS ${SAMPLE_MOC_HDRS} )'
 **Issue**: NixOS refused to run the ELF binaries because they were linked against `/lib64/ld-linux-x86-64.so.2`.
 **Fix**: Added a `patchelf` post-install step that rewrites the interpreter to `${oldPkgs.glibc}/lib/ld-linux-x86-64.so.2` and seeds RPATH with `$out/lib/mds` plus Qt4/Boost paths.
 
-**Final Output**: `result -> /nix/store/7qx689j1ak39vdh33lpxwssscfhnigrx-mds-picoblaze-avr-ide-unstable-2024-11-18`
+**Final Output**: `result -> /nix/store/mldamlfpap6wqr1dhnd35x3vgq4c597d-mds-picoblaze-avr-ide-unstable-2024-11-18`
 - Executables (`mds-ide`, `mds-compiler`, `mds-translator`, etc.) now start correctly on NixOS (after ensuring an X server is available for the GUI).
 
 ---
@@ -164,7 +164,7 @@ QT4_WRAP_CPP( SAMPLE_MOC_SRCS ${SAMPLE_MOC_HDRS} )'
 ### 14. Python-driven postPatch refactor (2025-11-20)
 - Collapsed the 300+ line inline `postPatch` shell snippet into a reusable `post-patch.py`, grouping each logical fix (include propagation, flex/bison macros, install-dir rewrites, license disable) into small helpers.
 - Initially the derivation called the helper plus a separate `fix-dialog-includes.py`, but all logic now lives in `post-patch.py` directly.
-- Verified the refactor via `NIXPKGS_ALLOW_UNFREE=1 nix build -L --impure .#mds-picoblaze-avr-ide`, producing `/nix/store/7qx689j1ak39vdh33lpxwssscfhnigrx-mds-picoblaze-avr-ide-unstable-2024-11-18`.
+- Verified the refactor via `NIXPKGS_ALLOW_UNFREE=1 nix build -L --impure .#mds-picoblaze-avr-ide`, producing `/nix/store/mldamlfpap6wqr1dhnd35x3vgq4c597d-mds-picoblaze-avr-ide-unstable-2024-11-18`.
 
 ### 15. Demo project sources missing at runtime (2025-11-20)
 - Disabling the tutorial project build prevented any `Example*.psm` files from landing in `$out/share/mds/demoproject`, so the IDE could not open files like `Example5.psm`.
@@ -174,6 +174,21 @@ QT4_WRAP_CPP( SAMPLE_MOC_SRCS ${SAMPLE_MOC_HDRS} )'
 ### 16. Inlined dialog/mainform hooks (2025-11-20)
 - Added `insert_after_marker`/`patch_dialog_and_mainform_includes` helpers to `post-patch.py`, mirroring what `fix-dialog-includes.py` previously injected.
 - `postPatch` now runs a single Python file (`${oldPkgs.python3}/bin/python3 ${./post-patch.py}`), simplifying the patch phase and keeping all transformations together.
+
+### 17. Necessity sweep – dialog/mainform includes (2025-11-20)
+- Temporarily commented out `patch_dialog_and_mainform_includes()` and rebuilt (`NIXPKGS_ALLOW_UNFREE=1 nix build ...` with log stored in `fail.log`).
+- Build failed at ~92% while compiling `GUI/mainform/mainform.cpp`: `fatal error: ../project/project.h: No such file or directory` because the shared include directories were no longer propagated.
+- Conclusion: dialog/mainform include injection remains required; change reverted immediately afterward.
+
+### 18. Necessity sweep – widget dependency injection (2025-11-20)
+- Commented out `patch_widget_dependencies()` and rebuilt to see if explicit include lists for Editor/Dock widgets are still required.
+- Build stopped at ~40% when compiling `GUI/widgets/Editor/codeedit.cpp`: `fatal error: ui_jumptoline.h: No such file or directory`, confirming those include-directories are still necessary for generated moc/ui headers.
+- Reverted the change and restored the helper.
+
+### 19. Necessity sweep – Boost filesystem patch (2025-11-20)
+- Disabled `patch_boost_filesystem()` to check if upstream Boost 1.62 still needs the custom append removal.
+- Compilation of `utilities/os/os.cxx` failed immediately with ambiguous `boost::filesystem::path::append` overload errors (see `fail.log`), matching the original reason for the workaround.
+- Conclusion: keep the Boost patch in place.
 
 ---
 
@@ -293,7 +308,7 @@ new line 3'
 
 **Build Progress**: 100% complete
 **Last Successful Target**: Install + wrapping (fontconfig + patchelf)
-**Current Error**: None — final derivation `/nix/store/7qx689j1ak39vdh33lpxwssscfhnigrx-mds-picoblaze-avr-ide-unstable-2024-11-18` builds successfully.
+**Current Error**: None — final derivation `/nix/store/mldamlfpap6wqr1dhnd35x3vgq4c597d-mds-picoblaze-avr-ide-unstable-2024-11-18` builds successfully.
 **Next Steps**:
 1. Smoke-test `mds-ide` and its helper binaries on the target workstation (fonts + license bypass).
 2. Evaluate which Python-driven replacements can be upstreamed as patch files to reduce maintenance burden.
@@ -353,4 +368,4 @@ Build artifacts location (in Nix sandbox):
 ---
 
 **Last Updated**: 2025-11-20 20:16 UTC
-**Build Status**: 100% (result -> /nix/store/7qx689j1ak39vdh33lpxwssscfhnigrx-mds-picoblaze-avr-ide-unstable-2024-11-18)
+**Build Status**: 100% (result -> /nix/store/mldamlfpap6wqr1dhnd35x3vgq4c597d-mds-picoblaze-avr-ide-unstable-2024-11-18)

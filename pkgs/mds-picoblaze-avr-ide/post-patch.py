@@ -1,19 +1,20 @@
 #!/usr/bin/env python3
 
 from pathlib import Path
+from typing import Iterable
 
 ROOT = Path.cwd()
 
 
-def read(path):
+def read(path: Path) -> str:
     return path.read_text(encoding="utf-8")
 
 
-def write(path, data):
+def write(path: Path, data: str) -> None:
     path.write_text(data, encoding="utf-8")
 
 
-def replace(path, old, new, *, count=None):
+def replace(path: Path, old: str, new: str, *, count: int = None) -> None:
     text = read(path)
     if old not in text:
         raise SystemExit("pattern not found in {}: {!r}".format(path, old))
@@ -24,27 +25,34 @@ def replace(path, old, new, *, count=None):
     write(path, text)
 
 
-def ensure_qt_ui_includes(cmake_path):
-    data = read(cmake_path)
-    if not any(token in data for token in ("qt4_wrap_ui", "QT4_WRAP_UI")):
+def prepend_if_missing(path: Path, snippet: str) -> None:
+    text = read(path)
+    if snippet in text:
         return
+    write(path, snippet + text)
+
+
+def insert_after_marker(path: Path, marker: str, addition: str) -> None:
+    text = read(path)
+    if addition in text:
+        return
+    if marker not in text:
+        raise SystemExit("marker not found in {}".format(path))
+    write(path, text.replace(marker, marker + addition, 1))
+
+
+def ensure_cmake_includes(paths: Iterable[Path], needles: Iterable[str]) -> None:
     snippet = 'include_directories ( "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_BINARY_DIR}" )\n'
-    if snippet in data:
-        return
-    write(cmake_path, snippet + data)
+    for path in paths:
+        text = read(path)
+        if snippet in text:
+            continue
+        if not any(needle in text for needle in needles):
+            continue
+        write(path, snippet + text)
 
 
-def ensure_assembler_includes(cmake_path):
-    data = read(cmake_path)
-    if not any(token in data for token in ("flex_bison_pair", "FLEX_TARGET", "BISON_TARGET")):
-        return
-    snippet = 'include_directories ( "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_BINARY_DIR}" )\n'
-    if snippet in data:
-        return
-    write(cmake_path, snippet + data)
-
-
-def update_include_blocks():
+def update_include_blocks() -> None:
     replacements = [
         ("GUI/widgets/sim/CMakeLists.txt", "${CMAKE_CURRENT_BINARY_DIR}", "${CMAKE_CURRENT_SOURCE_DIR}"),
         ("utilities/AdjSimProcDef/CMakeLists.txt", "include_directories ( ${CMAKE_SOURCE_DIR} )", "include_directories ( ${CMAKE_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} )"),
@@ -64,15 +72,14 @@ def update_include_blocks():
         count=1,
     )
 
-    assembler_dir = ROOT / "compiler/modules/assembler"
-    for cmake in sorted(assembler_dir.glob("*/CMakeLists.txt")):
-        ensure_assembler_includes(cmake)
+    assembler_paths = sorted((ROOT / "compiler/modules/assembler").glob("*/CMakeLists.txt"))
+    ensure_cmake_includes(assembler_paths, ("flex_bison_pair", "FLEX_TARGET", "BISON_TARGET"))
 
-    for cmake in sorted((ROOT / "GUI").rglob("CMakeLists.txt")):
-        ensure_qt_ui_includes(cmake)
+    gui_paths = sorted((ROOT / "GUI").rglob("CMakeLists.txt"))
+    ensure_cmake_includes(gui_paths, ("qt4_wrap_ui", "QT4_WRAP_UI"))
 
 
-def propagate_widget_includes():
+def propagate_widget_includes() -> None:
     replace(
         ROOT / "GUI/widgets/CMakeLists.txt",
         'set(CMAKE_VERBOSE_MAKEFILE OFF)\n\n',
@@ -104,19 +111,60 @@ def propagate_widget_includes():
     patch_dialog_and_mainform_includes()
 
 
-def patch_widget_dependencies():
-    replacements = {
-        "GUI/widgets/Editor/CMakeLists.txt": 'include_directories ( "${CMAKE_SOURCE_DIR}/GUI/widgets/EditorWidgets/JumpToLine" "${CMAKE_BINARY_DIR}/GUI/widgets/EditorWidgets/JumpToLine" )\ninclude_directories ( "${CMAKE_SOURCE_DIR}/GUI/widgets/EditorWidgets/Find" "${CMAKE_BINARY_DIR}/GUI/widgets/EditorWidgets/Find" )\ninclude_directories ( "${CMAKE_SOURCE_DIR}/GUI/widgets/EditorWidgets/FindAndReplace" "${CMAKE_BINARY_DIR}/GUI/widgets/EditorWidgets/FindAndReplace" )\ninclude_directories ( "${CMAKE_SOURCE_DIR}/GUI/widgets/EditorWidgets/ErrorDialog" "${CMAKE_BINARY_DIR}/GUI/widgets/EditorWidgets/ErrorDialog" )\nQT4_WRAP_CPP( SAMPLE_MOC_SRCS ${SAMPLE_MOC_HDRS} )',
-        "GUI/widgets/PicoBlazeGrid/CMakeLists.txt": 'include_directories ( "${CMAKE_SOURCE_DIR}/GUI/widgets/TimeWidget" "${CMAKE_BINARY_DIR}/GUI/widgets/TimeWidget" )\nQT4_WRAP_CPP( SAMPLE_MOC_SRCS ${SAMPLE_MOC_HDRS} )',
-        "GUI/widgets/DockManager/CMakeLists.txt": 'include_directories ( "${CMAKE_SOURCE_DIR}/GUI/widgets/CallWatcher" "${CMAKE_BINARY_DIR}/GUI/widgets/CallWatcher" )\ninclude_directories ( "${CMAKE_SOURCE_DIR}/GUI/widgets/RegWatcher" "${CMAKE_BINARY_DIR}/GUI/widgets/RegWatcher" )\ninclude_directories ( "${CMAKE_SOURCE_DIR}/GUI/widgets/ExtAppOutput" "${CMAKE_BINARY_DIR}/GUI/widgets/ExtAppOutput" )\ninclude_directories ( "${CMAKE_SOURCE_DIR}/GUI/widgets/PicoBlazeGrid" "${CMAKE_BINARY_DIR}/GUI/widgets/PicoBlazeGrid" )\ninclude_directories ( "${CMAKE_SOURCE_DIR}/GUI/widgets/BreakpointList" "${CMAKE_BINARY_DIR}/GUI/widgets/BreakpointList" )\ninclude_directories ( "${CMAKE_SOURCE_DIR}/GUI/widgets/BookmarkList" "${CMAKE_BINARY_DIR}/GUI/widgets/BookmarkList" )\ninclude_directories ( "${CMAKE_SOURCE_DIR}/GUI/widgets/TabBar" "${CMAKE_BINARY_DIR}/GUI/widgets/TabBar" )\ninclude_directories ( "${CMAKE_SOURCE_DIR}/GUI/widgets/Editor" "${CMAKE_BINARY_DIR}/GUI/widgets/Editor" )\ninclude_directories ( "${CMAKE_SOURCE_DIR}/GUI/widgets/CompileInfo" "${CMAKE_BINARY_DIR}/GUI/widgets/CompileInfo" )\ninclude_directories ( "${CMAKE_SOURCE_DIR}/GUI/widgets/WelcomeScr" "${CMAKE_BINARY_DIR}/GUI/widgets/WelcomeScr" )\ninclude_directories ( "${CMAKE_SOURCE_DIR}/GUI/widgets/AsmMacroAnalyser" "${CMAKE_BINARY_DIR}/GUI/widgets/AsmMacroAnalyser" )\ninclude_directories ( "${CMAKE_SOURCE_DIR}/GUI/widgets/HelpDockWidget" "${CMAKE_BINARY_DIR}/GUI/widgets/HelpDockWidget" )\ninclude_directories ( "${CMAKE_SOURCE_DIR}/GUI/widgets/HelpWidget" "${CMAKE_BINARY_DIR}/GUI/widgets/HelpWidget" )\nQT4_WRAP_CPP( SAMPLE_MOC_SRCS ${SAMPLE_MOC_HDRS} )',
-        "GUI/widgets/DockUi/CMakeLists.txt": 'include_directories ( "${CMAKE_SOURCE_DIR}/GUI/widgets/CallWatcher" "${CMAKE_BINARY_DIR}/GUI/widgets/CallWatcher" )\ninclude_directories ( "${CMAKE_SOURCE_DIR}/GUI/widgets/RegWatcher" "${CMAKE_BINARY_DIR}/GUI/widgets/RegWatcher" )\ninclude_directories ( "${CMAKE_SOURCE_DIR}/GUI/widgets/ExtAppOutput" "${CMAKE_BINARY_DIR}/GUI/widgets/ExtAppOutput" )\ninclude_directories ( "${CMAKE_SOURCE_DIR}/GUI/widgets/PicoBlazeGrid" "${CMAKE_BINARY_DIR}/GUI/widgets/PicoBlazeGrid" )\ninclude_directories ( "${CMAKE_SOURCE_DIR}/GUI/widgets/BreakpointList" "${CMAKE_BINARY_DIR}/GUI/widgets/BreakpointList" )\ninclude_directories ( "${CMAKE_SOURCE_DIR}/GUI/widgets/BookmarkList" "${CMAKE_BINARY_DIR}/GUI/widgets/BookmarkList" )\ninclude_directories ( "${CMAKE_SOURCE_DIR}/GUI/widgets/CompileInfo" "${CMAKE_BINARY_DIR}/GUI/widgets/CompileInfo" )\ninclude_directories ( "${CMAKE_SOURCE_DIR}/GUI/widgets/WelcomeScr" "${CMAKE_BINARY_DIR}/GUI/widgets/WelcomeScr" )\ninclude_directories ( "${CMAKE_SOURCE_DIR}/GUI/widgets/AsmMacroAnalyser" "${CMAKE_BINARY_DIR}/GUI/widgets/AsmMacroAnalyser" )\ninclude_directories ( "${CMAKE_SOURCE_DIR}/GUI/widgets/HelpDockWidget" "${CMAKE_BINARY_DIR}/GUI/widgets/HelpDockWidget" )\nQT4_WRAP_CPP( SAMPLE_MOC_SRCS ${SAMPLE_MOC_HDRS} )',
+def patch_widget_dependencies() -> None:
+    widgets = {
+        "GUI/widgets/Editor/CMakeLists.txt": [
+            "EditorWidgets/JumpToLine",
+            "EditorWidgets/Find",
+            "EditorWidgets/FindAndReplace",
+            "EditorWidgets/ErrorDialog",
+        ],
+        "GUI/widgets/PicoBlazeGrid/CMakeLists.txt": ["TimeWidget"],
+        "GUI/widgets/DockManager/CMakeLists.txt": [
+            "CallWatcher",
+            "RegWatcher",
+            "ExtAppOutput",
+            "PicoBlazeGrid",
+            "BreakpointList",
+            "BookmarkList",
+            "TabBar",
+            "Editor",
+            "CompileInfo",
+            "WelcomeScr",
+            "AsmMacroAnalyser",
+            "HelpDockWidget",
+            "HelpWidget",
+        ],
+        "GUI/widgets/DockUi/CMakeLists.txt": [
+            "CallWatcher",
+            "RegWatcher",
+            "ExtAppOutput",
+            "PicoBlazeGrid",
+            "BreakpointList",
+            "BookmarkList",
+            "CompileInfo",
+            "WelcomeScr",
+            "AsmMacroAnalyser",
+            "HelpDockWidget",
+        ],
     }
-    pattern = 'QT4_WRAP_CPP( SAMPLE_MOC_SRCS ${SAMPLE_MOC_HDRS} )'
-    for rel, new in replacements.items():
-        replace(ROOT / rel, pattern, new)
+
+    for rel, deps in widgets.items():
+        snippet_lines = []
+        for dep in deps:
+            snippet_lines.append(
+                'include_directories ( "${CMAKE_SOURCE_DIR}/GUI/widgets/%s" "${CMAKE_BINARY_DIR}/GUI/widgets/%s" )'
+                % (dep, dep)
+            )
+        snippet = "\n".join(snippet_lines) + "\nQT4_WRAP_CPP( SAMPLE_MOC_SRCS ${SAMPLE_MOC_HDRS} )"
+        replace(
+            ROOT / rel,
+            'QT4_WRAP_CPP( SAMPLE_MOC_SRCS ${SAMPLE_MOC_HDRS} )',
+            snippet,
+        )
 
 
-def adjust_project_configuration():
+def adjust_project_configuration() -> None:
     replace(
         ROOT / "moraviascript/CMakeLists.txt",
         'project ( MScript )',
@@ -130,23 +178,23 @@ def adjust_project_configuration():
     )
 
     cmake_root = ROOT / "CMakeLists.txt"
-    layout_replacements = [
-        ('set ( INSTALL_DIR_PREFIX "/usr/" )', 'set ( INSTALL_DIR_PREFIX "${CMAKE_INSTALL_PREFIX}/" )'),
-        ('set ( INSTALL_DIR_BIN         "${INSTALL_DIR_PREFIX}bin" )', 'set ( INSTALL_DIR_BIN         "${CMAKE_INSTALL_PREFIX}/bin" )'),
-        ('set ( INSTALL_DIR_LIB         "${INSTALL_DIR_PREFIX}lib/mds" )', 'set ( INSTALL_DIR_LIB         "${CMAKE_INSTALL_PREFIX}/lib/mds" )'),
-        ('set ( INSTALL_DIR_DOC         "${INSTALL_DIR_PREFIX}doc/mds" )', 'set ( INSTALL_DIR_DOC         "${CMAKE_INSTALL_PREFIX}/doc/mds" )'),
-        ('set ( INSTALL_DIR_SHARE       "${INSTALL_DIR_PREFIX}share/mds" )', 'set ( INSTALL_DIR_SHARE       "${CMAKE_INSTALL_PREFIX}/share/mds" )'),
-        ('set ( INSTALL_DIR_DEMOPROJECT "${INSTALL_DIR_PREFIX}share/mds/demoproject" )', 'set ( INSTALL_DIR_DEMOPROJECT "${CMAKE_INSTALL_PREFIX}/share/mds/demoproject" )'),
-        ('set ( INSTALL_DIR_INCLUDE     "${INSTALL_DIR_PREFIX}include/mds" )', 'set ( INSTALL_DIR_INCLUDE     "${CMAKE_INSTALL_PREFIX}/include/mds" )'),
-        ('set ( INSTALL_DIR_MAIN_SHARE    "/usr/share" )', 'set ( INSTALL_DIR_MAIN_SHARE    "${CMAKE_INSTALL_PREFIX}/share" )'),
-    ]
-    for old, new in layout_replacements:
+    layout_replacements = {
+        'set ( INSTALL_DIR_PREFIX "/usr/" )': 'set ( INSTALL_DIR_PREFIX "${CMAKE_INSTALL_PREFIX}/" )',
+        'set ( INSTALL_DIR_BIN         "${INSTALL_DIR_PREFIX}bin" )': 'set ( INSTALL_DIR_BIN         "${CMAKE_INSTALL_PREFIX}/bin" )',
+        'set ( INSTALL_DIR_LIB         "${INSTALL_DIR_PREFIX}lib/mds" )': 'set ( INSTALL_DIR_LIB         "${CMAKE_INSTALL_PREFIX}/lib/mds" )',
+        'set ( INSTALL_DIR_DOC         "${INSTALL_DIR_PREFIX}doc/mds" )': 'set ( INSTALL_DIR_DOC         "${CMAKE_INSTALL_PREFIX}/doc/mds" )',
+        'set ( INSTALL_DIR_SHARE       "${INSTALL_DIR_PREFIX}share/mds" )': 'set ( INSTALL_DIR_SHARE       "${CMAKE_INSTALL_PREFIX}/share/mds" )',
+        'set ( INSTALL_DIR_DEMOPROJECT "${INSTALL_DIR_PREFIX}share/mds/demoproject" )': 'set ( INSTALL_DIR_DEMOPROJECT "${CMAKE_INSTALL_PREFIX}/share/mds/demoproject" )',
+        'set ( INSTALL_DIR_INCLUDE     "${INSTALL_DIR_PREFIX}include/mds" )': 'set ( INSTALL_DIR_INCLUDE     "${CMAKE_INSTALL_PREFIX}/include/mds" )',
+        'set ( INSTALL_DIR_MAIN_SHARE    "/usr/share" )': 'set ( INSTALL_DIR_MAIN_SHARE    "${CMAKE_INSTALL_PREFIX}/share" )',
+    }
+    for old, new in layout_replacements.items():
         replace(cmake_root, old, new)
 
     replace(cmake_root, 'add_subdirectory ( docs )', '# add_subdirectory ( docs ) - disabled for Nix build')
 
 
-def patch_boost_filesystem():
+def patch_boost_filesystem() -> None:
     replace(
         ROOT / "utilities/os/os.cxx",
         'namespace boost\n{\n    #if BOOST_VERSION <= 104800\n        namespace filesystem3\n    #else\n        namespace filesystem\n    #endif\n    {\n        template < >\n            path & path::append< typename path::iterator > ( typename path::iterator begin,\n                                                             typename path::iterator end,\n                                                             const codecvt_type & /*cvt*/ )\n            {\n                for( ; begin != end ; ++begin )\n                {\n                    *this /= *begin;\n                }\n\n                return *this;\n            }\n    }\n}',
@@ -160,7 +208,7 @@ def patch_boost_filesystem():
     )
 
 
-def patch_flex_bison_macros():
+def patch_flex_bison_macros() -> None:
     flex_path = ROOT / "FlexBisonPair.cmake"
     replace(
         flex_path,
@@ -187,7 +235,7 @@ def patch_flex_bison_macros():
     )
 
 
-def disable_auxiliary_generators():
+def disable_auxiliary_generators() -> None:
     replace(
         ROOT / "compiler/include/assembler/PicoBlaze/CMakeLists.txt",
         '# Build device specification files.\nforeach ( PROCESSOR "kcpsm1" "kcpsm1cpld" "kcpsm2" "kcpsm3" "kcpsm6" )',
@@ -200,42 +248,23 @@ def disable_auxiliary_generators():
         'endforeach ( PROCESSOR )\nendif()',
     )
 
+    demo_path = ROOT / "GUI/resources/projects/MDSExample/CMakeLists.txt"
     replace(
-        ROOT / "GUI/resources/projects/MDSExample/CMakeLists.txt",
+        demo_path,
         'file ( GLOB PSM_FILES *.psm )\nforeach ( PSM_FILE ${PSM_FILES} )',
         'file ( GLOB PSM_FILES *.psm )\nif ( FALSE )\nforeach ( PSM_FILE ${PSM_FILES} )',
     )
+    replace(demo_path, 'endforeach ( PSM_FILE )', 'endforeach ( PSM_FILE )\nendif()')
 
-    replace(
-        ROOT / "GUI/resources/projects/MDSExample/CMakeLists.txt",
-        'endforeach ( PSM_FILE )',
-        'endforeach ( PSM_FILE )\nendif()',
-    )
-
-    demo_path = ROOT / "GUI/resources/projects/MDSExample/CMakeLists.txt"
     install_snippet = (
         "# Install demo project source files without invoking mds-compiler.\n"
         "install ( FILES ${PSM_FILES} DESTINATION ${INSTALL_DIR_DEMOPROJECT} )\n\n"
     )
     marker = '# List of additional files that will be cleaned as a part of the "make clean" stage.'
-    text = read(demo_path)
-    if install_snippet not in text:
-        if marker not in text:
-            raise SystemExit("marker not found in {}".format(demo_path))
-        text = text.replace(marker, install_snippet + marker, 1)
-        write(demo_path, text)
+    insert_after_marker(demo_path, marker, install_snippet)
 
 
-def insert_after_marker(path, marker, addition):
-    text = read(path)
-    if addition in text:
-        return
-    if marker not in text:
-        raise SystemExit("marker not found in {}".format(path))
-    write(path, text.replace(marker, marker + addition, 1))
-
-
-def patch_dialog_and_mainform_includes():
+def patch_dialog_and_mainform_includes() -> None:
     dialogs_path = ROOT / "GUI/dialogs/CMakeLists.txt"
     dialogs_marker = (
         "# ------------------------------------------------------------------------------\n"
@@ -262,8 +291,8 @@ def patch_dialog_and_mainform_includes():
         for subdir in sorted(p for p in tools_dir.iterdir() if p.is_dir()):
             name = subdir.name
             tool_lines.append(
-                'include_directories ( "${CMAKE_SOURCE_DIR}/GUI/widgets/Tools/%s" '
-                '"${CMAKE_BINARY_DIR}/GUI/widgets/Tools/%s" )\n' % (name, name)
+                'include_directories ( "${CMAKE_SOURCE_DIR}/GUI/widgets/Tools/%s" "${CMAKE_BINARY_DIR}/GUI/widgets/Tools/%s" )\n'
+                % (name, name)
             )
 
     mainform_addition = (
@@ -275,7 +304,7 @@ def patch_dialog_and_mainform_includes():
     insert_after_marker(mainform_path, mainform_marker, mainform_addition)
 
 
-def run():
+def run() -> None:
     update_include_blocks()
     propagate_widget_includes()
     patch_widget_dependencies()
@@ -285,9 +314,5 @@ def run():
     disable_auxiliary_generators()
 
 
-def main():
-    run()
-
-
 if __name__ == "__main__":
-    main()
+    run()
