@@ -156,8 +156,21 @@ QT4_WRAP_CPP( SAMPLE_MOC_SRCS ${SAMPLE_MOC_HDRS} )'
 **Issue**: NixOS refused to run the ELF binaries because they were linked against `/lib64/ld-linux-x86-64.so.2`.
 **Fix**: Added a `patchelf` post-install step that rewrites the interpreter to `${oldPkgs.glibc}/lib/ld-linux-x86-64.so.2` and seeds RPATH with `$out/lib/mds` plus Qt4/Boost paths.
 
-**Final Output**: `result -> /nix/store/1id5dl4pkimp1alb7m2m2x3lkvq5z97k-mds-picoblaze-avr-ide-unstable-2024-11-18`
+**Final Output**: `result -> /nix/store/c88qsa8bwbssa9mbvbsgkzcs7hbj2p4s-mds-picoblaze-avr-ide-unstable-2024-11-18`
 - Executables (`mds-ide`, `mds-compiler`, `mds-translator`, etc.) now start correctly on NixOS (after ensuring an X server is available for the GUI).
+
+---
+
+### 14. Python-driven postPatch refactor (2025-11-20)
+- Collapsed the 300+ line inline `postPatch` shell snippet into a reusable `post-patch.py`, grouping each logical fix (include propagation, flex/bison macros, install-dir rewrites, license disable) into small helpers.
+- The derivation now simply runs ``${oldPkgs.python3}/bin/python3 ${postPatchScript} --fix-dialog-script ${fixDialogScript}``, which keeps the Nix expression readable while still executing every historical adjustment.
+- The helper also invokes `fix-dialog-includes.py`, so dialog/widget wiring lives outside of raw `substituteInPlace` calls.
+- Verified the refactor via `NIXPKGS_ALLOW_UNFREE=1 nix build -L --impure .#mds-picoblaze-avr-ide`, producing `/nix/store/c88qsa8bwbssa9mbvbsgkzcs7hbj2p4s-mds-picoblaze-avr-ide-unstable-2024-11-18`.
+
+### 15. Demo project sources missing at runtime (2025-11-20)
+- Disabling the tutorial project build prevented any `Example*.psm` files from landing in `$out/share/mds/demoproject`, so the IDE could not open files like `Example5.psm`.
+- Updated `post-patch.py` to append `install ( FILES ${PSM_FILES} DESTINATION ${INSTALL_DIR_DEMOPROJECT} )`, copying the raw tutorial sources without invoking the legacy compiler.
+- Rebuilt with `NIXPKGS_ALLOW_UNFREE=1 nix build …mds-picoblaze-avr-ide`, confirming `Example1.psm` through `Example6.psm` exist alongside `MDSExample.mds-project`.
 
 ---
 
@@ -275,13 +288,12 @@ new line 3'
 
 ## Current Status
 
-**Build Progress**: 53% complete
-**Last Successful Target**: PortHexEdit
-**Current Error**: Missing `ui_timewidget.h` in PicoBlazeGrid module
+**Build Progress**: 100% complete
+**Last Successful Target**: Install + wrapping (fontconfig + patchelf)
+**Current Error**: None — final derivation `/nix/store/c88qsa8bwbssa9mbvbsgkzcs7hbj2p4s-mds-picoblaze-avr-ide-unstable-2024-11-18` builds successfully.
 **Next Steps**:
-1. Fix PicoBlazeGrid/TimeWidget dependency issue
-2. Continue fixing similar cross-module Qt UI header dependencies
-3. Monitor build to 100%
+1. Smoke-test `mds-ide` and its helper binaries on the target workstation (fonts + license bypass).
+2. Evaluate which Python-driven replacements can be upstreamed as patch files to reduce maintenance burden.
 
 ---
 
@@ -313,10 +325,8 @@ From build logs:
 
 ## Next Actions
 
-1. **Fix TimeWidget dependency**: Similar to EditorWidgets fix, need to add TimeWidget binary dir to modules that use it
-2. **Systematic approach**: Find all modules that depend on TimeWidget and fix them all at once
-3. **Continue monitoring**: Keep watching build progress for new errors
-4. **Test final binary**: Once build completes, verify the IDE launches correctly
+1. **Runtime smoke test**: Launch `./result/bin/mds-ide` inside the user's X11/tmux environment to ensure the license bypass + fontconfig wrapper behave correctly end-to-end.
+2. **Patch upstreaming**: Review `post-patch.py` chunks for candidates to upstream as conventional patches so the helper script stays lean over time.
 
 ---
 
@@ -339,5 +349,5 @@ Build artifacts location (in Nix sandbox):
 
 ---
 
-**Last Updated**: 2025-11-19 23:47 UTC
-**Build Status**: In progress at 53%
+**Last Updated**: 2025-11-20 19:53 UTC
+**Build Status**: 100% (result -> /nix/store/c88qsa8bwbssa9mbvbsgkzcs7hbj2p4s-mds-picoblaze-avr-ide-unstable-2024-11-18)
