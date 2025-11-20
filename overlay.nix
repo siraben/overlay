@@ -30,6 +30,7 @@ in
   lang-narrow = prev.ocamlPackages.callPackage ./pkgs/lang-narrow { };
   lue = callPackage ./pkgs/lue { };
   mapscii = callPackage ./pkgs/mapscii { };
+  mds-picoblaze-avr-ide = callPackage ./pkgs/mds-picoblaze-avr-ide { };
   mes = callPackage ./pkgs/mes { };
   micro-lisp = callPackage ./pkgs/micro-lisp { };
   microhs = callPackage ./pkgs/microhs { };
