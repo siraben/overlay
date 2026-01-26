@@ -13,6 +13,7 @@ in
   blynn = callPackage ./pkgs/blynn { };
   bootstrap-scheme = callPackage ./pkgs/bootstrap-scheme { };
   carbonyl = callPackage ./pkgs/carbonyl { };
+  carp = callPackage ./pkgs/carp { };
   c4 = callPackage ./pkgs/c4 { };
   c64-non-sense = callPackage ./pkgs/c64-non-sense { };
   ccusage = callPackage ./pkgs/ccusage { };
