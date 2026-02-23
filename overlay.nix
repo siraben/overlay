@@ -25,6 +25,7 @@ in
   edge-tts = callPackage ./pkgs/edge-tts { };
   essentials-of-compilation = callPackage ./pkgs/essentials-of-compilation { };
   fe = callPackage ./pkgs/fe { };
+  femtolisp = callPackage ./pkgs/femtolisp { };
   git2graph = callPackage ./pkgs/git2graph { };
   jonesforth = callPackage ./pkgs/jonesforth { };
   kickthemout = prev.python3Packages.callPackage ./pkgs/kickthemout { };

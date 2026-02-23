@@ -15,11 +15,24 @@ stdenv.mkDerivation {
     hash = "sha256-XFpkCFYZ1tVXoJrf3/X/99MKK6rziNg5afYIiymOnrk=";
   };
 
-  makeFlags = [ "release" ];
+  postPatch = ''
+    # Add aarch64 support to architecture detection
+    substituteInPlace llt/utils.h \
+      --replace-fail '#else
+#  error "unknown architecture"' '#elif defined(__aarch64__) || defined(_M_ARM64)
+#  define ARCH_AARCH64
+#else
+#  error "unknown architecture"'
+  '';
+
+  makeFlags = [
+    "CC=${stdenv.cc.targetPrefix}cc"
+    "release"
+  ];
 
   installPhase = ''
     mkdir -p $out/bin
-    cp flisp $out/bin/
+    cp flisp flisp.boot $out/bin/
   '';
 
   meta = with lib; {
