@@ -32,6 +32,10 @@
             value = pkgs.${name};
           }) (builtins.attrNames (overlay { } { }))
         );
+
+        devShells.default = pkgs.mkShell {
+          packages = [ pkgs.nixfmt-rfc-style ];
+        };
       }
     )
     // {
