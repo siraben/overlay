@@ -78,4 +78,4 @@ jobs:
       with:
         github_access_token: ${{ secrets.GITHUB_TOKEN }}
     - name: Check flake
-      run: nix flake check --no-build
+      run: NIXPKGS_ALLOW_UNFREE=1 nix flake check --no-build --impure
