@@ -1,0 +1,19 @@
+diff --git a/btr/e1etex.c b/btr/e1etex.c
+index 6a6f3ae..4f6f9c0 100644
+--- a/btr/e1etex.c
++++ b/btr/e1etex.c
+@@
+-Visible value mk_etext(m) string m; {
+-	value v; intlet len= strlen(m);
+-	v= grab(Etex, len);
+-	strcpy(Str(v), m);
+-	return v;
++Visible value mk_etext(m) string m; {
++	/* Guard against oversized inputs overflowing the 16-bit intlet. */
++	size_t full_len = strlen(m);
++	intlet len = full_len > Maxintlet ? Maxintlet : (intlet) full_len;
++	value v = grab(Etex, len);
++	memcpy(Str(v), m, len);
++	Str(v)[len] = '\0';
++	return v;
+ }

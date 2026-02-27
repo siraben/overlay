@@ -1,0 +1,8 @@
+diff --git a/unix/feat.h b/unix/feat.h
+index 6f5515a..f7eaa9e 100644
+--- a/unix/feat.h
++++ b/unix/feat.h
+@@
+-#define USERSUGG	/* Give suggestions for user-defined commands */
++/* Suggestions rely on unchecked buffer logic that overflows on 64-bit builds. */
++#undef USERSUGG

@@ -1,0 +1,19 @@
+diff --git a/bhdrs/b.h b/bhdrs/b.h
+index 531110f..afbc888 100644
+--- a/bhdrs/b.h
++++ b/bhdrs/b.h
+@@
+-typedef int bool;
+-typedef char *string; /* Strings are always terminated with a char '\0'. */
++typedef int bool;
++typedef char *string; /* Strings are always terminated with a char '\0'. */
++
++/* Needed for portable pointer/integer conversions. */
++#include <stdint.h>
+@@
+-#define IsSmallInt(v) (((int)(v)) & 1)
+-#define SmallIntVal(v) (((int)(v) & ~1) / 2)
+-#define MkSmallInt(i) ((value)((i)*2 | 1))
++#define IsSmallInt(v) (((intptr_t)(v)) & 1)
++#define SmallIntVal(v) (((intptr_t)(v) & ~(intptr_t)1) / 2)
++#define MkSmallInt(i) ((value)((intptr_t)(i)*2 | 1))
