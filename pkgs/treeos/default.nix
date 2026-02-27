@@ -1,34 +1,42 @@
-{ stdenv, lib, fetchFromGitHub, writeShellScriptBin, nasm, qemu }:
+{
+  lib,
+  stdenv,
+  fetchFromGitHub,
+  nasm,
+  qemu,
+  makeWrapper,
+}:
 
-stdenv.mkDerivation rec {
+stdenv.mkDerivation {
   pname = "treeos";
-  version = "unstable-2020-12-25";
+  version = "unstable-2019-12-25";
 
   src = fetchFromGitHub {
     owner = "cfallin";
     repo = "treeos";
-    rev = "0db34fc015b2266c280f4108eba564561eacdcb6";
-    sha256 = "0hvmwnhlag0xlmnfqcmcdky6rj9d12s0jd2inzxkwv2fnhb1m4ci";
+    rev = "eed652cff0286b5ad3ec66724927e606d35a5694";
+    sha256 = "0sn16wf5d1fcmlfqj3bb7l09lsjbxxmc6kxazhgj2rla2i8299ah";
   };
 
-  nativeBuildInputs = [ nasm ];
-
-  buildInputs = [ qemu ];
+  nativeBuildInputs = [ nasm makeWrapper ];
 
   buildPhase = ''
     make floppy.img
   '';
 
   installPhase = ''
-    mkdir -p $out/bin
-    cp floppy.img $out/bin
+    mkdir -p $out/share/treeos $out/bin
+    cp floppy.img $out/share/treeos/
+    makeWrapper ${qemu}/bin/qemu-system-x86_64 $out/bin/treeos \
+      --add-flags "-fda $out/share/treeos/floppy.img -snapshot"
   '';
 
   meta = with lib; {
-    description = "Christmas tree demo on bare PC hardware (no OS), in 16-bit assembly";
+    description = "A 16-bit bootsector Christmas tree demo";
     homepage = "https://github.com/cfallin/treeos";
-    license = licenses.mit;
+    license = licenses.gpl3Plus;
     maintainers = with maintainers; [ siraben ];
-    platforms = platforms.all;
+    platforms = platforms.unix;
+    mainProgram = "treeos";
   };
 }
