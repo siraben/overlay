@@ -5,6 +5,7 @@ let
   darwin = prev.darwin;
 in
 {
+  abc = callPackage ./pkgs/abc { };
   abs = callPackage ./pkgs/abs { };
   acme = callPackage ./pkgs/acme { };
   algebraic = callPackage ./pkgs/algebraic { };
@@ -26,6 +27,7 @@ in
   essentials-of-compilation = callPackage ./pkgs/essentials-of-compilation { };
   fe = callPackage ./pkgs/fe { };
   femtolisp = callPackage ./pkgs/femtolisp { };
+  gambas3 = callPackage ./pkgs/gambas3 { };
   git2graph = callPackage ./pkgs/git2graph { };
   jonesforth = callPackage ./pkgs/jonesforth { };
   kickthemout = prev.python3Packages.callPackage ./pkgs/kickthemout { };
@@ -50,6 +52,7 @@ in
   rmview = prev.libsForQt5.callPackage ./pkgs/rmview { };
   runpodctl = callPackage ./pkgs/runpodctl { };
   simple-vm = callPackage ./pkgs/simple-vm { };
+  squirrel = callPackage ./pkgs/squirrel { };
   ti84-forth = callPackage ./pkgs/ti84-forth { };
   ts_sms = callPackage ./pkgs/ts_sms { };
   ts_sms-cuda = callPackage ./pkgs/ts_sms {
