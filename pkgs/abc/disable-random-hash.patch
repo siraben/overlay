@@ -1,0 +1,13 @@
+diff --git a/bint1/i1num.c b/bint1/i1num.c
+index d84fb40..d23c917 100644
+--- a/bint1/i1num.c
++++ b/bint1/i1num.c
+@@
+-Visible Procedure set_random(v) value v; {
+-	setran((double) hash(v));
+-}
++Visible Procedure set_random(v) value v; {
++	/* Hashing is unsafe on 64-bit builds; fall back to a fixed seed. */
++	(void)v;
++	setran(1.0);
++}
