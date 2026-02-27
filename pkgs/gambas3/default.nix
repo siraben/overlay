@@ -18,7 +18,9 @@
 , bzip2
 , zlib
 , pcre
-, xorg
+, libx11
+, libxext
+, libxtst
 , qt5
 , SDL2
 , libGL
@@ -68,9 +70,9 @@ stdenv.mkDerivation rec {
     bzip2
     zlib
     pcre
-    xorg.libX11
-    xorg.libXext
-    xorg.libXtst
+    libx11
+    libxext
+    libxtst
     qt5.qtbase
     qt5.qtsvg
     qt5.qtx11extras

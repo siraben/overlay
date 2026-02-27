@@ -3,8 +3,8 @@
   stdenv,
   fetchFromGitHub,
   zlib,
-  libX11,
-  libXpm,
+  libx11,
+  libxpm,
   ncurses,
 }:
 
@@ -21,8 +21,8 @@ stdenv.mkDerivation rec {
 
   buildInputs = [
     zlib
-    libX11
-    libXpm
+    libx11
+    libxpm
     ncurses
   ];
   enableParallelBuilding = true;

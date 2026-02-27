@@ -5,7 +5,7 @@
   fetchurl,
   pkg-config,
   libxcb,
-  libX11,
+  libx11,
   makeWrapper,
   util-linux,
 }:
@@ -34,7 +34,7 @@ stdenv.mkDerivation rec {
   ];
   buildInputs = [
     libxcb
-    libX11
+    libx11
   ];
 
   patches = [ ./xcb-connection-check.patch ];
@@ -83,7 +83,7 @@ stdenv.mkDerivation rec {
       --prefix PATH : ${
         lib.makeBinPath [
           libxcb
-          libX11
+          libx11
         ]
       }
   '';

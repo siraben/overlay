@@ -2,11 +2,11 @@
   stdenv,
   lib,
   fetchurl,
-  xorg,
+  libx11,
+  libxext,
   pkg-config,
   SDL,
   zlib,
-  tree,
 }:
 
 stdenv.mkDerivation rec {
@@ -20,8 +20,8 @@ stdenv.mkDerivation rec {
 
   nativeBuildInputs = [ pkg-config ];
   buildInputs = [
-    xorg.libX11
-    xorg.libXext
+    libx11
+    libxext
     SDL
     zlib
   ];
@@ -31,7 +31,7 @@ stdenv.mkDerivation rec {
   postPatch = lib.optionalString stdenv.isDarwin ''
     substituteInPlace EMULib/Rules.gcc --replace SndUnix.o SndSDL.o
     substituteInPlace EMULib/Unix/SndSDL.c --replace '#include "SDL.h"' '#include <SDL/SDL.h>'
-    substituteInPlace EMULib/Rules.Unix --replace '-I/usr/X11R6/include' '-I${xorg.libX11.dev} -lSDL -lX11 -lXext'
+    substituteInPlace EMULib/Rules.Unix --replace '-I/usr/X11R6/include' '-I${libx11.dev} -lSDL -lX11 -lXext'
   '';
 
   makeFlags = [
