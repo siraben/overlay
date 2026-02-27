@@ -19,12 +19,12 @@
   glib,
   gtk3,
   libdrm,
-  libX11,
-  libXcomposite,
-  libXdamage,
-  libXext,
-  libXfixes,
-  libXrandr,
+  libx11,
+  libxcomposite,
+  libxdamage,
+  libxext,
+  libxfixes,
+  libxrandr,
   libxcb,
   libxkbcommon,
   mesa,
@@ -95,12 +95,12 @@ stdenv.mkDerivation rec {
     glib
     gtk3
     libdrm
-    libX11
-    libXcomposite
-    libXdamage
-    libXext
-    libXfixes
-    libXrandr
+    libx11
+    libxcomposite
+    libxdamage
+    libxext
+    libxfixes
+    libxrandr
     libxcb
     libxkbcommon
     mesa

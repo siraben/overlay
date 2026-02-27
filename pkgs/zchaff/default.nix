@@ -1,10 +1,10 @@
 {
   lib,
-  gcc9Stdenv,
+  gccStdenv,
   fetchurl,
 }:
 
-gcc9Stdenv.mkDerivation rec {
+gccStdenv.mkDerivation rec {
   pname = "zchaff";
   version = "2004.5.13";
 
@@ -13,8 +13,8 @@ gcc9Stdenv.mkDerivation rec {
     sha256 = "sha256-IgOdb2KsFbRV3gPvIPkHa71ixnYRxyx91vt7m0jzIAw=";
   };
 
-  patches = [ ./sat_solver.patch ];
-  makeFlags = [ "CC=${gcc9Stdenv.cc.targetPrefix}c++" ];
+  patches = [ ./sat_solver.patch ./const-comparator.patch ];
+  makeFlags = [ "CC=${gccStdenv.cc.targetPrefix}c++" ];
   installPhase = ''
     runHook preInstall
     install -Dm755 -t $out/bin zchaff

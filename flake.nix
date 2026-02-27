@@ -34,7 +34,7 @@
         );
 
         devShells.default = pkgs.mkShell {
-          packages = [ pkgs.nixfmt-rfc-style ];
+          packages = [ pkgs.nixfmt ];
         };
       }
     )

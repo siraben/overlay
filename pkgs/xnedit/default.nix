@@ -3,7 +3,12 @@
   stdenv,
   fetchFromGitHub,
   pkg-config,
-  xorg,
+  libx11,
+  libxt,
+  libxrender,
+  libxft,
+  libxpm,
+  libxmu,
   motif,
   fontconfig,
   freetype,
@@ -33,12 +38,12 @@ stdenv.mkDerivation rec {
   ];
 
   buildInputs = [
-    xorg.libX11
-    xorg.libXt
-    xorg.libXrender
-    xorg.libXft
-    xorg.libXpm
-    xorg.libXmu
+    libx11
+    libxt
+    libxrender
+    libxft
+    libxpm
+    libxmu
     motif
     fontconfig
     freetype

@@ -4,7 +4,7 @@
   fetchgit,
   ncurses,
   pkg-config,
-  xorg,
+  libx11,
   makeWrapper,
 }:
 
@@ -21,7 +21,7 @@ stdenv.mkDerivation rec {
   ];
   buildInputs = [
     ncurses
-    xorg.libX11
+    libx11
   ];
   postPatch = ''
     substituteInPlace cvm/Makefile --replace '-lcurses' '-lncurses'

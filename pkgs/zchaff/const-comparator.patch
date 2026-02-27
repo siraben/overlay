@@ -1,0 +1,9 @@
+--- a/zchaff_solver.h
++++ b/zchaff_solver.h
+@@ -184,7 +184,7 @@
+ struct cmp_var_assgn_pos {
+-    bool operator () (CVariable * v1, CVariable * v2)
++    bool operator () (CVariable * v1, CVariable * v2) const
+ 	{
+ 	    if (v1->dlevel() > v2->dlevel())
+ 		return true;
