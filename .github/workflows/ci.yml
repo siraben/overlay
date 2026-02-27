@@ -10,61 +10,69 @@ jobs:
   generate-matrix:
     runs-on: ubuntu-latest
     outputs:
-      packages: ${{ steps.packages.outputs.packages }}
+      matrix: ${{ steps.matrix.outputs.matrix }}
     steps:
     - uses: actions/checkout@v4
     - name: Install Nix
-      uses: cachix/install-nix-action@v23
+      uses: cachix/install-nix-action@v31.5.2
       with:
         github_access_token: ${{ secrets.GITHUB_TOKEN }}
-    - name: Get package list
-      id: packages
+    - name: Generate build matrix
+      id: matrix
       run: |
-        packages=$(nix eval --impure --json --expr '
+        matrix=$(NIXPKGS_ALLOW_UNFREE=1 nix eval --impure --json --expr '
           let
+            nixpkgs = builtins.getFlake "nixpkgs";
             overlay = import ./overlay.nix;
-            attrNames = builtins.attrNames (overlay {} {});
+            names = builtins.attrNames (overlay {} {});
+            systems = [
+              { system = "x86_64-linux"; os = "ubuntu-latest"; }
+              { system = "aarch64-darwin"; os = "macos-latest"; }
+            ];
+            pkgsFor = s: import nixpkgs { system = s; overlays = [ overlay ]; config.allowUnfree = true; };
+            hasPackage = sys: name:
+              let
+                pkgs = pkgsFor sys;
+                drv = pkgs.${name};
+                platforms = drv.meta.platforms or null;
+              in
+                platforms == null || builtins.elem sys (map (p: if builtins.isString p then p else p.system or "") (if builtins.isList platforms then platforms else []));
+            entries = builtins.concatMap (s:
+              map (name: { package = name; system = s.system; os = s.os; })
+                (builtins.filter (hasPackage s.system) names)
+            ) systems;
           in
-            attrNames
+            { include = entries; }
         ')
-        echo "packages=$packages" >> $GITHUB_OUTPUT
+        echo "matrix=$matrix" >> $GITHUB_OUTPUT
 
   build:
     needs: generate-matrix
     strategy:
       fail-fast: false
-      matrix:
-        system:
-          - x86_64-linux
-          - aarch64-darwin
-        package: ${{ fromJson(needs.generate-matrix.outputs.packages) }}
-        include:
-          - system: x86_64-linux
-            os: ubuntu-latest
-          - system: aarch64-darwin
-            os: macos-latest
-    
+      matrix: ${{ fromJson(needs.generate-matrix.outputs.matrix) }}
+
     runs-on: ${{ matrix.os }}
-    
+
     steps:
     - uses: actions/checkout@v4
-    
+
     - name: Install Nix
       uses: cachix/install-nix-action@v31.5.2
       with:
         github_access_token: ${{ secrets.GITHUB_TOKEN }}
-    
+
     - name: Setup Cachix
       uses: cachix/cachix-action@v12
       with:
         name: siraben
         authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
-    
+
     - name: Build ${{ matrix.package }}
       run: |
         echo "Building ${{ matrix.package }} for ${{ matrix.system }}..."
         NIXPKGS_ALLOW_UNFREE=1 nix build --impure .#${{ matrix.package }} --print-build-logs
-    
+
     - name: Push to Cachix
       run: |
         nix build .#${{ matrix.package }} | cachix push siraben
