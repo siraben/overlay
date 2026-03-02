@@ -30,6 +30,7 @@ in
   gambas3 = callPackage ./pkgs/gambas3 { };
   git2graph = callPackage ./pkgs/git2graph { };
   jonesforth = callPackage ./pkgs/jonesforth { };
+  llmfit = callPackage ./pkgs/llmfit { };
   kickthemout = prev.python3Packages.callPackage ./pkgs/kickthemout { };
   lang-narrow = prev.ocamlPackages.callPackage ./pkgs/lang-narrow { };
   lue = callPackage ./pkgs/lue { };
