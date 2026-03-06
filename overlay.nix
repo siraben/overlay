@@ -11,6 +11,7 @@ in
   algebraic = callPackage ./pkgs/algebraic { };
   almost-ti = callPackage ./pkgs/almost-ti { };
   attoforth = callPackage ./pkgs/attoforth { };
+  binary-waterfall = callPackage ./pkgs/binary-waterfall { };
   blynn = callPackage ./pkgs/blynn { };
   bootstrap-scheme = callPackage ./pkgs/bootstrap-scheme { };
   carbonyl = callPackage ./pkgs/carbonyl { };
@@ -46,6 +47,7 @@ in
   opencode = callPackage ./pkgs/opencode { };
   options-implied-probability = final.oipd;
   ostools = callPackage ./pkgs/ostools { };
+  playball = callPackage ./pkgs/playball { };
   PortableGL = callPackage ./pkgs/PortableGL { };
   regit = callPackage ./pkgs/regit { };
   relay-outer = callPackage ./pkgs/relayouter { };
@@ -74,4 +76,8 @@ in
   zee = callPackage ./pkgs/zee {
     inherit (darwin.apple_sdk.frameworks) Security AppKit;
   };
+
+  python3Packages = prev.python3Packages.overrideScope (python-final: python-prev: {
+    infisical-sdk = callPackage ./pkgs/infisical-sdk { };
+  });
 }
