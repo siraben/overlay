@@ -6,6 +6,7 @@ let
 in
 {
   abc = callPackage ./pkgs/abc { };
+  agent-safehouse = callPackage ./pkgs/agent-safehouse { };
   abs = callPackage ./pkgs/abs { };
   acme = callPackage ./pkgs/acme { };
   algebraic = callPackage ./pkgs/algebraic { };
@@ -44,6 +45,7 @@ in
   nix-hello-minimal = callPackage ./pkgs/nix-hello-minimal { };
   oipd = callPackage ./pkgs/oipd { };
   opencode = callPackage ./pkgs/opencode { };
+  pi-coding-agent = callPackage ./pkgs/pi-coding-agent { };
   options-implied-probability = final.oipd;
   ostools = callPackage ./pkgs/ostools { };
   playball = callPackage ./pkgs/playball { };
