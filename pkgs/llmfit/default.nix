@@ -20,11 +20,11 @@ rustPlatform.buildRustPackage rec {
   # Only build the TUI/CLI binary, not the desktop app which requires Tauri
   cargoBuildFlags = [ "-p" "llmfit" ];
 
-  meta = with lib; {
+  meta = {
     description = "Find what LLM models run on your hardware";
     homepage = "https://github.com/AlexsJones/llmfit";
-    license = licenses.mit;
-    maintainers = with maintainers; [ siraben ];
+    license = lib.licenses.mit;
+    maintainers = with lib.maintainers; [ siraben ];
     mainProgram = "llmfit";
   };
 }

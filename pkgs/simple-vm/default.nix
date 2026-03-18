@@ -22,12 +22,12 @@ stdenv.mkDerivation rec {
     install -Dm755 -t $out/bin embedded
   '';
 
-  meta = with lib; {
+  meta = {
     description = "Simple virtual machine which interprets bytecode";
     homepage = "https://github.com/skx/simple.vm";
 
-    license = licenses.gpl2Plus;
-    maintainers = with maintainers; [ siraben ];
-    platforms = platforms.all;
+    license = lib.licenses.gpl2Plus;
+    maintainers = with lib.maintainers; [ siraben ];
+    platforms = lib.platforms.all;
   };
 }

@@ -36,12 +36,12 @@ rustPlatform.buildRustPackage rec {
     ncurses
   ];
 
-  meta = with lib; {
+  meta = {
     description = "A Rust port of tmux";
     homepage = "https://github.com/richardscollin/tmux-rs";
-    license = licenses.isc;
-    maintainers = with maintainers; [ siraben ];
-    platforms = platforms.unix;
+    license = lib.licenses.isc;
+    maintainers = with lib.maintainers; [ siraben ];
+    platforms = lib.platforms.unix;
     mainProgram = "tmux-rs";
   };
 }

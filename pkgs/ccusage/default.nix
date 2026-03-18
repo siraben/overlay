@@ -26,11 +26,11 @@ stdenv.mkDerivation rec {
       --add-flags "$out/lib/node_modules/ccusage/dist/index.js"
   '';
 
-  meta = with lib; {
+  meta = {
     description = "A CLI tool for analyzing Claude Code token usage and costs from local JSONL files";
     homepage = "https://github.com/ryoppippi/ccusage";
-    license = licenses.mit;
-    maintainers = with maintainers; [ siraben ];
+    license = lib.licenses.mit;
+    maintainers = with lib.maintainers; [ siraben ];
     mainProgram = "ccusage";
   };
 }

@@ -46,11 +46,11 @@ stdenv.mkDerivation rec {
   # Disable tests for now - they appear to have issues with the "not a procedure" error
   doCheck = false;
 
-  meta = with lib; {
+  meta = {
     description = "A Scheme compiler that generates x86 assembly";
     homepage = "http://www.canonical.org/~kragen/sw/urscheme/";
-    license = licenses.gpl3Plus;
-    maintainers = with maintainers; [ siraben ];
-    platforms = platforms.linux;
+    license = lib.licenses.gpl3Plus;
+    maintainers = with lib.maintainers; [ siraben ];
+    platforms = lib.platforms.linux;
   };
 }

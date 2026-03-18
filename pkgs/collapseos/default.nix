@@ -35,10 +35,10 @@ stdenv.mkDerivation rec {
     cp cvm/{blkfs,forth,forth.bin,stage} $out/bin
   '';
 
-  meta = with lib; {
+  meta = {
     description = "Bootstrap post-collapse technology - an operating system designed for resource-constrained environments";
     homepage = "https://git.sr.ht/~vdupras/collapseos";
-    maintainers = with maintainers; [ siraben ];
-    platforms = platforms.unix;
+    maintainers = with lib.maintainers; [ siraben ];
+    platforms = lib.platforms.unix;
   };
 }

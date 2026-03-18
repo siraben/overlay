@@ -29,11 +29,11 @@ rustPlatform.buildRustPackage rec {
 
   doCheck = false;
 
-  meta = with lib; {
+  meta = {
     description = "A statically typed smart contract language for the Ethereum Virtual Machine";
     homepage = "https://github.com/ethereum/fe";
-    license = licenses.asl20;
-    maintainers = with maintainers; [ siraben ];
-    platforms = platforms.unix;
+    license = lib.licenses.asl20;
+    maintainers = with lib.maintainers; [ siraben ];
+    platforms = lib.platforms.unix;
   };
 }

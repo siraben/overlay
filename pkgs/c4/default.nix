@@ -21,11 +21,11 @@ stdenv.mkDerivation rec {
     install -Dm755 c4 -t $out/bin
   '';
 
-  meta = with lib; {
+  meta = {
     description = "C in four functions";
     homepage = "https://github.com/rswier/c4";
-    license = licenses.gpl2;
-    maintainers = with maintainers; [ siraben ];
-    platforms = platforms.all;
+    license = lib.licenses.gpl2;
+    maintainers = with lib.maintainers; [ siraben ];
+    platforms = lib.platforms.all;
   };
 }

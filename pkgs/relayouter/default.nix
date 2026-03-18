@@ -35,11 +35,11 @@ stdenv.mkDerivation rec {
     runHook postInstall
   '';
 
-  meta = with lib; {
+  meta = {
     description = "High-performance non-blocking static file serving web server written in x86 assembly";
     homepage = "https://github.com/peachey2k2/relayouter";
-    license = licenses.mit;
+    license = lib.licenses.mit;
     platforms = [ "x86_64-linux" ];
-    maintainers = with maintainers; [ ];
+    maintainers = with lib.maintainers; [ ];
   };
 }

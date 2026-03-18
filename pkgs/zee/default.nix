@@ -35,11 +35,11 @@ rustPlatform.buildRustPackage rec {
   # Disable grammar build which requires missing config directory
   ZEE_DISABLE_GRAMMAR_BUILD = "1";
 
-  meta = with lib; {
+  meta = {
     description = "A modern text editor for the terminal";
     homepage = "https://github.com/mcobzarenco/zee";
-    license = licenses.asl20;
-    maintainers = with maintainers; [ siraben ];
-    platforms = platforms.unix;
+    license = lib.licenses.asl20;
+    maintainers = with lib.maintainers; [ siraben ];
+    platforms = lib.platforms.unix;
   };
 }

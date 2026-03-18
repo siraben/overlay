@@ -22,11 +22,11 @@ buildPythonApplication rec {
     install -Dm755 -t $out/bin kickthemout.py
   '';
 
-  meta = with lib; {
+  meta = {
     description = "Kick devices off your network using ARP spoofing";
     homepage = "https://github.com/k4m4/kickthemout";
-    license = licenses.mit;
-    maintainers = with maintainers; [ siraben ];
-    platforms = platforms.unix;
+    license = lib.licenses.mit;
+    maintainers = with lib.maintainers; [ siraben ];
+    platforms = lib.platforms.unix;
   };
 }

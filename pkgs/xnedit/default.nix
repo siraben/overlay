@@ -70,12 +70,12 @@ stdenv.mkDerivation rec {
     runHook postInstall
   '';
 
-  meta = with lib; {
+  meta = {
     description = "Multi-purpose text editor for the X Window System";
     homepage = "https://github.com/unixwork/xnedit";
-    license = licenses.gpl2Plus;
-    maintainers = with maintainers; [ ];
-    platforms = platforms.unix;
+    license = lib.licenses.gpl2Plus;
+    maintainers = with lib.maintainers; [ ];
+    platforms = lib.platforms.unix;
     mainProgram = "xnedit";
   };
 }

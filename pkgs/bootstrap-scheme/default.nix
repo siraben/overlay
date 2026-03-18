@@ -33,11 +33,11 @@ stdenv.mkDerivation rec {
     install -Dm755 scheme -t $out/bin
   '';
 
-  meta = with lib; {
+  meta = {
     description = "A quick and very dirty Scheme interpreter";
     homepage = "https://github.com/petermichaux/bootstrap-scheme";
-    license = licenses.agpl3Plus;
-    platforms = platforms.all;
+    license = lib.licenses.agpl3Plus;
+    platforms = lib.platforms.all;
     mainProgram = "scheme";
   };
 }

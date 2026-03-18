@@ -26,11 +26,11 @@ stdenv.mkDerivation rec {
     runHook postInstall
   '';
 
-  meta = with lib; {
+  meta = {
     description = "A small Haskell implementation using combinators";
     homepage = "https://github.com/augustss/MicroHs";
-    license = licenses.asl20;
-    maintainers = with maintainers; [ ];
-    platforms = platforms.all;
+    license = lib.licenses.asl20;
+    maintainers = with lib.maintainers; [ ];
+    platforms = lib.platforms.all;
   };
 }

@@ -50,11 +50,11 @@ python3Packages.buildPythonPackage rec {
     "binary_waterfall"
   ];
 
-  meta = with lib; {
+  meta = {
     description = "A Raw Data Media Player";
     homepage = "https://github.com/nimaid/binary-waterfall";
-    license = licenses.gpl3Only;
-    maintainers = with maintainers; [ ];
+    license = lib.licenses.gpl3Only;
+    maintainers = with lib.maintainers; [ ];
     mainProgram = "binary-waterfall";
   };
 }

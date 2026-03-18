@@ -24,7 +24,7 @@ stdenv.mkDerivation rec {
 
   # No postInstall needed - cmake handles everything
 
-  meta = with lib; {
+  meta = {
     description = "A light-weight scripting language";
     longDescription = ''
       Squirrel is a high level imperative, object-oriented programming language,
@@ -32,8 +32,8 @@ stdenv.mkDerivation rec {
       memory bandwidth, and real-time requirements of applications like video games.
     '';
     homepage = "http://squirrel-lang.org/";
-    license = licenses.mit;
-    maintainers = with maintainers; [ ];
-    platforms = platforms.all;
+    license = lib.licenses.mit;
+    maintainers = with lib.maintainers; [ ];
+    platforms = lib.platforms.all;
   };
 }

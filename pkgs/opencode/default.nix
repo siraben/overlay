@@ -33,12 +33,12 @@ buildGoModule rec {
       --prefix PATH : ${lib.makeBinPath [ fzf ]}
   '';
 
-  meta = with lib; {
+  meta = {
     description = "Terminal-based AI coding assistant";
     homepage = "https://github.com/opencode-ai/opencode";
-    license = licenses.asl20;
-    maintainers = with maintainers; [ siraben ];
+    license = lib.licenses.asl20;
+    maintainers = with lib.maintainers; [ siraben ];
     mainProgram = "opencode";
-    platforms = platforms.unix;
+    platforms = lib.platforms.unix;
   };
 }

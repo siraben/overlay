@@ -11,12 +11,12 @@ let
     rev = "585204f4638ecd73f993de9b6eba5554853abc15";
     sha256 = "sha256-fs1GLJ4ZynTYxUREiJ70RrqRXDm56K171/5qMRtxFx0=";
   };
-  meta = with lib; {
+  meta = {
     description = "The adventures of a Haskell compiler";
     homepage = "https://github.com/blynn/compiler";
-    license = licenses.gpl3Plus;
-    maintainers = with maintainers; [ siraben ];
-    platforms = platforms.all;
+    license = lib.licenses.gpl3Plus;
+    maintainers = with lib.maintainers; [ siraben ];
+    platforms = lib.platforms.all;
   };
   version = "unstable-2021-10-07";
   vm = stdenv.mkDerivation rec {

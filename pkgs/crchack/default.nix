@@ -19,11 +19,11 @@ stdenv.mkDerivation rec {
     install -Dm755 -t $out/bin crchack
   '';
 
-  meta = with lib; {
+  meta = {
     description = "Force CRC checksums of input messages to arbitrary chosen values";
     homepage = "https://github.com/resilar/crchack";
-    license = licenses.unlicense;
-    maintainers = with maintainers; [ siraben ];
-    platforms = platforms.all;
+    license = lib.licenses.unlicense;
+    maintainers = with lib.maintainers; [ siraben ];
+    platforms = lib.platforms.all;
   };
 }

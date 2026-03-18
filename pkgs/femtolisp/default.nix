@@ -35,11 +35,11 @@ stdenv.mkDerivation {
     cp flisp flisp.boot $out/bin/
   '';
 
-  meta = with lib; {
+  meta = {
     description = "A lightweight, robust, scheme-like lisp implementation";
     homepage = "https://github.com/JeffBezanson/femtolisp";
-    license = licenses.bsd3;
-    maintainers = with maintainers; [ siraben ];
-    platforms = platforms.unix;
+    license = lib.licenses.bsd3;
+    maintainers = with lib.maintainers; [ siraben ];
+    platforms = lib.platforms.unix;
   };
 }

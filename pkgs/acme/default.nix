@@ -23,11 +23,11 @@ stdenv.mkDerivation rec {
 
   installFlags = [ "BINDIR=$(out)/bin" ];
 
-  meta = with lib; {
+  meta = {
     description = "Multi-platform cross assembler for 6502/6510/65816 CPUs";
     homepage = "https://sourceforge.net/projects/acme-crossass/";
-    license = licenses.gpl2Plus;
-    maintainers = with maintainers; [ siraben ];
-    platforms = platforms.all;
+    license = lib.licenses.gpl2Plus;
+    maintainers = with lib.maintainers; [ siraben ];
+    platforms = lib.platforms.all;
   };
 }

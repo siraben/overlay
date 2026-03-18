@@ -118,12 +118,12 @@ buildNpmPackage rec {
     runHook postInstall
   '';
 
-  meta = with lib; {
+  meta = {
     description = "Coding agent CLI with read, bash, edit, write tools and session management";
     homepage = "https://github.com/badlogic/pi-mono";
-    license = licenses.mit;
-    maintainers = with maintainers; [ ];
+    license = lib.licenses.mit;
+    maintainers = with lib.maintainers; [ ];
     mainProgram = "pi";
-    platforms = platforms.all;
+    platforms = lib.platforms.all;
   };
 }

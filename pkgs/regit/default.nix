@@ -20,11 +20,11 @@ buildGoModule rec {
 
   vendorHash = null;
 
-  meta = with lib; {
+  meta = {
     description = "A Tiny Git-compatible Git Implementation";
     homepage = "https://github.com/WithGJR/regit-go";
-    license = licenses.mit;
-    maintainers = with maintainers; [ siraben ];
-    platforms = platforms.linux ++ platforms.darwin;
+    license = lib.licenses.mit;
+    maintainers = with lib.maintainers; [ siraben ];
+    platforms = lib.platforms.linux ++ lib.platforms.darwin;
   };
 }

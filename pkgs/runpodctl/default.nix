@@ -17,12 +17,12 @@ buildGoModule rec {
 
   vendorHash = "sha256-OGUt+L0wP6eQkY/HWL+Ij9z9u+wsQ5OLK/IAq+1ezVA=";
 
-  meta = with lib; {
+  meta = {
     description = "RunPod CLI for pod management";
     homepage = "https://github.com/runpod/runpodctl";
-    license = licenses.gpl3Plus;
-    maintainers = with maintainers; [ siraben ];
-    platforms = platforms.unix;
+    license = lib.licenses.gpl3Plus;
+    maintainers = with lib.maintainers; [ siraben ];
+    platforms = lib.platforms.unix;
     mainProgram = "runpodctl";
   };
 }

@@ -21,11 +21,11 @@ stdenvNoCC.mkDerivation rec {
     cp ./bin/* $out/bin
   '';
 
-  meta = with lib; {
+  meta = {
     description = "Collection of tools for the bootstrap process of creating a C compiler from a minimal seed";
     homepage = "https://github.com/oriansj/mescc-tools-seed";
-    license = licenses.gpl3Plus;
-    maintainers = with maintainers; [ siraben ];
-    platforms = platforms.unix;
+    license = lib.licenses.gpl3Plus;
+    maintainers = with lib.maintainers; [ siraben ];
+    platforms = lib.platforms.unix;
   };
 }

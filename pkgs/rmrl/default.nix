@@ -27,12 +27,12 @@ python3Packages.buildPythonApplication rec {
   
   pythonRemoveDeps = [ "xdg" ];
 
-  meta = with lib; {
+  meta = {
     description = "reMarkable Rendering Library - render reMarkable documents to PDF";
     homepage = "https://github.com/rschroll/rmrl";
-    license = licenses.gpl3Plus;
-    maintainers = with maintainers; [ siraben ];
-    platforms = platforms.all;
+    license = lib.licenses.gpl3Plus;
+    maintainers = with lib.maintainers; [ siraben ];
+    platforms = lib.platforms.all;
   };
 }
 

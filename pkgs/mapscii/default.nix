@@ -25,12 +25,12 @@ buildNpmPackage rec {
   # Let Nix compute this for us on first build; we'll replace with the real hash.
   npmDepsHash = "sha256-w/gTRritttShxrj6n6RzjCVin6TjJl+o/sVoBafAM+0=";
 
-  meta = with lib; {
+  meta = {
     description = "Braille & ASCII world map renderer for your console";
     homepage = "https://github.com/rastapasta/mapscii";
-    license = licenses.mit;
-    platforms = platforms.all;
-    maintainers = with maintainers; [ ];
+    license = lib.licenses.mit;
+    platforms = lib.platforms.all;
+    maintainers = with lib.maintainers; [ ];
     mainProgram = "mapscii";
   };
 }

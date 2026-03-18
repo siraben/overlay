@@ -22,10 +22,10 @@ rustPlatform.buildRustPackage rec {
 
   cargoHash = "sha256-j07zSblqY+qHHBccDfbw5raWGemXx/YnT7ss1BkDz24=";
 
-  meta = with lib; {
+  meta = {
     description = "Takes a folder of images (as a palette), and an image, then tiles the palette to resemble the image";
     homepage = "https://github.com/ahhh6980/mosaic";
-    license = licenses.gpl3Plus;
-    maintainers = with maintainers; [ siraben ];
+    license = lib.licenses.gpl3Plus;
+    maintainers = with lib.maintainers; [ siraben ];
   };
 }

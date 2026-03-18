@@ -31,12 +31,12 @@ stdenv.mkDerivation {
       --add-flags "-fda $out/share/treeos/floppy.img -snapshot"
   '';
 
-  meta = with lib; {
+  meta = {
     description = "A 16-bit bootsector Christmas tree demo";
     homepage = "https://github.com/cfallin/treeos";
-    license = licenses.gpl3Plus;
-    maintainers = with maintainers; [ siraben ];
-    platforms = platforms.unix;
+    license = lib.licenses.gpl3Plus;
+    maintainers = with lib.maintainers; [ siraben ];
+    platforms = lib.platforms.unix;
     mainProgram = "treeos";
   };
 }

@@ -32,11 +32,11 @@ python3Packages.buildPythonPackage rec {
     "edge_playback"
   ];
 
-  meta = with lib; {
+  meta = {
     description = "Use Microsoft Edge's online text-to-speech service from Python";
     homepage = "https://github.com/rany2/edge-tts";
-    license = licenses.lgpl3Only;
-    maintainers = with maintainers; [ ];
+    license = lib.licenses.lgpl3Only;
+    maintainers = with lib.maintainers; [ ];
     mainProgram = "edge-tts";
   };
 }

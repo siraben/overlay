@@ -32,11 +32,11 @@ stdenv.mkDerivation rec {
     sed -e 's/socklen_t/_socklen_t/g' -i $(find . -type f)
   '';
 
-  meta = with lib; {
+  meta = {
     description = "Text-based windowing environment with mouse support, window manager, terminal emulator, networked clients and the ability to attach/detach mode displays on-the-fly";
     homepage = "https://github.com/cosmos72/twin";
-    license = licenses.gpl2;
-    maintainers = with maintainers; [ siraben ];
-    platforms = platforms.unix;
+    license = lib.licenses.gpl2;
+    maintainers = with lib.maintainers; [ siraben ];
+    platforms = lib.platforms.unix;
   };
 }

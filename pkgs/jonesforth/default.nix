@@ -23,10 +23,10 @@ stdenv.mkDerivation rec {
   '';
   # TODO: write shell wrapper
 
-  meta = with lib; {
+  meta = {
     description = "Mirror of Richard WM Jones's excellent literate x86 assembly implementation of Forth";
     homepage = "https://github.com/nornagon/jonesforth";
-    maintainers = with maintainers; [ siraben ];
-    platforms = platforms.i686 ++ platforms.x86_64;
+    maintainers = with lib.maintainers; [ siraben ];
+    platforms = lib.platforms.i686 ++ lib.platforms.x86_64;
   };
 }

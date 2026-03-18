@@ -28,11 +28,11 @@ python3Packages.buildPythonApplication rec {
     install -Dm755 -t $out/bin algebraic.py
   '';
 
-  meta = with lib; {
+  meta = {
     description = "Compute algebraic numbers in the complex plane and draw a nice picture";
     homepage = "https://github.com/andrejbauer/algebraic";
-    maintainers = with maintainers; [ siraben ];
-    platforms = platforms.unix;
+    maintainers = with lib.maintainers; [ siraben ];
+    platforms = lib.platforms.unix;
     mainProgram = "algebraic.py";
   };
 }

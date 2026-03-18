@@ -46,11 +46,11 @@ python3Packages.buildPythonApplication rec {
     ];
   };
 
-  meta = with lib; {
+  meta = {
     description = "Terminal-based eBook reader with modular text-to-speech capabilities and multi-format support";
     homepage = "https://github.com/superstarryeyes/lue";
-    license = licenses.gpl3Only;
-    maintainers = with maintainers; [ ];
+    license = lib.licenses.gpl3Only;
+    maintainers = with lib.maintainers; [ ];
     mainProgram = "lue";
   };
 }

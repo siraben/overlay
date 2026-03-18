@@ -38,11 +38,11 @@ stdenv.mkDerivation rec {
     runHook postInstall
   '';
 
-  meta = with lib; {
+  meta = {
     description = "C64 NonSense Game Engine";
     homepage = "https://github.com/YouDirk/c64-non-sense";
-    license = licenses.agpl3Plus;
-    maintainers = with maintainers; [ siraben ];
-    platforms = platforms.linux;
+    license = lib.licenses.agpl3Plus;
+    maintainers = with lib.maintainers; [ siraben ];
+    platforms = lib.platforms.linux;
   };
 }

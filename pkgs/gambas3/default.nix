@@ -130,7 +130,7 @@ stdenv.mkDerivation rec {
     fi
   '';
 
-  meta = with lib; {
+  meta = {
     description = "Object-oriented language and development environment";
     longDescription = ''
       Gambas is a free development environment and a full powerful 
@@ -138,8 +138,8 @@ stdenv.mkDerivation rec {
       extensions, as easy as Visual Basic.
     '';
     homepage = "http://gambas.sourceforge.net/";
-    license = licenses.gpl2Plus;
-    maintainers = with maintainers; [ ];
-    platforms = platforms.linux;
+    license = lib.licenses.gpl2Plus;
+    maintainers = with lib.maintainers; [ ];
+    platforms = lib.platforms.linux;
   };
 }

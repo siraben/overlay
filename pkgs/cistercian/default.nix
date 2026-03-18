@@ -17,10 +17,10 @@ buildGoModule rec {
 
   vendorHash = "sha256-XL4MIP67jbR+EOI3fhZ62LMnPdLXI1bG0ptgznd3REk";
 
-  meta = with lib; {
+  meta = {
     description = "Command line tool to generate Cistercian numerals";
     homepage = "https://github.com/rhardih/cistercian";
-    license = licenses.mit;
-    maintainers = with maintainers; [ siraben ];
+    license = lib.licenses.mit;
+    maintainers = with lib.maintainers; [ siraben ];
   };
 }

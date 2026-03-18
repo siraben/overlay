@@ -51,13 +51,13 @@ stdenv.mkDerivation rec {
       ${lib.optionalString cudaSupport ''--prefix LD_LIBRARY_PATH : "/run/opengl-driver/lib:/run/opengl-driver-32/lib"''}
   '';
 
-  meta = with lib; {
+  meta = {
     description =
       "Text compression using Large Language Models"
       + lib.optionalString cudaSupport " (with CUDA support)";
     homepage = "https://bellard.org/ts_zip/";
-    license = licenses.mit;
+    license = lib.licenses.mit;
     maintainers = [ ];
-    platforms = platforms.linux;
+    platforms = lib.platforms.linux;
   };
 }

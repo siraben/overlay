@@ -25,11 +25,11 @@ stdenv.mkDerivation rec {
     runHook postInstall
   '';
 
-  meta = with lib; {
+  meta = {
     description = "A book about compiling Racket and Python to x86-64 assembly";
     homepage = "https://github.com/IUCompilerCourse/essentials-of-compilation";
-    maintainers = with maintainers; [ siraben ];
-    license = licenses.cc-by-30;
-    platforms = platforms.all;
+    maintainers = with lib.maintainers; [ siraben ];
+    license = lib.licenses.cc-by-30;
+    platforms = lib.platforms.all;
   };
 }

@@ -23,7 +23,7 @@ stdenv.mkDerivation rec {
     install -Dm755 multihex packxxu rompatch -t $out/bin
   '';
 
-  meta = with lib; {
+  meta = {
     description = "Useful programs for creating apps and OSes for the TI 83+/84+/73";
     longDescription = ''
       Three programs that are useful for creating both Apps and OSes
@@ -33,8 +33,8 @@ stdenv.mkDerivation rec {
       and 73U files.
     '';
     homepage = "https://www.ticalc.org/archives/files/fileinfo/350/35057.html";
-    license = licenses.gpl2Plus;
-    maintainers = with maintainers; [ siraben ];
-    platforms = platforms.all;
+    license = lib.licenses.gpl2Plus;
+    maintainers = with lib.maintainers; [ siraben ];
+    platforms = lib.platforms.all;
   };
 }
