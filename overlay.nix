@@ -29,7 +29,7 @@ in
   essentials-of-compilation = callPackage ./pkgs/essentials-of-compilation { };
   fe = callPackage ./pkgs/fe { };
   femtolisp = callPackage ./pkgs/femtolisp { };
-  gambas3 = callPackage ./pkgs/gambas3 { };
+  gambas3 = callPackage ./pkgs/gambas3 { unixODBC = prev.unixodbc; };
   git2graph = callPackage ./pkgs/git2graph { };
   jonesforth = callPackage ./pkgs/jonesforth { };
   llmfit = callPackage ./pkgs/llmfit { };
@@ -49,7 +49,6 @@ in
   pi-coding-agent = callPackage ./pkgs/pi-coding-agent { };
   options-implied-probability = final.oipd;
   ostools = callPackage ./pkgs/ostools { };
-  playball = callPackage ./pkgs/playball { };
   PortableGL = callPackage ./pkgs/PortableGL { };
   regit = callPackage ./pkgs/regit { };
   relay-outer = callPackage ./pkgs/relayouter { };
@@ -75,9 +74,7 @@ in
   urscheme = callPackage ./pkgs/urscheme { };
   xnedit = callPackage ./pkgs/xnedit { };
   zchaff = callPackage ./pkgs/zchaff { };
-  zee = callPackage ./pkgs/zee {
-    inherit (darwin.apple_sdk.frameworks) Security AppKit;
-  };
+  zee = callPackage ./pkgs/zee { };
 
   python3Packages = prev.python3Packages.overrideScope (python-final: python-prev: {
     infisical-sdk = callPackage ./pkgs/infisical-sdk { };

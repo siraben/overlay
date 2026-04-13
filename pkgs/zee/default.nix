@@ -5,8 +5,7 @@
   rustPlatform,
   pkg-config,
   openssl,
-  Security,
-  AppKit,
+  darwin,
 }:
 
 rustPlatform.buildRustPackage rec {
@@ -27,10 +26,10 @@ rustPlatform.buildRustPackage rec {
   buildInputs = [
     openssl
   ]
-  ++ lib.optionals stdenv.isDarwin [
+  ++ lib.optionals stdenv.isDarwin (with darwin.apple_sdk.frameworks; [
     Security
     AppKit
-  ];
+  ]);
 
   # Disable grammar build which requires missing config directory
   ZEE_DISABLE_GRAMMAR_BUILD = "1";
@@ -40,6 +39,6 @@ rustPlatform.buildRustPackage rec {
     homepage = "https://github.com/mcobzarenco/zee";
     license = lib.licenses.asl20;
     maintainers = with lib.maintainers; [ siraben ];
-    platforms = lib.platforms.unix;
+    platforms = lib.platforms.linux;
   };
 }

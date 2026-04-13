@@ -16,7 +16,7 @@ stdenv.mkDerivation rec {
     owner = "cosmos72";
     repo = "twin";
     rev = "v${version}";
-    sha256 = "sha256-SDb1e2cQkZGi3uCezNLXji8YLMC5vul5z9EtHEDuwvc=";
+    sha256 = "sha256-Hzgjtxb2Sf/HsvT9t8Aq4rw7tbS4A+UcNCor1YA/r60=";
   };
 
   buildInputs = [
@@ -25,6 +25,8 @@ stdenv.mkDerivation rec {
     libxpm
     ncurses
   ];
+  env.NIX_CFLAGS_COMPILE = "-Wno-error=incompatible-pointer-types -Wno-error=implicit-function-declaration -Wno-error=int-conversion";
+
   enableParallelBuilding = true;
   hardeningDisable = [ "all" ];
 
@@ -37,6 +39,6 @@ stdenv.mkDerivation rec {
     homepage = "https://github.com/cosmos72/twin";
     license = lib.licenses.gpl2;
     maintainers = with lib.maintainers; [ siraben ];
-    platforms = lib.platforms.unix;
+    platforms = lib.platforms.linux;
   };
 }

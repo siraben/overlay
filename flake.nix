@@ -26,12 +26,25 @@
         };
       in
       {
-        packages = builtins.listToAttrs (
-          map (name: {
-            inherit name;
-            value = pkgs.${name};
-          }) (builtins.attrNames (overlay { } { }))
-        );
+        packages =
+          let
+            allPkgs = builtins.listToAttrs (
+              map (name: {
+                inherit name;
+                value = pkgs.${name};
+              }) (builtins.attrNames (overlay { } { }))
+            );
+          in
+          pkgs.lib.filterAttrs (_: pkg:
+            let
+              isDrv = builtins.tryEval (pkg ? drvPath);
+              available = builtins.tryEval (
+                pkgs.lib.meta.availableOn { inherit system; } pkg
+              );
+            in
+            (isDrv.success && isDrv.value)
+            && (available.success && available.value)
+          ) allPkgs;
 
         devShells.default = pkgs.mkShell {
           packages = [ pkgs.nixfmt ];

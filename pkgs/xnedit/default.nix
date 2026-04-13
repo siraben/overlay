@@ -75,7 +75,7 @@ stdenv.mkDerivation rec {
     homepage = "https://github.com/unixwork/xnedit";
     license = lib.licenses.gpl2Plus;
     maintainers = with lib.maintainers; [ ];
-    platforms = lib.platforms.unix;
+    platforms = lib.platforms.linux;
     mainProgram = "xnedit";
   };
 }

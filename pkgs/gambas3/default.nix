@@ -37,15 +37,16 @@
 , librsvg
 , gdk-pixbuf
 , gst_all_1
+, gmime3
 }:
 
 stdenv.mkDerivation rec {
   pname = "gambas3";
-  version = "3.20.4";
+  version = "3.21.5";
 
   src = fetchurl {
     url = "https://gitlab.com/gambas/gambas/-/archive/${version}/gambas-${version}.tar.bz2";
-    sha256 = "sha256-tDIZKGhUwZSaq4NK9fxrUae0EGmmGCFzwqqQuGuzHr4=";
+    sha256 = "sha256-3SzUJyAe7bsxMFAXzFfz/jQGXC0buaNO0sAlIH/marM=";
   };
 
   nativeBuildInputs = [
@@ -92,10 +93,24 @@ stdenv.mkDerivation rec {
     gdk-pixbuf
     gst_all_1.gstreamer
     gst_all_1.gst-plugins-base
+    gmime3
   ];
 
   preConfigure = ''
     ./reconf-all
+  '';
+
+  # Fix for poppler 25.10.x: GooString::getLength() was removed before 25.11.0
+  # but gambas3 guards the compat fix behind POPPLER_VERSION_25_11_0
+  # Lower the threshold so the fix applies to our poppler version too
+  postPatch = ''
+    sed -i 's/--atleast-version=25.11.0 poppler/--atleast-version=25.10.0 poppler/' \
+      gb.pdf/configure.ac
+    sed -i 's/POPPLER_VERSION_25_11_0/POPPLER_VERSION_25_10_0/g' \
+      gb.pdf/configure.ac gb.pdf/src/CPdfDocument.cpp
+    # Remove WebView dependency from gb.form.editor test (requires QtWebEngine)
+    sed -i '/WebView/d' comp/src/gb.form.editor/.src/test/FTestEditor.form \
+      comp/src/gb.form.editor/.src/test/FTestEditor.class
   '';
 
   configureFlags = [

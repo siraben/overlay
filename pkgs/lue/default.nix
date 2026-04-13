@@ -14,7 +14,7 @@ python3Packages.buildPythonApplication rec {
     owner = "superstarryeyes";
     repo = "lue";
     rev = "main";
-    hash = "sha256-H4CdYx+i7S/JX+nBJ3b/3aPjnVuZ1ApSrTtT6JQAqwU=";
+    hash = "sha256-T7uh9PSCTkT+jYxQYC4ebPkabDz3pc6JjCGtgNatIAM=";
   };
 
   build-system = with python3Packages; [

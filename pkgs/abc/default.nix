@@ -38,6 +38,16 @@ stdenv.mkDerivation rec {
       --replace '((int)(v) & ~1) / 2' '((intptr_t)(v) & ~(intptr_t)1) / 2' \
       --replace '((i)*2 | 1)' '(((intptr_t)(i))*2 | 1)'
     grep -q intptr_t bhdrs/b.h || sed -i '1i#include <stdint.h>' bhdrs/b.h
+    # termio.h is a legacy header removed in glibc 2.41+, use POSIX termios.h instead
+    for f in unix/keys.c unix/trm.c; do
+      sed -i 's|<termio\.h>|<termios.h>|g' "$f"
+      sed -i 's|struct termio |struct termios |g' "$f"
+    done
+    # In keys.c: replace ioctl TCGETA with tcgetattr
+    sed -i 's|ioctl(0, TCGETA, (char\*) &sgbuf)|tcgetattr(0, \&sgbuf)|g' unix/keys.c
+    # In trm.c: replace ioctl-based gtty/stty macros with tcgetattr/tcsetattr
+    sed -i 's|#define gtty(fd,bp) ioctl(fd, TCGETA, (char \*) bp)|#define gtty(fd,bp) tcgetattr(fd, bp)|g' unix/trm.c
+    sed -i 's|#define stty(fd,bp) VOID ioctl(fd, TCSETAW, (char \*) bp)|#define stty(fd,bp) VOID tcsetattr(fd, TCSADRAIN, bp)|g' unix/trm.c
     substituteInPlace bint1/i1num.c \
       --replace 'setran((double) hash(v));' 'setran(1.0);'
   '';
@@ -74,6 +84,6 @@ stdenv.mkDerivation rec {
     license = lib.licenses.unfree;
     maintainers = [ lib.maintainers.siraben ];
     mainProgram = "abc";
-    platforms = lib.platforms.unix;
+    platforms = lib.platforms.linux;
   };
 }

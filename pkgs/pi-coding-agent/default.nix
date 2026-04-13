@@ -50,10 +50,16 @@ buildNpmPackage rec {
     pixman
   ];
 
-  # Use system libvips for sharp
-  env.SHARP_FORCE_GLOBAL_LIBVIPS = 1;
+  # Tell sharp to use its own prebuilt libvips instead of building from source
+  env.SHARP_IGNORE_GLOBAL_LIBVIPS = "1";
   # Fix for node-gyp
   env.npm_config_nodedir = nodejs;
+
+  makeCacheWritable = true;
+
+  npmFlags = [ "--ignore-scripts" ];
+
+  npmInstallFlags = [ "--ignore-scripts" ];
 
   # Use tsgo with noCheck to skip type errors
   # The codebase has type issues that don't affect runtime

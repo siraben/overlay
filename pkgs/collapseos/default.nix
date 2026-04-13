@@ -2,18 +2,25 @@
   lib,
   stdenv,
   fetchgit,
+  fetchurl,
   ncurses,
   pkg-config,
   libx11,
   makeWrapper,
 }:
 
+let
+  duskos = fetchurl {
+    url = "https://git.sr.ht/~vdupras/duskos/archive/v11.tar.gz";
+    hash = "sha256-F/fb5LL8c/CuOFJJS/+iVkpKfuogRReSc7LfqhweB1Q=";
+  };
+in
 stdenv.mkDerivation rec {
   name = "collapseos";
   src = fetchgit {
     url = "https://git.sr.ht/~vdupras/${name}";
-    rev = "374a0a8e464f0e79f8850ea129c394e8cf455e77";
-    sha256 = "0nxgwgqnhcz37fpk885sykjzd644lm8nzpr0v77pwid4qhy8c3sj";
+    rev = "1d0cf3d1e602fe2f3dc05b1b856fd8b01fc8fe93";
+    hash = "sha256-asNPvBKQJVUXNGzViCNd5ttM6KY91r0wPdoxYJ8Bf2U=";
   };
   nativeBuildInputs = [
     pkg-config
@@ -23,16 +30,31 @@ stdenv.mkDerivation rec {
     ncurses
     libx11
   ];
-  postPatch = ''
-    substituteInPlace cvm/Makefile --replace '-lcurses' '-lncurses'
+
+  postUnpack = ''
+    # Extract DuskOS into the source tree where the build expects it
+    tar xzf ${duskos} -C $sourceRoot
+    mv $sourceRoot/duskos-v11 $sourceRoot/duskos-v11 2>/dev/null || true
   '';
+
   buildPhase = ''
-    make -C cvm forth
+    runHook preBuild
+    # First build DuskOS's dusk interpreter
+    make -C duskos-v11 dusk
+    # Then build collapseos artifacts
+    make blkpack
+    make cos.blk
+    make 6502.img
+    runHook postBuild
   '';
+
   installPhase = ''
-    mkdir -p $out/bin
-    cp tools/{blkpack,blkunpack,blkup,memdump,pingpong,ttysafe,upload} $out/bin
-    cp cvm/{blkfs,forth,forth.bin,stage} $out/bin
+    runHook preInstall
+    mkdir -p $out/bin $out/share/collapseos
+    cp blkpack $out/bin/
+    cp cos.blk 6502.img $out/share/collapseos/
+    cp duskos-v11/dusk $out/bin/
+    runHook postInstall
   '';
 
   meta = {

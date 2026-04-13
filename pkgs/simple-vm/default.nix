@@ -15,6 +15,7 @@ stdenv.mkDerivation rec {
     sha256 = "sha256-LgzEwmXevmTSAoEfHC3uhQESAnLR8ivBvD4zuBpmEhY=";
   };
 
+  env.NIX_CFLAGS_COMPILE = "-D_DEFAULT_SOURCE -Wno-error=implicit-function-declaration";
   makeFlags = [ "CC=${stdenv.cc.targetPrefix}cc" ];
 
   installPhase = ''
@@ -28,6 +29,6 @@ stdenv.mkDerivation rec {
 
     license = lib.licenses.gpl2Plus;
     maintainers = with lib.maintainers; [ siraben ];
-    platforms = lib.platforms.all;
+    platforms = lib.platforms.unix;
   };
 }

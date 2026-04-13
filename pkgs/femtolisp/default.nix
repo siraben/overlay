@@ -25,6 +25,8 @@ stdenv.mkDerivation {
 #  error "unknown architecture"'
   '';
 
+  env.NIX_CFLAGS_COMPILE = "-Wno-error=implicit-function-declaration";
+
   makeFlags = [
     "CC=${stdenv.cc.targetPrefix}cc"
     "release"

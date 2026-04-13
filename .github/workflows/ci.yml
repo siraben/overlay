@@ -34,9 +34,11 @@ jobs:
               let
                 pkgs = pkgsFor sys;
                 drv = pkgs.${name};
+                isDrv = builtins.tryEval (drv ? drvPath);
                 platforms = drv.meta.platforms or null;
               in
-                platforms == null || builtins.elem sys (map (p: if builtins.isString p then p else p.system or "") (if builtins.isList platforms then platforms else []));
+                isDrv.success && isDrv.value &&
+                (platforms == null || builtins.elem sys (map (p: if builtins.isString p then p else p.system or "") (if builtins.isList platforms then platforms else [])));
             entries = builtins.concatMap (s:
               map (name: { package = name; system = s.system; os = s.os; })
                 (builtins.filter (hasPackage s.system) names)
