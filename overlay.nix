@@ -41,6 +41,7 @@ in
   micro-lisp = callPackage ./pkgs/micro-lisp { };
   microhs = callPackage ./pkgs/microhs { };
   mosaic = callPackage ./pkgs/mosaic { };
+  oberon-system3 = callPackage ./pkgs/oberon-system3 { };
   nix-hello = callPackage ./pkgs/nix-hello { };
   nix-hello-minimal = callPackage ./pkgs/nix-hello-minimal { };
   oipd = callPackage ./pkgs/oipd { };
