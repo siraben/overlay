@@ -29,7 +29,7 @@ in
   essentials-of-compilation = callPackage ./pkgs/essentials-of-compilation { };
   fe = callPackage ./pkgs/fe { };
   femtolisp = callPackage ./pkgs/femtolisp { };
-  gambas3 = callPackage ./pkgs/gambas3 { unixODBC = prev.unixodbc; };
+  gambas3 = callPackage ./pkgs/gambas3 { };
   git2graph = callPackage ./pkgs/git2graph { };
   jonesforth = callPackage ./pkgs/jonesforth { };
   llmfit = callPackage ./pkgs/llmfit { };

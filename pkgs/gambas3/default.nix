@@ -28,7 +28,7 @@
 , poppler
 , postgresql
 , libmysqlclient
-, unixODBC
+, unixodbc
 , gettext
 , dbus
 , gsl
@@ -83,7 +83,7 @@ stdenv.mkDerivation rec {
     poppler
     postgresql
     libmysqlclient
-    unixODBC
+    unixodbc
     gettext
     dbus
     gsl
