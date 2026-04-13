@@ -25,7 +25,11 @@ stdenv.mkDerivation rec {
     libxpm
     ncurses
   ];
-  env.NIX_CFLAGS_COMPILE = "-Wno-error=incompatible-pointer-types -Wno-error=implicit-function-declaration -Wno-error=int-conversion";
+  env.NIX_CFLAGS_COMPILE = toString [
+    "-Wno-incompatible-pointer-types"
+    "-Wno-implicit-function-declaration"
+    "-Wno-int-conversion"
+  ];
 
   enableParallelBuilding = true;
   hardeningDisable = [ "all" ];
