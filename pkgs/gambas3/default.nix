@@ -100,15 +100,13 @@ stdenv.mkDerivation rec {
     ./reconf-all
   '';
 
-  # Fix for poppler 25.10.x: GooString::getLength() was removed before 25.11.0
-  # but gambas3 guards the compat fix behind POPPLER_VERSION_25_11_0
-  # Lower the threshold so the fix applies to our poppler version too
+  # Poppler 25.10 removed GooString::getLength(); lower the compat threshold
   postPatch = ''
-    sed -i 's/--atleast-version=25.11.0 poppler/--atleast-version=25.10.0 poppler/' \
-      gb.pdf/configure.ac
-    sed -i 's/POPPLER_VERSION_25_11_0/POPPLER_VERSION_25_10_0/g' \
-      gb.pdf/configure.ac gb.pdf/src/CPdfDocument.cpp
-    # Remove WebView dependency from gb.form.editor test (requires QtWebEngine)
+    substituteInPlace gb.pdf/configure.ac \
+      --replace-fail '--atleast-version=25.11.0 poppler' '--atleast-version=25.10.0 poppler'
+    substituteInPlace gb.pdf/configure.ac gb.pdf/src/CPdfDocument.cpp \
+      --replace-fail 'POPPLER_VERSION_25_11_0' 'POPPLER_VERSION_25_10_0'
+    # Remove WebView dependency (requires QtWebEngine)
     sed -i '/WebView/d' comp/src/gb.form.editor/.src/test/FTestEditor.form \
       comp/src/gb.form.editor/.src/test/FTestEditor.class
   '';
