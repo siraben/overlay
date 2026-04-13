@@ -17,10 +17,9 @@ stdenv.mkDerivation rec {
 
   nativeBuildInputs = [ cmake ];
 
-  # Squirrel builds both the library and the interpreter
   cmakeFlags = [
     "-DDISABLE_STATIC=ON"
-    "-DCMAKE_POLICY_VERSION_MINIMUM=3.5"
+    (lib.cmakeFeature "CMAKE_POLICY_VERSION_MINIMUM" "3.5")
   ];
 
   # No postInstall needed - cmake handles everything
