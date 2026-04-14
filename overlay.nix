@@ -6,6 +6,7 @@ let
 in
 {
   abc = callPackage ./pkgs/abc { };
+  agent-deck = callPackage ./pkgs/agent-deck { };
   agent-safehouse = callPackage ./pkgs/agent-safehouse { };
   abs = callPackage ./pkgs/abs { };
   acme = callPackage ./pkgs/acme { };
