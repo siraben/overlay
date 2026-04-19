@@ -9,13 +9,13 @@
 
 buildGoModule rec {
   pname = "agent-deck";
-  version = "1.5.1";
+  version = "1.7.38";
 
   src = fetchFromGitHub {
     owner = "asheshgoplani";
     repo = "agent-deck";
     rev = "v${version}";
-    hash = "sha256-IbI/HW4kS81fG5m7qxcExtNtxevFH3d6DbcmqIJNGtk=";
+    hash = "sha256-qWfgB4D+f30D5CiDosBqWQH+g3uZV1uJL+ASYEFKi5Y=";
   };
 
   patches = [
@@ -23,7 +23,7 @@ buildGoModule rec {
     ./agent-deck-remove-csiureader.patch
   ];
 
-  vendorHash = "sha256-1aCd3tT5Oh+K7kLils2r3kX4YMkDCL3Eqoj5XJ9R8m0=";
+  vendorHash = "sha256-aH32Up3redCpeyjZkjcjiVN0tfYpF+GFB2WVAGm3J2I=";
 
   subPackages = [ "cmd/agent-deck" ];
 
