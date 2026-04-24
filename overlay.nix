@@ -44,7 +44,6 @@ in
   mosaic = callPackage ./pkgs/mosaic { };
   oberon-system3 = callPackage ./pkgs/oberon-system3 { };
   nix-hello = callPackage ./pkgs/nix-hello { };
-  nuclear = callPackage ./pkgs/nuclear { };
   nix-hello-minimal = callPackage ./pkgs/nix-hello-minimal { };
   oipd = callPackage ./pkgs/oipd { };
   opencode = callPackage ./pkgs/opencode { };
