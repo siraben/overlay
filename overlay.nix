@@ -32,6 +32,7 @@ in
   femtolisp = callPackage ./pkgs/femtolisp { };
   gambas3 = callPackage ./pkgs/gambas3 { };
   git2graph = callPackage ./pkgs/git2graph { };
+  infer = callPackage ./pkgs/infer { };
   jonesforth = callPackage ./pkgs/jonesforth { };
   llmfit = callPackage ./pkgs/llmfit { };
   kickthemout = prev.python3Packages.callPackage ./pkgs/kickthemout { };
