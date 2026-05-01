@@ -48,6 +48,7 @@ in
   nix-hello-minimal = callPackage ./pkgs/nix-hello-minimal { };
   oipd = callPackage ./pkgs/oipd { };
   opencode = callPackage ./pkgs/opencode { };
+  pcc = callPackage ./pkgs/pcc { };
   pi-coding-agent = callPackage ./pkgs/pi-coding-agent { };
   options-implied-probability = final.oipd;
   ostools = callPackage ./pkgs/ostools { };
