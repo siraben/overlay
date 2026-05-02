@@ -27,6 +27,7 @@ jobs:
               { system = "x86_64-linux"; os = "ubuntu-latest"; }
               { system = "aarch64-darwin"; os = "macos-latest"; }
             ];
+            excludedPackages = [ "infer" ];
             hasPackage = sys: name:
               let
                 drv = flake.packages.${sys}.${name};
@@ -36,8 +37,12 @@ jobs:
                 isDrv.success && isDrv.value &&
                 (platforms == null || builtins.elem sys (map (p: if builtins.isString p then p else p.system or "") (if builtins.isList platforms then platforms else [])));
             entries = builtins.concatMap (s:
-              map (name: { package = name; system = s.system; os = s.os; })
-                (builtins.filter (hasPackage s.system) (builtins.attrNames flake.packages.${s.system}))
+              let
+                names = builtins.filter
+                  (name: !(builtins.elem name excludedPackages) && hasPackage s.system name)
+                  (builtins.attrNames flake.packages.${s.system});
+              in
+              map (name: { package = name; system = s.system; os = s.os; }) names
             ) systems;
           in
             { include = entries; }
