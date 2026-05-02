@@ -20,10 +20,21 @@
   libxml2,
   zstd,
   perl,
+  symlinkJoin,
 }:
 
 let
   version = "1.2.0";
+  modelSysroot = symlinkJoin {
+    name = "infer-model-capture-sysroot";
+    paths = [
+      stdenv.cc.libc
+      stdenv.cc.libc.dev
+      stdenv.cc.cc
+      stdenv.cc.cc.lib
+    ];
+  };
+  modelClangFlags = "--sysroot=${modelSysroot} --gcc-toolchain=${modelSysroot}";
 
   inferSrc = fetchurl {
     url = "https://github.com/facebook/infer/archive/refs/tags/v${version}.tar.gz";
@@ -61,6 +72,16 @@ let
         (
           # Preserve Nix's ocamlfind paths for javalib and sawja.
           final: prev: {
+            # OCaml 4.14.0's runtime relies on pre-C23 empty-parameter-list
+            # function pointer semantics. Newer GCC defaults reject those calls.
+            ocaml-base-compiler = prev.ocaml-base-compiler.overrideAttrs (old: {
+              CFLAGS = lib.concatStringsSep " " (
+                lib.filter (flag: flag != "") [
+                  (old.CFLAGS or "")
+                  "-std=gnu17"
+                ]
+              );
+            });
             javalib = prev.javalib.overrideAttrs (old: {
               patches = (old.patches or [ ]) ++ [
                 ./patches/javalib/configure.sh.patch
@@ -126,12 +147,20 @@ stdenv.mkDerivation {
     (lang dune 3.6)
     EOF
 
+    # Infer's model capture replays raw clang -cc1 commands. Seed the model
+    # compile flags with Nix's libc/libstdc++ locations so replay has headers.
+    substituteInPlace infer/models/c/src/Makefile \
+      --replace-fail 'CFLAGS=-c -w' 'CFLAGS=-c -w ${modelClangFlags}'
+    substituteInPlace infer/models/cpp/src/Makefile \
+      --replace-fail 'CXXFLAGS=-c -w -std=c++11' 'CXXFLAGS=-c -w -std=c++11 ${modelClangFlags}'
+
     # Record the vendored clang install after shebang patching so hashes match.
     patchShebangs \
       autogen.sh \
       build-infer.sh \
       facebook-clang-plugins/clang/setup.sh \
-      facebook-clang-plugins/clang/src/prepare_clang_src.sh
+      facebook-clang-plugins/clang/src/prepare_clang_src.sh \
+      facebook-clang-plugins/libtooling/atdlib
     mkdir -p facebook-clang-plugins/clang/install
     cp -rs --no-preserve=mode ${patchedLlvm}/. facebook-clang-plugins/clang/install/
     bash facebook-clang-plugins/clang/setup.sh --only-record-install

@@ -9,10 +9,28 @@
   libffi,
   zlib,
   ncurses,
+  symlinkJoin,
 }:
 
 let
   version = "18.1.3";
+  runtimeSysroot = symlinkJoin {
+    name = "infer-llvm-runtime-sysroot";
+    paths = [
+      stdenv.cc.libc
+      stdenv.cc.libc.dev
+      stdenv.cc.cc
+      stdenv.cc.cc.lib
+    ];
+  };
+  runtimeCmakeArgs = lib.concatStringsSep ";" [
+    "-DCMAKE_SYSROOT=${runtimeSysroot}"
+    "-DCMAKE_C_FLAGS=--gcc-toolchain=${runtimeSysroot}"
+    "-DCMAKE_CXX_FLAGS=--gcc-toolchain=${runtimeSysroot}"
+    "-DCMAKE_EXE_LINKER_FLAGS=-L${runtimeSysroot}/lib"
+    "-DCMAKE_SHARED_LINKER_FLAGS=-L${runtimeSysroot}/lib"
+    "-DCMAKE_MODULE_LINKER_FLAGS=-L${runtimeSysroot}/lib"
+  ];
 in
 stdenv.mkDerivation {
   pname = "infer-llvm";
@@ -27,6 +45,7 @@ stdenv.mkDerivation {
     ./patches/llvm/err_ret_local_block.patch
     ./patches/llvm/mangle_suppress_errors.patch
     ./patches/llvm/AArch64SVEACLETypes.patch
+    ./patches/llvm/SmallVector-cstdint.patch
   ];
 
   # The patches include an extra llvm-project/ path component.
@@ -63,6 +82,13 @@ stdenv.mkDerivation {
     "-DLLVM_ENABLE_RUNTIMES=libcxx;libcxxabi"
     "-DLIBCXX_CXX_ABI=libcxxabi"
     "-DLIBCXXABI_USE_LLVM_UNWINDER=OFF"
+    # GCC 15/libstdc++ exposes missing transitive <cstdint> includes in LLVM 18.
+    "-DCMAKE_CXX_FLAGS=-includecstdint"
+  ]
+  ++ lib.optionals stdenv.isLinux [
+    # LLVM runtimes are built by the just-built clang rather than Nix's wrapper,
+    # so pass a sysroot with glibc, GCC startup objects, and libstdc++.
+    "-DRUNTIMES_CMAKE_ARGS=${runtimeCmakeArgs}"
   ]
   ++ lib.optionals stdenv.isDarwin [
     "-DLLVM_BUILD_LLVM_DYLIB=ON"
