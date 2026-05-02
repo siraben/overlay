@@ -22,18 +22,14 @@ jobs:
       run: |
         matrix=$(NIXPKGS_ALLOW_UNFREE=1 nix eval --impure --json --expr '
           let
-            nixpkgs = builtins.getFlake "nixpkgs";
-            overlay = import ./overlay.nix;
-            names = builtins.attrNames (overlay {} {});
+            flake = builtins.getFlake (toString ./.);
             systems = [
               { system = "x86_64-linux"; os = "ubuntu-latest"; }
               { system = "aarch64-darwin"; os = "macos-latest"; }
             ];
-            pkgsFor = s: import nixpkgs { system = s; overlays = [ overlay ]; config.allowUnfree = true; };
             hasPackage = sys: name:
               let
-                pkgs = pkgsFor sys;
-                drv = pkgs.${name};
+                drv = flake.packages.${sys}.${name};
                 isDrv = builtins.tryEval (drv ? drvPath);
                 platforms = drv.meta.platforms or null;
               in
@@ -41,7 +37,7 @@ jobs:
                 (platforms == null || builtins.elem sys (map (p: if builtins.isString p then p else p.system or "") (if builtins.isList platforms then platforms else [])));
             entries = builtins.concatMap (s:
               map (name: { package = name; system = s.system; os = s.os; })
-                (builtins.filter (hasPackage s.system) names)
+                (builtins.filter (hasPackage s.system) (builtins.attrNames flake.packages.${s.system}))
             ) systems;
           in
             { include = entries; }
@@ -88,4 +84,4 @@ jobs:
       with:
         github_access_token: ${{ secrets.GITHUB_TOKEN }}
     - name: Check flake
-      run: NIXPKGS_ALLOW_UNFREE=1 nix flake check --no-build --impure
+      run: NIXPKGS_ALLOW_UNFREE=1 nix flake check --impure

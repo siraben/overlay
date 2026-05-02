@@ -44,19 +44,8 @@ let
   patchedLlvm = callPackage ./llvm.nix { };
 
   # Import the checked-in lock file without opam-nix re-resolving it to OCaml 5.
-  inferOpamExport = pkgs.runCommand "infer-export.opam" { } ''
-    {
-      echo 'opam-version: "2.0"'
-      echo 'compiler: [ "ocaml-base-compiler.4.14.0" ]'
-      echo 'roots: [ "infer.1.2.0" ]'
-      echo 'installed: ['
-      ${pkgs.gnused}/bin/sed -nE 's/^  "([^"]+)" \{= "([^"]+)"\}.*$/  "\1.\2"/p' \
-        ${./opam/infer.opam.locked} \
-        | grep -Ev '^  "(infer|ocaml-variants|ocaml-option-flambda)\.'
-      echo '  "ocaml-base-compiler.4.14.0"'
-      echo ']'
-    } > $out
-  '';
+  # Keep this in the source tree so opam-nix can read adjacent metadata paths.
+  inferOpamExport = ./opam/infer-export.opam;
 
   scope =
     if opamNix == null then
