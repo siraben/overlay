@@ -1,8 +1,18 @@
+# `inputs` and `system` are passed by flake.nix so packages can reach flake
+# inputs (e.g. opam-nix) without the overlay having to know about each one.
+# Both default to null so this file still works as a vanilla `final: prev`
+# overlay for consumers that import it directly.
+{
+  inputs ? { },
+  system ? null,
+}:
+
 final: prev:
 
 let
   callPackage = prev.callPackage;
   darwin = prev.darwin;
+  opamNix = inputs.opam-nix.lib.${system} or null;
 in
 {
   abc = callPackage ./pkgs/abc { };
@@ -32,7 +42,7 @@ in
   femtolisp = callPackage ./pkgs/femtolisp { };
   gambas3 = callPackage ./pkgs/gambas3 { };
   git2graph = callPackage ./pkgs/git2graph { };
-  infer = callPackage ./pkgs/infer { };
+  infer = callPackage ./pkgs/infer { inherit opamNix; };
   jonesforth = callPackage ./pkgs/jonesforth { };
   llmfit = callPackage ./pkgs/llmfit { };
   kickthemout = prev.python3Packages.callPackage ./pkgs/kickthemout { };
@@ -79,7 +89,9 @@ in
   zchaff = callPackage ./pkgs/zchaff { };
   zee = callPackage ./pkgs/zee { };
 
-  python3Packages = prev.python3Packages.overrideScope (python-final: python-prev: {
-    infisical-sdk = callPackage ./pkgs/infisical-sdk { };
-  });
+  python3Packages = prev.python3Packages.overrideScope (
+    python-final: python-prev: {
+      infisical-sdk = callPackage ./pkgs/infisical-sdk { };
+    }
+  );
 }
