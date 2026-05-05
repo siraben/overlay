@@ -30,6 +30,12 @@ in
   carp = callPackage ./pkgs/carp { };
   c4 = callPackage ./pkgs/c4 { };
   c64-non-sense = callPackage ./pkgs/c64-non-sense { };
+  polyml-cakeml = callPackage ./pkgs/cakeml/polyml.nix { };
+  hol4-cakeml = callPackage ./pkgs/cakeml/hol4.nix { polyml-cakeml = final.polyml-cakeml; };
+  cakeml = callPackage ./pkgs/cakeml {
+    polyml-cakeml = final.polyml-cakeml;
+    hol4-cakeml = final.hol4-cakeml;
+  };
   ccusage = callPackage ./pkgs/ccusage { };
   cistercian = callPackage ./pkgs/cistercian { };
   collapseos = callPackage ./pkgs/collapseos { };
