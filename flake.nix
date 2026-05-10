@@ -7,15 +7,6 @@
       url = "github:edolstra/flake-compat";
       flake = false;
     };
-    opam-nix = {
-      url = "github:tweag/opam-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.flake-utils.follows = "utils";
-      # Pin opam-repository to a snapshot from when infer 1.2.0 was released
-      # (2024-07-15). The default opam-nix snapshot has dropped some package
-      # versions infer's lock file pins (e.g. cmdliner 1.2.0).
-      inputs.opam-repository.url = "github:ocaml/opam-repository/f5e5eb2c42136f7ef9aea1029d704b7dabd5b5f7";
-    };
   };
 
   outputs =
@@ -23,13 +14,12 @@
       self,
       nixpkgs,
       utils,
-      opam-nix,
       ...
     }:
     utils.lib.eachDefaultSystem (
       system:
       let
-        overlay = import ./overlay.nix { inherit inputs system; };
+        overlay = import ./overlay.nix { inherit system; };
         pkgs = import nixpkgs {
           inherit system;
           overlays = [ overlay ];

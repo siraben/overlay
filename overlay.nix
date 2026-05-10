@@ -1,9 +1,8 @@
-# `inputs` and `system` are passed by flake.nix so packages can reach flake
-# inputs (e.g. opam-nix) without the overlay having to know about each one.
-# Both default to null so this file still works as a vanilla `final: prev`
-# overlay for consumers that import it directly.
+# `system` is passed by flake.nix so packages that need a system-specific
+# pkgs (e.g. infer's opam-nix scope) can be evaluated. Defaults to null so
+# this file still works as a vanilla `final: prev` overlay for consumers
+# that import it directly.
 {
-  inputs ? { },
   system ? null,
 }:
 
@@ -12,7 +11,71 @@ final: prev:
 let
   callPackage = prev.callPackage;
   darwin = prev.darwin;
-  opamNix = inputs.opam-nix.lib.${system} or null;
+
+  # Lazy-fetch opam-nix and its data inputs so they don't appear as flake
+  # inputs of this overlay (and therefore don't propagate into consumers'
+  # flake.lock). Only forced when a package like `infer` actually needs it.
+  # opam-repository is pinned to a 2024-07-15 snapshot because infer 1.2.0's
+  # lock file references package versions (e.g. cmdliner 1.2.0) that newer
+  # opam-repository snapshots have dropped.
+  opamNix =
+    if system == null then
+      null
+    else
+      let
+        sources = {
+          opam-nix = builtins.fetchTree {
+            type = "github";
+            owner = "tweag";
+            repo = "opam-nix";
+            rev = "2e20bbbe8130d1880338291446fd4e710a4db9a1";
+            narHash = "sha256-XSw8dQIkdr+6eLvbUHo3cJPtTU7o5SMODz3qlnzmGpQ=";
+          };
+          opam-repository = builtins.fetchTree {
+            type = "github";
+            owner = "ocaml";
+            repo = "opam-repository";
+            rev = "f5e5eb2c42136f7ef9aea1029d704b7dabd5b5f7";
+            narHash = "sha256-j0dy21J8P0Bdc08EE8C/wf3268jN5PKvcbqNXr4cN0k=";
+          };
+          opam-overlays = builtins.fetchTree {
+            type = "github";
+            owner = "dune-universe";
+            repo = "opam-overlays";
+            rev = "e031bb64e33bf93be963e9a38b28962e6e14381f";
+            narHash = "sha256-Z0PIW82fHJFvAv/JYpAffnp2DaOjLhsPutqyIrORZd0=";
+          };
+          mirage-opam-overlays = builtins.fetchTree {
+            type = "github";
+            owner = "dune-universe";
+            repo = "mirage-opam-overlays";
+            rev = "797cb363df3ff763c43c8fbec5cd44de2878757e";
+            narHash = "sha256-j4QREQDUf8oHOX7qg6wAOupgsNQoYlufxoPrgagD+pY=";
+          };
+          opam2json = builtins.fetchTree {
+            type = "github";
+            owner = "tweag";
+            repo = "opam2json";
+            rev = "0ecd66fc2bfb25d910522c990dd36412259eac1f";
+            narHash = "sha256-+QVm+HOYikF3wUhqSIV8qJbE/feSG+p48fgxIosbHS0=";
+          };
+        };
+        # Mirror opam-nix's flake: keep nixpkgs's opam2json if it's the
+        # version opam-nix expects (0.4), otherwise build from source.
+        pkgsForOpamNix = prev.extend (
+          final': prev': {
+            opam2json =
+              if (prev'.opam2json.version or null) == "0.4" then
+                prev'.opam2json
+              else
+                final'.ocamlPackages.callPackage (sources.opam2json + "/opam2json.nix") { };
+          }
+        );
+      in
+      import (sources.opam-nix + "/src/opam.nix") {
+        pkgs = pkgsForOpamNix;
+        inherit (sources) opam-repository opam-overlays mirage-opam-overlays;
+      };
 in
 {
   abc = callPackage ./pkgs/abc { };
