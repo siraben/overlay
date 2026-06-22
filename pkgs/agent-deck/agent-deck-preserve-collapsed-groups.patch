@@ -1,10 +1,10 @@
 diff --git a/internal/ui/home.go b/internal/ui/home.go
 --- a/internal/ui/home.go
 +++ b/internal/ui/home.go
-@@ -1275,43 +1275,6 @@
- 		h.flatItems = scoped
+@@ -1948,43 +1948,6 @@
+ 		h.flatItems = session.PartitionByViewMode(h.flatItems, h.groupViewMode, activity)
  	}
-
+ 
 -	// Inject window items after sessions that have 2+ windows
 -	if len(h.flatItems) > 0 {
 -		expanded := make([]session.Item, 0, len(h.flatItems)+8)
