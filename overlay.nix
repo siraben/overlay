@@ -12,6 +12,11 @@ let
   callPackage = prev.callPackage;
   darwin = prev.darwin;
 
+  # Hermes Agent ships a tested uv2nix package with its own locked dependency
+  # graph. Reuse that package so the exact Python and Node dependency pins from
+  # the upstream release are preserved.
+  hermesAgentFlake = builtins.getFlake "github:NousResearch/hermes-agent/fcbd1076a93841fa88855acce810e342a5b78101";
+
   # Lazy-fetch opam-nix and its data inputs so they don't appear as flake
   # inputs of this overlay (and therefore don't propagate into consumers'
   # flake.lock). Only forced when a package like `infer` actually needs it.
@@ -111,6 +116,7 @@ in
   femtolisp = callPackage ./pkgs/femtolisp { };
   gambas3 = callPackage ./pkgs/gambas3 { };
   git2graph = callPackage ./pkgs/git2graph { };
+  hermes-agent = hermesAgentFlake.packages.${prev.stdenv.hostPlatform.system}.default;
   infer = callPackage ./pkgs/infer { inherit opamNix; };
   jonesforth = callPackage ./pkgs/jonesforth { };
   llmfit = callPackage ./pkgs/llmfit { };
