@@ -134,7 +134,6 @@ in
   oipd = callPackage ./pkgs/oipd { };
   opencode = callPackage ./pkgs/opencode { };
   pcc = callPackage ./pkgs/pcc { };
-  pi-coding-agent = callPackage ./pkgs/pi-coding-agent { };
   options-implied-probability = final.oipd;
   ostools = callPackage ./pkgs/ostools { };
   PortableGL = callPackage ./pkgs/PortableGL { };
