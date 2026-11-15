@@ -14,13 +14,17 @@ stdenv.mkDerivation rec {
   };
 
   buildPhase = ''
+    runHook preBuild
     ${stdenv.cc.targetPrefix}cc -O2 -o multihex multihex.c
     ${stdenv.cc.targetPrefix}cc -O2 -o packxxu packxxu.c
     ${stdenv.cc.targetPrefix}cc -O2 -o rompatch rompatch.c
+    runHook postBuild
   '';
 
   installPhase = ''
+    runHook preInstall
     install -Dm755 multihex packxxu rompatch -t $out/bin
+    runHook postInstall
   '';
 
   meta = {
@@ -33,7 +37,7 @@ stdenv.mkDerivation rec {
       and 73U files.
     '';
     homepage = "https://www.ticalc.org/archives/files/fileinfo/350/35057.html";
-    license = lib.licenses.gpl2Plus;
+    license = lib.licenses.lgpl21Plus;
     maintainers = with lib.maintainers; [ siraben ];
     platforms = lib.platforms.all;
   };
