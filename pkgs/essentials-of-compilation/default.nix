@@ -29,7 +29,14 @@ stdenv.mkDerivation rec {
     description = "A book about compiling Racket and Python to x86-64 assembly";
     homepage = "https://github.com/IUCompilerCourse/essentials-of-compilation";
     maintainers = with lib.maintainers; [ siraben ];
-    license = lib.licenses.cc-by-30;
+    # The copyright page specifies CC-BY-NC-ND without a license version.
+    license = {
+      shortName = "CC-BY-NC-ND";
+      fullName = "Creative Commons Attribution-NonCommercial-NoDerivatives";
+      url = "https://github.com/IUCompilerCourse/essentials-of-compilation/blob/abb2d88b9bc2792b6bc060f1503fe30d9f866018/book.tex#L139-L142";
+      free = false;
+      redistributable = false;
+    };
     platforms = lib.platforms.all;
   };
 }
