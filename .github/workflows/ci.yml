@@ -20,6 +20,8 @@ jobs:
     - name: Generate build matrix
       id: matrix
       run: |
+        # The single-quoted expression uses Nix interpolation, not shell expansion.
+        # shellcheck disable=SC2016
         matrix=$(NIXPKGS_ALLOW_UNFREE=1 nix eval --impure --json --expr '
           let
             flake = builtins.getFlake (toString ./.);
@@ -47,7 +49,7 @@ jobs:
           in
             { include = entries; }
         ')
-        echo "matrix=$matrix" >> $GITHUB_OUTPUT
+        echo "matrix=$matrix" >> "$GITHUB_OUTPUT"
 
   build:
     needs: generate-matrix
@@ -74,11 +76,11 @@ jobs:
     - name: Build ${{ matrix.package }}
       run: |
         echo "Building ${{ matrix.package }} for ${{ matrix.system }}..."
-        NIXPKGS_ALLOW_UNFREE=1 nix build --impure .#${{ matrix.package }} --print-build-logs
+        NIXPKGS_ALLOW_UNFREE=1 nix build --impure .#${{ matrix.package }} --no-link --print-build-logs
 
     - name: Push to Cachix
       run: |
-        nix build .#${{ matrix.package }} | cachix push siraben
+        NIXPKGS_ALLOW_UNFREE=1 nix build --impure .#${{ matrix.package }} --no-link --print-out-paths | cachix push siraben
 
   check:
     runs-on: ubuntu-latest
