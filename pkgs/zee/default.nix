@@ -26,10 +26,13 @@ rustPlatform.buildRustPackage rec {
   buildInputs = [
     openssl
   ]
-  ++ lib.optionals stdenv.isDarwin (with darwin.apple_sdk.frameworks; [
-    Security
-    AppKit
-  ]);
+  ++ lib.optionals stdenv.isDarwin (
+    with darwin.apple_sdk.frameworks;
+    [
+      Security
+      AppKit
+    ]
+  );
 
   # Disable grammar build which requires missing config directory
   ZEE_DISABLE_GRAMMAR_BUILD = "1";
