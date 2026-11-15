@@ -4,32 +4,60 @@
   fetchFromGitHub,
   bison,
   flex,
+  callPackage,
+  wrapCCWith,
 }:
 
-stdenv.mkDerivation {
-  pname = "pcc";
-  version = "1.2.0.DEVEL-unstable-2026-02-13";
+let
+  pccLibs = callPackage ./libs.nix { };
+  unwrapped = stdenv.mkDerivation {
+    pname = "pcc";
+    version = "1.2.0.DEVEL-unstable-2026-10-23";
 
-  src = fetchFromGitHub {
-    owner = "PortableCC";
-    repo = "pcc";
-    rev = "65d0c26d106a393239f571722df0d21625a7c5eb";
-    hash = "sha256-XH1yx0yeB2/ZvMaCA2ScMxhkCt9UrZHF2Q2edTFP/xo=";
+    src = fetchFromGitHub {
+      owner = "PortableCC";
+      repo = "pcc";
+      rev = "8b92dab2899f1ba0b99e9e541e6be6c13b2a95bf";
+      hash = "sha256-kqYe6HkQ74ukhGkkB/NjhlLKI/6/+aCP1dR6w7S/tFQ=";
+    };
+
+    nativeBuildInputs = [
+      bison
+      flex
+    ];
+
+    enableParallelBuilding = true;
+
+    meta = {
+      description = "Portable C Compiler";
+      homepage = "http://pcc.ludd.ltu.se/";
+      license = with lib.licenses; [
+        bsd2
+        bsd3
+        caldera
+        dtoa
+        isc
+      ];
+      mainProgram = "pcc";
+      maintainers = with lib.maintainers; [ siraben ];
+      platforms = lib.platforms.linux;
+    };
   };
-
-  nativeBuildInputs = [
-    bison
-    flex
-  ];
-
-  enableParallelBuilding = true;
-
-  meta = {
-    description = "Portable C Compiler";
-    homepage = "http://pcc.ludd.ltu.se/";
-    license = lib.licenses.bsd2;
-    mainProgram = "pcc";
-    maintainers = with lib.maintainers; [ siraben ];
-    platforms = lib.platforms.linux;
-  };
+in
+wrapCCWith {
+  cc = unwrapped;
+  extraPackages = [ pccLibs ];
+  extraBuildCommands = ''
+    wrap pcc "$wrapper" ${unwrapped}/bin/pcc
+    wrap pcpp "$wrapper" ${unwrapped}/bin/pcpp
+    wrap p++ "$wrapper" ${unwrapped}/bin/p++
+    ln -s pcc $out/bin/cc
+    ln -s p++ $out/bin/c++
+    echo "-isystem ${pccLibs}/include -B${pccLibs}/lib" >> $out/nix-support/cc-cflags
+    echo "-L${pccLibs}/lib" >> $out/nix-support/cc-ldflags
+    # PCC forwards these GCC-specific -m options to ld instead of accepting them.
+    substituteInPlace $out/nix-support/cc-cflags-before \
+      --replace-quiet "-mtls-dialect=gnu2" "" \
+      --replace-quiet "-mno-omit-leaf-frame-pointer" ""
+  '';
 }
