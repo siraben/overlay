@@ -2,7 +2,27 @@ diff --git a/unix/feat.h b/unix/feat.h
 index 6f5515a..f7eaa9e 100644
 --- a/unix/feat.h
 +++ b/unix/feat.h
-@@
+@@ -18,1 +18,2 @@
 -#define USERSUGG	/* Give suggestions for user-defined commands */
 +/* Suggestions rely on unchecked buffer logic that overflows on 64-bit builds. */
 +#undef USERSUGG
+diff --git a/bed/e1edoc.c b/bed/e1edoc.c
+--- a/bed/e1edoc.c
++++ b/bed/e1edoc.c
+@@ -649,2 +649,4 @@
+-	if (symbol(tree(ep->focus)) == Suggestion)
+-		acksugg(ep);
++#ifdef USERSUGG
++	if (symbol(tree(ep->focus)) == Suggestion)
++		acksugg(ep);
++#endif /* USERSUGG */
+diff --git a/bint3/i3cen.c b/bint3/i3cen.c
+--- a/bint3/i3cen.c
++++ b/bint3/i3cen.c
+@@ -89,2 +89,4 @@
+-		if (iscentralws)
+-			initcensugg();
++#ifdef USERSUGG
++		if (iscentralws)
++			initcensugg();
++#endif /* USERSUGG */

@@ -2,7 +2,7 @@ diff --git a/btr/e1etex.c b/btr/e1etex.c
 index 6a6f3ae..4f6f9c0 100644
 --- a/btr/e1etex.c
 +++ b/btr/e1etex.c
-@@
+@@ -13,6 +13,9 @@
 -Visible value mk_etext(m) string m; {
 -	value v; intlet len= strlen(m);
 -	v= grab(Etex, len);

@@ -33,11 +33,6 @@ stdenv.mkDerivation rec {
   ];
 
   postPatch = ''
-    substituteInPlace bhdrs/b.h \
-      --replace '((int)(v)) & 1' '((intptr_t)(v)) & 1' \
-      --replace '((int)(v) & ~1) / 2' '((intptr_t)(v) & ~(intptr_t)1) / 2' \
-      --replace '((i)*2 | 1)' '(((intptr_t)(i))*2 | 1)'
-    grep -q intptr_t bhdrs/b.h || sed -i '1i#include <stdint.h>' bhdrs/b.h
     # termio.h removed in glibc 2.41+, use POSIX termios.h
     for f in unix/keys.c unix/trm.c; do
       substituteInPlace "$f" \
@@ -49,8 +44,6 @@ stdenv.mkDerivation rec {
     substituteInPlace unix/trm.c \
       --replace-fail '#define gtty(fd,bp) ioctl(fd, TCGETA, (char *) bp)' '#define gtty(fd,bp) tcgetattr(fd, bp)' \
       --replace-fail '#define stty(fd,bp) VOID ioctl(fd, TCSETAW, (char *) bp)' '#define stty(fd,bp) VOID tcsetattr(fd, TCSADRAIN, bp)'
-    substituteInPlace bint1/i1num.c \
-      --replace 'setran((double) hash(v));' 'setran(1.0);'
   '';
 
   dontConfigure = true;

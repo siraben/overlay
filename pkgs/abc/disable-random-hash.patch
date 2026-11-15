@@ -2,7 +2,7 @@ diff --git a/bint1/i1num.c b/bint1/i1num.c
 index d84fb40..d23c917 100644
 --- a/bint1/i1num.c
 +++ b/bint1/i1num.c
-@@
+@@ -332,3 +332,5 @@
 -Visible Procedure set_random(v) value v; {
 -	setran((double) hash(v));
 -}
