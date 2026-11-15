@@ -16,39 +16,46 @@
       utils,
       ...
     }:
-    utils.lib.eachDefaultSystem (
-      system:
-      let
-        overlay = import ./overlay.nix { inherit system; };
-        pkgs = import nixpkgs {
-          inherit system;
-          overlays = [ overlay ];
-        };
-      in
-      {
-        packages =
-          let
-            allPkgs = builtins.listToAttrs (
-              map (name: {
-                inherit name;
-                value = pkgs.${name};
-              }) (builtins.attrNames (overlay { } { }))
-            );
-          in
-          pkgs.lib.filterAttrs (
-            _: pkg:
+    # Nixpkgs 26.11 no longer supports x86_64-darwin.
+    utils.lib.eachSystem
+      [
+        "x86_64-linux"
+        "aarch64-linux"
+        "aarch64-darwin"
+      ]
+      (
+        system:
+        let
+          overlay = import ./overlay.nix { inherit system; };
+          pkgs = import nixpkgs {
+            inherit system;
+            overlays = [ overlay ];
+          };
+        in
+        {
+          packages =
             let
-              isDrv = builtins.tryEval (pkg ? drvPath);
-              available = builtins.tryEval (pkgs.lib.meta.availableOn { inherit system; } pkg);
+              allPkgs = builtins.listToAttrs (
+                map (name: {
+                  inherit name;
+                  value = pkgs.${name};
+                }) (builtins.attrNames (overlay { } { }))
+              );
             in
-            (isDrv.success && isDrv.value) && (available.success && available.value)
-          ) allPkgs;
+            pkgs.lib.filterAttrs (
+              _: pkg:
+              let
+                isDrv = builtins.tryEval (pkg ? drvPath);
+                available = builtins.tryEval (pkgs.lib.meta.availableOn { inherit system; } pkg);
+              in
+              (isDrv.success && isDrv.value) && (available.success && available.value)
+            ) allPkgs;
 
-        devShells.default = pkgs.mkShell {
-          packages = [ pkgs.nixfmt ];
-        };
-      }
-    )
+          devShells.default = pkgs.mkShell {
+            packages = [ pkgs.nixfmt ];
+          };
+        }
+      )
     // {
       overlays.default = import ./overlay.nix { };
     };
