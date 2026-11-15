@@ -1,11 +1,9 @@
 {
   lib,
-  stdenv,
   fetchFromGitHub,
   rustPlatform,
   pkg-config,
   openssl,
-  darwin,
 }:
 
 rustPlatform.buildRustPackage rec {
@@ -23,16 +21,7 @@ rustPlatform.buildRustPackage rec {
   cargoHash = "sha256-/U7icE4r/R1aPy5/m4Jahg0mfcqUxsFUUFGM3LNY2Ok=";
 
   nativeBuildInputs = [ pkg-config ];
-  buildInputs = [
-    openssl
-  ]
-  ++ lib.optionals stdenv.isDarwin (
-    with darwin.apple_sdk.frameworks;
-    [
-      Security
-      AppKit
-    ]
-  );
+  buildInputs = [ openssl ];
 
   # Disable grammar build which requires missing config directory
   ZEE_DISABLE_GRAMMAR_BUILD = "1";
