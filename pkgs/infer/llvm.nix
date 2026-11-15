@@ -85,12 +85,12 @@ stdenv.mkDerivation {
     # GCC 15/libstdc++ exposes missing transitive <cstdint> includes in LLVM 18.
     "-DCMAKE_CXX_FLAGS=-includecstdint"
   ]
-  ++ lib.optionals stdenv.isLinux [
+  ++ lib.optionals stdenv.hostPlatform.isLinux [
     # LLVM runtimes are built by the just-built clang rather than Nix's wrapper,
     # so pass a sysroot with glibc, GCC startup objects, and libstdc++.
     "-DRUNTIMES_CMAKE_ARGS=${runtimeCmakeArgs}"
   ]
-  ++ lib.optionals stdenv.isDarwin [
+  ++ lib.optionals stdenv.hostPlatform.isDarwin [
     "-DLLVM_BUILD_LLVM_DYLIB=ON"
   ];
 
