@@ -1,4 +1,8 @@
-{ lib, python3Packages, fetchFromGitHub }:
+{
+  lib,
+  python3Packages,
+  fetchFromGitHub,
+}:
 
 python3Packages.buildPythonApplication rec {
   pname = "rmrl";
@@ -12,20 +16,29 @@ python3Packages.buildPythonApplication rec {
   };
 
   pyproject = true;
-  
-  build-system = with python3Packages; [ poetry-core pythonRelaxDepsHook ];
-  
+
+  build-system = with python3Packages; [
+    poetry-core
+    pythonRelaxDepsHook
+  ];
+
   dependencies = with python3Packages; [
     reportlab
     svglib
     pdfrw
+    pkg-resources-backport
     pillow
-    pyxdg
+    xdg
   ];
-  
-  pythonRelaxDeps = [ "reportlab" ];
-  
-  pythonRemoveDeps = [ "xdg" ];
+
+  pythonRelaxDeps = [
+    "reportlab"
+    "svglib"
+    # xdg 6 retains the xdg_data_home API used by rmrl.
+    "xdg"
+  ];
+
+  pythonImportsCheck = [ "rmrl" ];
 
   meta = {
     description = "reMarkable Rendering Library - render reMarkable documents to PDF";
@@ -35,6 +48,3 @@ python3Packages.buildPythonApplication rec {
     platforms = lib.platforms.all;
   };
 }
-
-
-
