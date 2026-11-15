@@ -18,7 +18,10 @@ stdenv.mkDerivation {
     sha256 = "0sn16wf5d1fcmlfqj3bb7l09lsjbxxmc6kxazhgj2rla2i8299ah";
   };
 
-  nativeBuildInputs = [ nasm makeWrapper ];
+  nativeBuildInputs = [
+    nasm
+    makeWrapper
+  ];
 
   buildPhase = ''
     make floppy.img
