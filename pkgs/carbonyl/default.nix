@@ -64,8 +64,9 @@ let
     buildType = "release";
 
     installPhase = ''
-      mkdir -p $out/lib
-      find . -name "libcarbonyl.so" | head -1 | xargs -I {} cp {} $out/lib/
+      runHook preInstall
+      install -Dm755 build/${stdenv.hostPlatform.rust.rustcTarget}/release/libcarbonyl.so -t $out/lib
+      runHook postInstall
     '';
   };
 
@@ -152,6 +153,10 @@ stdenv.mkDerivation rec {
     description = "Chromium running inside your terminal";
     homepage = "https://github.com/fathyb/carbonyl";
     license = lib.licenses.bsd3;
+    sourceProvenance = with lib.sourceTypes; [
+      fromSource
+      binaryNativeCode
+    ];
     maintainers = with lib.maintainers; [ ];
     platforms = [ "x86_64-linux" ];
     mainProgram = "carbonyl";
