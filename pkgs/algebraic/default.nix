@@ -1,6 +1,5 @@
 {
   lib,
-  stdenv,
   fetchgit,
   python3Packages,
 }:
@@ -25,12 +24,14 @@ python3Packages.buildPythonApplication rec {
   doCheck = false;
 
   installPhase = ''
+    runHook preInstall
     install -Dm755 -t $out/bin algebraic.py
+    runHook postInstall
   '';
 
   meta = {
     description = "Compute algebraic numbers in the complex plane and draw a nice picture";
-    homepage = "https://github.com/andrejbauer/algebraic";
+    homepage = "https://gist.github.com/andrejbauer/884ef9697384097491834a48d39f3e62";
     maintainers = with lib.maintainers; [ siraben ];
     platforms = lib.platforms.unix;
     mainProgram = "algebraic.py";
