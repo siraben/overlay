@@ -15,6 +15,11 @@ stdenv.mkDerivation rec {
     sha256 = "sha256-cSiClCyI+awT27ewL8UFpXb/BWbPF5HxzmvtWhMH1lk=";
   };
 
+  postPatch = ''
+    substituteInPlace src/runtime/builtin.c \
+      --replace-fail /usr/local/share/attoforth/src "$out/share/attoforth/src"
+  '';
+
   makeFlags = [
     "CC=${stdenv.cc.targetPrefix}cc"
     "PREFIX=$(out)"
@@ -26,5 +31,6 @@ stdenv.mkDerivation rec {
     license = lib.licenses.bsd3;
     maintainers = with lib.maintainers; [ siraben ];
     platforms = lib.platforms.unix;
+    mainProgram = "attoforth";
   };
 }
