@@ -1,40 +1,58 @@
-# { pkgs ? import <nixpkgs> { system = "x86_64-linux"; }}:
 {
-  pkgs ? import <nixpkgs> { },
+  lib,
+  stdenv,
+  fetchurl,
+  unzip,
+  libx11,
+  libxext,
+  SDL,
+  zlib,
 }:
-with pkgs;
 
-stdenv.mkDerivation rec {
-  name = "almost-ti";
+stdenv.mkDerivation {
+  pname = "almost-ti";
+  version = "1.3";
+
   src = fetchurl {
-    url = "http://fms.komkon.org/ATI85/AlmostTI13.zip";
-    sha256 = "11i448rqh9r2jrc4w9vxfc99hh9c62z1qmd0sxay2di0sl3a21nw";
+    url = "https://fms.komkon.org/ATI85/AlmostTI13.zip";
+    hash = "sha256-3AahBtUgNuFV16BVHL4wLEGYEnN9J05YliIniDMiJIY=";
   };
 
-  unpackPhase = ''
-    mkdir -p src
-    unzip ${src} -d src
+  sourceRoot = ".";
+
+  postPatch = ''
+    substituteInPlace EMULib/Rules.gcc --replace-fail SndUnix.o SndSDL.o
+    substituteInPlace EMULib/Unix/SndSDL.c --replace-fail '#include "SDL.h"' '#include <SDL/SDL.h>'
+    substituteInPlace EMULib/Rules.Unix --replace-fail '-lX11 -lXext' '-lX11 -lXext -lSDL'
   '';
 
-  sourceRoot = "src/ATI85/Unix";
-  patchPhase = ''
-    substituteInPlace ../../EMULib/Rules.gcc --replace SndUnix.o SndSDL.o
-    substituteInPlace ../../EMULib/Unix/SndSDL.c --replace '#include "SDL.h"' '#include <SDL/SDL.h>'
-    substituteInPlace ../../EMULib/Rules.Unix --replace '-lX11 -lXext' '-lX11 -lXext -lSDL'
-  '';
+  env.NIX_CFLAGS_COMPILE = "-Wno-implicit-function-declaration -Wno-incompatible-pointer-types -fcommon -Wno-implicit-int";
 
-  # for Darwin
-  makeFlags = [ "CC=cc" ]; # "-I../../ATI85/Unix" "CFLAGS=$(NIX_CFLAGS_COMPILE)" ];
+  makeFlags = [
+    "--directory=ATI85/Unix"
+    "CC=${stdenv.cc.targetPrefix}cc"
+  ];
 
   installPhase = ''
-    install -Dm755 ati85 -t $out/bin
+    runHook preInstall
+    install -Dm755 ATI85/Unix/ati85 -t $out/bin
+    runHook postInstall
   '';
 
   nativeBuildInputs = [ unzip ];
   buildInputs = [
-    x11
+    libx11
+    libxext
     SDL
-    SDL_sound
+    zlib
   ];
 
+  meta = {
+    description = "Emulator of Z80-based TI graphing calculators";
+    homepage = "https://fms.komkon.org/ATI85/";
+    license = lib.licenses.unfree;
+    maintainers = [ lib.maintainers.siraben ];
+    platforms = lib.platforms.unix;
+    mainProgram = "ati85";
+  };
 }

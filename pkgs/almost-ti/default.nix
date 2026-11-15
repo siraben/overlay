@@ -11,10 +11,10 @@
 
 stdenv.mkDerivation rec {
   pname = "almost-ti";
-  version = "2.11";
+  version = "1.3";
 
   src = fetchurl {
-    url = "http://fms.komkon.org/ATI85/AlmostTI13-Unix-DougMelton-051409.tar.gz";
+    url = "https://fms.komkon.org/ATI85/AlmostTI13-Unix-DougMelton-051409.tar.gz";
     sha256 = "1bip3m3c4fizvydwkll7ci8zra8ip5y2xfja9wpwcn9rq39dgp63";
   };
 
@@ -36,12 +36,21 @@ stdenv.mkDerivation rec {
 
   makeFlags = [
     "--directory=ATI85/Unix"
-    "DESTDIR=$out"
-  ]
-  ++ lib.optional stdenv.isDarwin "CC=${stdenv.cc.targetPrefix}cc";
+    "CC=${stdenv.cc.targetPrefix}cc"
+  ];
 
   installPhase = ''
+    runHook preInstall
     install -Dm755 ATI85/Unix/ati85 -t $out/bin
+    runHook postInstall
   '';
 
+  meta = {
+    description = "Emulator of Z80-based TI graphing calculators";
+    homepage = "https://fms.komkon.org/ATI85/";
+    license = lib.licenses.unfree;
+    maintainers = [ lib.maintainers.siraben ];
+    platforms = lib.platforms.unix;
+    mainProgram = "ati85";
+  };
 }
