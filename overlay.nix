@@ -61,8 +61,9 @@ let
             type = "github";
             owner = "tweag";
             repo = "opam2json";
-            rev = "0ecd66fc2bfb25d910522c990dd36412259eac1f";
-            narHash = "sha256-+QVm+HOYikF3wUhqSIV8qJbE/feSG+p48fgxIosbHS0=";
+            # Includes the upstream cmdliner 2.x compatibility fix.
+            rev = "84b01579e3f80a0d65582a9bcfdd20a4374ea23e";
+            narHash = "sha256-CAA3Z8BtAbmDE0iX9+5sRzIrUrUszlSLm9mlLCK5JoI=";
           };
         };
         # Mirror opam-nix's flake: keep nixpkgs's opam2json if it's the
