@@ -23,13 +23,16 @@ stdenv.mkDerivation rec {
   ];
 
   buildInputs = lib.optionals cudaSupport [
-    cudaPackages.cudatoolkit
+    cudaPackages.libcublas
   ];
 
   # libcuda.so.1 is provided by the NVIDIA driver at runtime
   autoPatchelfIgnoreMissingDeps = [ "libcuda.so.1" ];
 
   installPhase = ''
+    runHook preInstall
+
+    install -Dm644 readme.txt $out/share/doc/${pname}/readme.txt
     mkdir -p $out/{bin,lib}
 
     # Install libraries
@@ -46,9 +49,13 @@ stdenv.mkDerivation rec {
     # Install binary
     cp ts_zip $out/bin/ts_zip-unwrapped
 
-    # Create wrapper that sets up CUDA paths
+    # libnc_cuda.so loads libcublasLt.so with dlopen, so it needs a runtime search path.
     makeWrapper $out/bin/ts_zip-unwrapped $out/bin/ts_zip \
-      ${lib.optionalString cudaSupport ''--prefix LD_LIBRARY_PATH : "/run/opengl-driver/lib:/run/opengl-driver-32/lib"''}
+      ${lib.optionalString cudaSupport ''--prefix LD_LIBRARY_PATH : "${
+        lib.makeLibraryPath [ cudaPackages.libcublas ]
+      }:/run/opengl-driver/lib"''}
+
+    runHook postInstall
   '';
 
   meta = {
@@ -58,6 +65,8 @@ stdenv.mkDerivation rec {
     homepage = "https://bellard.org/ts_zip/";
     license = lib.licenses.mit;
     maintainers = [ ];
-    platforms = lib.platforms.linux;
+    sourceProvenance = [ lib.sourceTypes.binaryNativeCode ];
+    platforms = [ "x86_64-linux" ];
+    mainProgram = "ts_zip";
   };
 }
