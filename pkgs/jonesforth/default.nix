@@ -16,17 +16,24 @@ stdenv.mkDerivation rec {
 
   nativeBuildInputs = [ gcc ];
 
+  doCheck = true;
+
   installPhase = ''
-    mkdir -p $out/bin $out/share
-    cp jonesforth $out/bin
-    cp jonesforth.f $out/share
+    runHook preInstall
+    install -Dm755 jonesforth $out/bin/jonesforth
+    install -Dm644 jonesforth.f $out/share/jonesforth.f
+    runHook postInstall
   '';
-  # TODO: write shell wrapper
 
   meta = {
     description = "Mirror of Richard WM Jones's excellent literate x86 assembly implementation of Forth";
     homepage = "https://github.com/nornagon/jonesforth";
     maintainers = with lib.maintainers; [ siraben ];
-    platforms = lib.platforms.i686 ++ lib.platforms.x86_64;
+    license = lib.licenses.publicDomain;
+    platforms = [
+      "i686-linux"
+      "x86_64-linux"
+    ];
+    mainProgram = "jonesforth";
   };
 }
