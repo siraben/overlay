@@ -64,7 +64,6 @@ stdenv.mkDerivation (finalAttrs: {
   meta = {
     description = "Verified implementation of ML";
     homepage = "https://cakeml.org";
-    changelog = "https://github.com/CakeML/cakeml/releases/tag/${finalAttrs.version}";
     license = lib.licenses.bsd3;
     mainProgram = "cake";
     sourceProvenance = with lib.sourceTypes; [ fromSource ];
