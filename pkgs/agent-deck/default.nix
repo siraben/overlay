@@ -34,7 +34,12 @@ buildGoModule rec {
 
   postInstall = ''
     wrapProgram $out/bin/agent-deck \
-      --prefix PATH : ${lib.makeBinPath [ tmux git ]}
+      --prefix PATH : ${
+        lib.makeBinPath [
+          tmux
+          git
+        ]
+      }
   '';
 
   meta = {
