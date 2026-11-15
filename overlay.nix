@@ -15,7 +15,7 @@ let
   # Hermes Agent ships a tested uv2nix package with its own locked dependency
   # graph. Reuse that package so the exact Python and Node dependency pins from
   # the upstream release are preserved.
-  hermesAgentFlake = builtins.getFlake "github:NousResearch/hermes-agent/fcbd1076a93841fa88855acce810e342a5b78101";
+  hermesAgentFlake = builtins.getFlake "github:NousResearch/hermes-agent/3b421578588243f920886e6fe79a6faa87ea026e";
 
   # Lazy-fetch opam-nix and its data inputs so they don't appear as flake
   # inputs of this overlay (and therefore don't propagate into consumers'
@@ -61,7 +61,6 @@ let
             type = "github";
             owner = "tweag";
             repo = "opam2json";
-            # Includes the upstream cmdliner 2.x compatibility fix.
             rev = "84b01579e3f80a0d65582a9bcfdd20a4374ea23e";
             narHash = "sha256-CAA3Z8BtAbmDE0iX9+5sRzIrUrUszlSLm9mlLCK5JoI=";
           };
@@ -117,7 +116,9 @@ in
   femtolisp = callPackage ./pkgs/femtolisp { };
   gambas3 = callPackage ./pkgs/gambas3 { };
   git2graph = callPackage ./pkgs/git2graph { };
-  hermes-agent = hermesAgentFlake.packages.${prev.stdenv.hostPlatform.system}.default;
+  hermes-agent = hermesAgentFlake.packages.${prev.stdenv.hostPlatform.system}.default.override {
+    version = "0.23.1";
+  };
   infer = callPackage ./pkgs/infer { inherit opamNix; };
   jonesforth = callPackage ./pkgs/jonesforth { };
   llmfit = callPackage ./pkgs/llmfit { };
