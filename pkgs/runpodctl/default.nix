@@ -2,20 +2,44 @@
   lib,
   buildGoModule,
   fetchFromGitHub,
+  openssh,
+  rsync,
 }:
 
 buildGoModule rec {
   pname = "runpodctl";
-  version = "1.14.5";
+  version = "3.1.1";
 
   src = fetchFromGitHub {
     owner = "runpod";
     repo = "runpodctl";
     rev = "v${version}";
-    sha256 = "sha256-wRHf2Bh0jz9UqrjJmc2ZV3WSLDYl+9frZ8nD0qDay7g=";
+    hash = "sha256-09EOqntCGEuOKiWceiT1gfAQ4du0zMoFg20KrmQLgZ4=";
   };
 
-  vendorHash = "sha256-OGUt+L0wP6eQkY/HWL+Ij9z9u+wsQ5OLK/IAq+1ezVA=";
+  vendorHash = "sha256-dy+N/VWjEWSvuB+8Ut2rkxiBnAkbwN77IfXr4OPI+aw=";
+  proxyVendor = true;
+
+  subPackages = [ "." ];
+
+  env.CGO_ENABLED = "0";
+
+  nativeCheckInputs = [
+    openssh
+    rsync
+  ];
+
+  checkPhase = ''
+    runHook preCheck
+    go test ./...
+    runHook postCheck
+  '';
+
+  ldflags = [
+    "-s"
+    "-w"
+    "-X main.Version=${version}"
+  ];
 
   meta = {
     description = "RunPod CLI for pod management";
