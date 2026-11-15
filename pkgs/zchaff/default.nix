@@ -13,7 +13,10 @@ gccStdenv.mkDerivation rec {
     sha256 = "sha256-IgOdb2KsFbRV3gPvIPkHa71ixnYRxyx91vt7m0jzIAw=";
   };
 
-  patches = [ ./sat_solver.patch ./const-comparator.patch ];
+  patches = [
+    ./sat_solver.patch
+    ./const-comparator.patch
+  ];
   makeFlags = [ "CC=${gccStdenv.cc.targetPrefix}c++" ];
   installPhase = ''
     runHook preInstall
