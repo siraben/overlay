@@ -4,15 +4,15 @@
   fetchFromGitHub,
 }:
 
-buildGoModule rec {
+buildGoModule {
   pname = "cistercian";
-  version = "unstable-2021-07-18";
+  version = "1.1.0";
 
   src = fetchFromGitHub {
     owner = "rhardih";
     repo = "cistercian";
-    rev = "2838f7da3c6a99aa8496aaa642c7a6769c2425d3";
-    sha256 = "sha256-hDyf4T123elMsC012wQFrwH7hjXBFLRInVyPKHNaRWo=";
+    rev = "429049febedfeb3724fdabfd4abf6b3323fa2b60";
+    hash = "sha256-45depf2VIz4aMOJ2r4jof4ieeSheKg/u+UNwZmUnXpw=";
   };
 
   vendorHash = "sha256-XL4MIP67jbR+EOI3fhZ62LMnPdLXI1bG0ptgznd3REk";
@@ -21,6 +21,7 @@ buildGoModule rec {
     description = "Command line tool to generate Cistercian numerals";
     homepage = "https://github.com/rhardih/cistercian";
     license = lib.licenses.mit;
+    mainProgram = "cistercian";
     maintainers = with lib.maintainers; [ siraben ];
   };
 }
