@@ -5,6 +5,7 @@
   fetchurl,
   ncurses,
   pkg-config,
+  util-linux,
   libx11,
   makeWrapper,
 }:
@@ -16,13 +17,16 @@ let
   };
 in
 stdenv.mkDerivation rec {
-  name = "collapseos";
+  pname = "collapseos";
+  version = "0-unstable-2025-03-25";
+
   src = fetchgit {
-    url = "https://git.sr.ht/~vdupras/${name}";
+    url = "https://git.sr.ht/~vdupras/${pname}";
     rev = "1d0cf3d1e602fe2f3dc05b1b856fd8b01fc8fe93";
     hash = "sha256-asNPvBKQJVUXNGzViCNd5ttM6KY91r0wPdoxYJ8Bf2U=";
   };
   nativeBuildInputs = [
+    util-linux
     pkg-config
     makeWrapper
   ];
@@ -34,7 +38,6 @@ stdenv.mkDerivation rec {
   postUnpack = ''
     # Extract DuskOS into the source tree where the build expects it
     tar xzf ${duskos} -C $sourceRoot
-    mv $sourceRoot/duskos-v11 $sourceRoot/duskos-v11 2>/dev/null || true
   '';
 
   buildPhase = ''
@@ -60,6 +63,8 @@ stdenv.mkDerivation rec {
   meta = {
     description = "Bootstrap post-collapse technology - an operating system designed for resource-constrained environments";
     homepage = "https://git.sr.ht/~vdupras/collapseos";
+    license = lib.licenses.cc0;
+    mainProgram = "dusk";
     maintainers = with lib.maintainers; [ siraben ];
     platforms = lib.platforms.unix;
   };
