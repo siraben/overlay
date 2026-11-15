@@ -1,39 +1,45 @@
 {
   lib,
-  stdenv,
   fetchFromGitHub,
   rustPlatform,
   libiconv,
   pkg-config,
   openssl,
+  tree-sitter,
+  nodejs,
 }:
 
 rustPlatform.buildRustPackage rec {
   pname = "fe";
-  version = "0.26.0";
+  version = "26.6.0";
 
   src = fetchFromGitHub {
-    owner = "ethereum";
+    owner = "argotorg";
     repo = "fe";
     rev = "v${version}";
-    sha256 = "sha256-zWwxcW3Osx5tKbl+6y8Tup4SfS+G7svqtooW82WycXE=";
+    hash = "sha256-hkaGffpt3k0GlnKVNos5n5V9GhohpRRsWbOvin+yf0k=";
   };
 
-  nativeBuildInputs = [ pkg-config ];
+  nativeBuildInputs = [
+    pkg-config
+    tree-sitter
+    nodejs
+  ];
   buildInputs = [
     libiconv
     openssl
   ];
 
-  cargoHash = "sha256-9cNCIlTGbkDtx7yzXtOszsjXCSLki2JQFIGG24p38EA=";
+  cargoHash = "sha256-42d1DNH2qo6P5A0XJHhGsABSmuJl2GON0HRs6nrbvug=";
 
   doCheck = false;
 
   meta = {
     description = "A statically typed smart contract language for the Ethereum Virtual Machine";
-    homepage = "https://github.com/ethereum/fe";
+    homepage = "https://fe-lang.org/";
     license = lib.licenses.asl20;
     maintainers = with lib.maintainers; [ siraben ];
     platforms = lib.platforms.unix;
+    mainProgram = "fe";
   };
 }
