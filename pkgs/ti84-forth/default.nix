@@ -19,7 +19,11 @@ let
       hash = "sha256-Uu7KIqQyoCTZyfdeL7DNwWz5QoRk6k4WASZHJ27tV3c=";
     };
 
-    buildInputs = [ gmp openssl zlib ];
+    buildInputs = [
+      gmp
+      openssl
+      zlib
+    ];
 
     env.NIX_CFLAGS_COMPILE = "-std=c++14";
     makeFlags = [ "CC=${stdenv.cc.targetPrefix}c++" ];
@@ -33,13 +37,13 @@ let
 in
 stdenv.mkDerivation {
   pname = "ti84-forth";
-  version = "unstable-2021-01-24";
+  version = "1.2";
 
   src = fetchFromGitHub {
     owner = "siraben";
     repo = "ti84-forth";
-    rev = "97162514f81dce267cafdbd021978efa181177d6";
-    hash = "sha256-nsAQc+Ryv7rm+RO87cY6L4+gyONOwjgs1PpvxAp4MdU=";
+    rev = "1.2";
+    hash = "sha256-nKDbfTtykYKFvWgxHFo3+Gp2LDS+WsrRmQmc8WHbJBo=";
   };
 
   nativeBuildInputs = [ spasm-ng ];
