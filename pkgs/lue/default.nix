@@ -1,27 +1,29 @@
 {
   lib,
+  stdenv,
   python3Packages,
   fetchFromGitHub,
-  edge-tts,
+  ffmpeg,
+  procps,
 }:
 
 python3Packages.buildPythonApplication rec {
-  pname = "lue";
-  version = "0.1.0";
+  pname = "lue-reader";
+  version = "0.5.0";
   pyproject = true;
 
   src = fetchFromGitHub {
-    owner = "superstarryeyes";
+    owner = "paulilaaso";
     repo = "lue";
-    rev = "main";
-    hash = "sha256-T7uh9PSCTkT+jYxQYC4ebPkabDz3pc6JjCGtgNatIAM=";
+    tag = "v${version}";
+    hash = "sha256-tscMjgJ1YxJ96BMGbxlsa12bXJtFRTAjyxsFuvNkzYI=";
   };
 
   build-system = with python3Packages; [
     setuptools
   ];
 
-  propagatedBuildInputs = with python3Packages; [
+  dependencies = with python3Packages; [
     python-docx
     striprtf
     rich
@@ -29,13 +31,6 @@ python3Packages.buildPythonApplication rec {
     markdown
     platformdirs
     edge-tts
-  ];
-
-  pythonRelaxDeps = [
-    "python-docx"
-    "rich"
-    "pymupdf"
-    "markdown"
   ];
 
   passthru.optional-dependencies = {
@@ -46,10 +41,19 @@ python3Packages.buildPythonApplication rec {
     ];
   };
 
+  makeWrapperArgs = [
+    "--prefix"
+    "PATH"
+    ":"
+    (lib.makeBinPath ([ ffmpeg ] ++ lib.optional stdenv.hostPlatform.isLinux procps))
+  ];
+
+  pythonImportsCheck = [ "lue" ];
+
   meta = {
     description = "Terminal-based eBook reader with modular text-to-speech capabilities and multi-format support";
-    homepage = "https://github.com/superstarryeyes/lue";
-    license = lib.licenses.gpl3Only;
+    homepage = "https://github.com/paulilaaso/lue";
+    license = lib.licenses.gpl3Plus;
     maintainers = with lib.maintainers; [ ];
     mainProgram = "lue";
   };
