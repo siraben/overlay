@@ -6,21 +6,21 @@
 
 python3Packages.buildPythonPackage rec {
   pname = "edge-tts";
-  version = "7.2.0";
+  version = "7.3.1";
   pyproject = true;
 
   src = fetchFromGitHub {
     owner = "rany2";
     repo = "edge-tts";
     rev = version;
-    hash = "sha256-HnMMh3N9mUF8ALRpgx1wjrF2RL2ntRyVOOz4RcJyRMI=";
+    hash = "sha256-1Ji1IqOC3iB36N00Ud6LRXyAwRbUrm5iFd1MyCxkbVc=";
   };
 
   build-system = with python3Packages; [
     setuptools
   ];
 
-  propagatedBuildInputs = with python3Packages; [
+  dependencies = with python3Packages; [
     aiohttp
     certifi
     tabulate
