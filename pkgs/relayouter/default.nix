@@ -8,12 +8,12 @@
 
 stdenv.mkDerivation rec {
   pname = "relayouter";
-  version = "unstable-2024-12-16";
+  version = "unstable-2025-08-01";
 
   src = fetchFromGitHub {
     owner = "peachey2k2";
     repo = "relayouter";
-    rev = "420749a7d4d937db23468b890677b1a30c44ec16";
+    rev = "3e94749b588cba30db3b778ac6f5f7127e76f12a";
     hash = "sha256-i8yAGJLGkfmxVQ4dHtFzyIyTOHVp3yB/8ljPmkwIgDE=";
   };
 
@@ -36,6 +36,7 @@ stdenv.mkDerivation rec {
   '';
 
   meta = {
+    mainProgram = "relayouter";
     description = "High-performance non-blocking static file serving web server written in x86 assembly";
     homepage = "https://github.com/peachey2k2/relayouter";
     license = lib.licenses.mit;
