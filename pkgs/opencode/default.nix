@@ -8,13 +8,13 @@
 
 buildGoModule rec {
   pname = "opencode";
-  version = "unstable-2025-01-17";
+  version = "0.0.55";
 
   src = fetchFromGitHub {
     owner = "opencode-ai";
     repo = "opencode";
-    rev = "f0571f5f5adef12eba9ddf6d07223a043d63dca8";
-    sha256 = "sha256-pNvC2BB2jKsLQIguG79QAmlUH3zY80O0W0+kUQ5q0Nk=";
+    rev = "v${version}";
+    hash = "sha256-UjGNtekqPVUxH/jfi6/D4hNM27856IjbepW7SgY2yQw=";
   };
 
   vendorHash = "sha256-Kcwd8deHug7BPDzmbdFqEfoArpXJb1JtBKuk+drdohM=";
@@ -24,6 +24,7 @@ buildGoModule rec {
   ldflags = [
     "-s"
     "-w"
+    "-X github.com/opencode-ai/opencode/internal/version.Version=${version}"
   ];
 
   doCheck = false;
@@ -36,7 +37,7 @@ buildGoModule rec {
   meta = {
     description = "Terminal-based AI coding assistant";
     homepage = "https://github.com/opencode-ai/opencode";
-    license = lib.licenses.asl20;
+    license = lib.licenses.mit;
     maintainers = with lib.maintainers; [ siraben ];
     mainProgram = "opencode";
     platforms = lib.platforms.unix;
