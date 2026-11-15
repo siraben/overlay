@@ -16,13 +16,13 @@ stdenv.mkDerivation {
   };
 
   postPatch = ''
-    # Add aarch64 support to architecture detection
-    substituteInPlace llt/utils.h \
-      --replace-fail '#else
-#  error "unknown architecture"' '#elif defined(__aarch64__) || defined(_M_ARM64)
-#  define ARCH_AARCH64
-#else
-#  error "unknown architecture"'
+        # Add aarch64 support to architecture detection
+        substituteInPlace llt/utils.h \
+          --replace-fail '#else
+    #  error "unknown architecture"' '#elif defined(__aarch64__) || defined(_M_ARM64)
+    #  define ARCH_AARCH64
+    #else
+    #  error "unknown architecture"'
   '';
 
   env.NIX_CFLAGS_COMPILE = "-Wno-error=implicit-function-declaration";
@@ -32,9 +32,14 @@ stdenv.mkDerivation {
     "release"
   ];
 
+  doCheck = true;
+  checkTarget = "test";
+
   installPhase = ''
+    runHook preInstall
     mkdir -p $out/bin
     cp flisp flisp.boot $out/bin/
+    runHook postInstall
   '';
 
   meta = {
@@ -43,5 +48,6 @@ stdenv.mkDerivation {
     license = lib.licenses.bsd3;
     maintainers = with lib.maintainers; [ siraben ];
     platforms = lib.platforms.unix;
+    mainProgram = "flisp";
   };
 }
