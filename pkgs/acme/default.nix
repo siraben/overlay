@@ -16,10 +16,11 @@ stdenv.mkDerivation rec {
 
   enableParallelBuilding = true;
 
-  buildPhase = ''
-    cd src
-    make CC=cc
-  '';
+  makeFlags = [
+    "-C"
+    "src"
+    "CC=${stdenv.cc.targetPrefix}cc"
+  ];
 
   installFlags = [ "BINDIR=$(out)/bin" ];
 
@@ -28,6 +29,7 @@ stdenv.mkDerivation rec {
     homepage = "https://sourceforge.net/projects/acme-crossass/";
     license = lib.licenses.gpl2Plus;
     maintainers = with lib.maintainers; [ siraben ];
-    platforms = lib.platforms.all;
+    platforms = lib.platforms.unix;
+    mainProgram = "acme";
   };
 }
