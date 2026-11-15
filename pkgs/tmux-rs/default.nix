@@ -1,9 +1,10 @@
-{ lib
-, rustPlatform
-, fetchFromGitHub
-, pkg-config
-, libevent
-, ncurses
+{
+  lib,
+  rustPlatform,
+  fetchFromGitHub,
+  pkg-config,
+  libevent,
+  ncurses,
 }:
 
 rustPlatform.buildRustPackage rec {
