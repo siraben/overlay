@@ -2,45 +2,52 @@
   lib,
   stdenv,
   fetchFromGitHub,
+  pkg-config,
+  makeWrapper,
   SDL2,
   assimp,
+  libx11,
 }:
 
 stdenv.mkDerivation rec {
   pname = "PortableGL";
-  version = "unstable-2021-12-18";
+  version = "0.100.0";
 
   src = fetchFromGitHub {
     owner = "rswinkle";
     repo = "PortableGL";
-    rev = "1baeb4d96faf95cdff0081111df9fbc153c1d3aa";
-    sha256 = "sha256-CtOrLUmh0dp8KW3dynqkDqgOQPCcNyYdzG9Q82337Uk=";
+    tag = version;
+    hash = "sha256-OOqQFIXHiGfNK/CwK7qkGY6NRyhUbQ8hw5aVuLksXdM=";
   };
 
   sourceRoot = "source/demos";
+  nativeBuildInputs = [
+    pkg-config
+    makeWrapper
+  ];
   buildInputs = [
     SDL2
     assimp
-  ];
+  ]
+  ++ lib.optionals stdenv.hostPlatform.isLinux [ libx11 ];
 
-  # The upstream build system uses -Werror, which causes issues with modern compilers
-  # We need to patch the makefiles to remove -Werror or override CFLAGS
+  makeFlags = [ "config=release" ];
+
   preBuild = ''
-    # Find and patch any makefiles to remove -Werror
-    find . -name "*.make" -o -name "Makefile" | while read -r file; do
-      sed -i 's/-Werror//g' "$file"
-    done
+    makeFlags+=("CPPFLAGS=$(pkg-config --cflags sdl2)")
   '';
-
-  NIX_CFLAGS_COMPILE = "-Wno-strict-prototypes -Wno-error";
 
   installPhase = ''
     runHook preInstall
-      mkdir -p $out/bin
-      for f in $(find . -executable -type f);
-      do
-        cp $f $out/bin/
-      done
+    mkdir -p "$out/bin" "$out/include"
+    find . -maxdepth 1 -type f -executable -exec install -m755 -t "$out/bin" {} +
+    install -m644 ../portablegl.h "$out/include/portablegl.h"
+    mkdir -p "$out/share/PortableGL/demos"
+    cp -r ../media "$out/share/PortableGL/"
+    cp ./*.config "$out/share/PortableGL/demos/"
+    for demo in swrenderer sphereworld cubemap pointsprites shadertoy texturing texturing_ext; do
+      wrapProgram "$out/bin/$demo" --chdir "$out/share/PortableGL/demos"
+    done
     runHook postInstall
   '';
 
