@@ -7,12 +7,12 @@
 
 rustPlatform.buildRustPackage rec {
   pname = "mosaic";
-  version = "unstable-2022-03-20";
+  version = "0.6.3m";
 
   src = fetchFromGitHub {
     owner = "ahhhh6980";
     repo = "mosaic";
-    rev = "a1b0f06f46180f6ab1624a87d75791d5293bcf60";
+    tag = "v${version}";
     sha256 = "sha256-0v4sCSCPJvWLy8Y8yPzucxtg2yk1+G4BNBGZNWfKgrs=";
   };
 
@@ -24,7 +24,8 @@ rustPlatform.buildRustPackage rec {
 
   meta = {
     description = "Takes a folder of images (as a palette), and an image, then tiles the palette to resemble the image";
-    homepage = "https://github.com/ahhh6980/mosaic";
+    mainProgram = "mosaic";
+    homepage = "https://github.com/ahhhh6980/mosaic";
     license = lib.licenses.gpl3Plus;
     maintainers = with lib.maintainers; [ siraben ];
   };
