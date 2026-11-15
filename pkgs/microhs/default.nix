@@ -2,32 +2,38 @@
   lib,
   stdenv,
   fetchFromGitHub,
-  gmp,
+  makeWrapper,
 }:
 
 stdenv.mkDerivation rec {
   pname = "microhs";
-  version = "unstable-2025-01-19";
+  version = "0.16.9.0";
 
   src = fetchFromGitHub {
     owner = "augustss";
     repo = "MicroHs";
-    rev = "849d5494919a1270fa61e0dd421ca4efd8c6973b";
-    hash = "sha256-BplxfCPjktA9D7Hht4juGgpX4gCDgA1UnZRHbnfT49g=";
+    tag = "v${version}";
+    hash = "sha256-aHimkMCMXz1Soomsy4UyOm/wDVvSuoeqGrBrFszdWUU=";
   };
 
-  buildInputs = [ gmp ];
+  nativeBuildInputs = [ makeWrapper ];
 
   makeFlags = [ "PREFIX=$(out)" ];
 
   installPhase = ''
     runHook preInstall
-    make oldinstall PREFIX=$out
+    make oldminstall MCABAL=$out
     runHook postInstall
+  '';
+
+  postFixup = ''
+    wrapProgram $out/bin/mhs \
+      --prefix PATH : "$out/bin:${lib.makeBinPath [ stdenv.cc ]}"
   '';
 
   meta = {
     description = "A small Haskell implementation using combinators";
+    mainProgram = "mhs";
     homepage = "https://github.com/augustss/MicroHs";
     license = lib.licenses.asl20;
     maintainers = with lib.maintainers; [ ];
