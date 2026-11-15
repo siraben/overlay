@@ -162,10 +162,4 @@ in
   xnedit = callPackage ./pkgs/xnedit { };
   zchaff = callPackage ./pkgs/zchaff { };
   zee = callPackage ./pkgs/zee { };
-
-  python3Packages = prev.python3Packages.overrideScope (
-    python-final: python-prev: {
-      infisical-sdk = callPackage ./pkgs/infisical-sdk { };
-    }
-  );
 }
