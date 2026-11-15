@@ -11,20 +11,20 @@ let
   op2-src = fetchFromGitHub {
     owner = "rochus-keller";
     repo = "op2";
-    rev = "b8bece32f5bcd0c27d4e847d0ae1da31cdf4ad1a";
-    hash = "sha256-5m2Q9V6SAcZeHjqdqXMygK85t2Ai5bJTYsyOGUNfgrM=";
+    rev = "2aa7cafcdfce2c1e6a1259581b44971aa306f853";
+    hash = "sha256-OYdUOb7E+wqfGjXegAgyyPFEHljf4vpAiKHKnSWgvDs=";
   };
 
   activeoberon-src = fetchFromGitHub {
     owner = "rochus-keller";
     repo = "activeoberon";
-    rev = "578f9bd602b97bae95b73386422ede66947c71ee";
-    hash = "sha256-RiIhCwyDEke+BQpgVzVrRVdGEEeGq6Ku2X19ho1yLGE=";
+    rev = "4d76a70d6cad173e4863505e3542cc15c1bfe75d";
+    hash = "sha256-KKyx6y+2XGkMGFi+84a++Q/F7cCUAB2b/aVpdEwSDJU=";
   };
 
   toolchain = stdenv.mkDerivation {
     pname = "oberon-toolchain";
-    version = "unstable-2026-04-12";
+    version = "2026-07-23";
 
     dontUnpack = true;
 
@@ -59,23 +59,24 @@ let
   };
 
   mkOberonSystem =
-    { pname
-    , op2Bin
-    , modDirs
-    , modulesFile
-    , linkerArgs
-    , fsSize
-    , needsOpaData ? false
+    {
+      pname,
+      op2Bin,
+      modDirs,
+      modulesFile,
+      linkerArgs,
+      fsSize,
+      needsOpaData ? false,
     }:
     stdenv.mkDerivation {
       inherit pname;
-      version = "unstable-2026-04-12";
+      version = "2026-07-23";
 
       src = fetchFromGitHub {
         owner = "rochus-keller";
         repo = "OberonSystem3Native";
-        rev = "35f79869faefe0ea33d5dd136e53c60003ad9fda";
-        hash = "sha256-rofme878bKTU4b/kNOqDZ8PWG4WkyXx79qK5omfvl4E=";
+        tag = "2026-07-23";
+        hash = "sha256-WzpRLKiKRZvaucpc94ANWhnEtB7d/Y9o7nXI3oVzXfE=";
       };
 
       dontConfigure = true;
@@ -90,8 +91,7 @@ let
 
         cd staging
 
-        ${lib.optionalString needsOpaData
-          "cp ${toolchain}/share/op2/OPA.Data ."}
+        ${lib.optionalString needsOpaData "cp ${toolchain}/share/op2/OPA.Data ."}
 
         while IFS= read -r name || [[ -n "$name" ]]; do
           ${op2Bin} "$name"
@@ -126,7 +126,12 @@ let
   i386 = mkOberonSystem {
     pname = "oberon-system3-i386";
     op2Bin = "op2-i386";
-    modDirs = [ "i386" "portable" ];
+    modDirs = [
+      "i386"
+      "i386/compiler"
+      "portable"
+      "portable/compiler"
+    ];
     modulesFile = "i386/build/Modules.txt";
     linkerArgs = "--multiboot --enable-stack --base 10000 --autofix Kernel Disks PCI ATADisks OFS Files Modules OFSAosFiles OFSCacheVolumes OFSBoot OFSDiskVolumes";
     fsSize = 45;
@@ -136,7 +141,12 @@ let
   arm32 = mkOberonSystem {
     pname = "oberon-system3-arm32";
     op2Bin = "op2-arm32";
-    modDirs = [ "arm32" "arm32/compiler" "portable" ];
+    modDirs = [
+      "arm32"
+      "arm32/compiler"
+      "portable"
+      "portable/compiler"
+    ];
     modulesFile = "arm32/build/Modules.txt";
     linkerArgs = "--multiboot --enable-stack --arch arm32 --base 10000 --stack-size 64000 --hyp-to-svc --core-parking --autofix Kernel Disks EMMCDisks OFS Files Modules OFSAosFiles OFSCacheVolumes OFSBoot OFSDiskVolumes";
     fsSize = 63;
@@ -145,7 +155,7 @@ let
 in
 stdenv.mkDerivation {
   pname = "oberon-system3";
-  version = "unstable-2026-04-12";
+  version = "2026-07-23";
 
   dontUnpack = true;
   dontFixup = true;
@@ -167,7 +177,7 @@ stdenv.mkDerivation {
     makeWrapper ${qemu}/bin/qemu-system-arm $out/bin/oberon-system3-arm32 \
       --add-flags "-machine raspi2b" \
       --add-flags "-kernel $out/share/oberon-system3/arm32/image.bin" \
-      --add-flags '-append ";;BootVol=SYS AosFS SD0#0;AosFS=OFSDiskVolumes.New OFSAosFiles.NewFS;MT=;MP=;MB=-3;DMASize=14800H;TraceModules=1;Display=;DDriver=DisplayLinear;DMode=;TracePort=1;"' \
+      --add-flags '-append ";;BootVol=SYS AosFS SD0#0;AosFS=OFSDiskVolumes.New OFSAosFiles.NewFS;MT=;MP=;MB=-3;DMASize=14800H;TraceModules=1;Display=;DDriver=DisplayLinear;DMode=;TracePort=1;Qemu=1;"' \
       --add-flags "-semihosting-config enable=on,target=native" \
       --add-flags "-serial stdio" \
       --add-flags "-usb -device usb-kbd -device usb-mouse" \
