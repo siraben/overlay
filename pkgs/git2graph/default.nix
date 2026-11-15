@@ -2,6 +2,8 @@
   lib,
   buildGoModule,
   fetchFromGitHub,
+  makeWrapper,
+  git,
 }:
 
 buildGoModule rec {
@@ -16,6 +18,12 @@ buildGoModule rec {
   };
 
   vendorHash = "sha256-neEcxtIX/uZHQ/TaShZkSrTpbyRWxWdjPewrOIm3dVU=";
+
+  nativeBuildInputs = [ makeWrapper ];
+
+  postInstall = ''
+    wrapProgram $out/bin/git2graph --prefix PATH : ${lib.makeBinPath [ git ]}
+  '';
 
   ldflags = [
     "-s"
