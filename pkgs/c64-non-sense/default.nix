@@ -6,22 +6,21 @@
   vice,
 }:
 
-stdenv.mkDerivation rec {
+stdenv.mkDerivation {
   pname = "c64-non-sense";
-  version = "unstable-2021-05-23";
+  version = "unstable-2025-12-15";
 
   src = fetchFromGitHub {
     owner = "YouDirk";
     repo = "c64-non-sense";
-    rev = "42ade38290bca6d48ffbab365e118c59c8961724";
-    sha256 = "sha256-4Ghb7gWTnapGAugXB0jfhLsf6d4Yuw57V5CmG2ueDno=";
+    rev = "3f4ebe85ca27d8335fbb62c6d638828f0a83c9ef";
+    hash = "sha256-5Jp/rj7Gy3pnl8Q2zN+eQVpNCDy1orUpAK04OraIbVU=";
   };
 
   nativeBuildInputs = [
     cc65
     vice
   ];
-  buildInputs = [ ];
 
   makeFlags = [
     "CC=${cc65}/bin/cc65"
