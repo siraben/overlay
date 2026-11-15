@@ -15,7 +15,6 @@
   libiconv,
   libjpeg,
   libpng,
-  darwin,
   cctools,
 }:
 
@@ -50,9 +49,6 @@ stdenv.mkDerivation rec {
     libiconv
     libjpeg
     libpng
-  ]
-  ++ lib.optionals stdenv.hostPlatform.isDarwin [
-    darwin.apple_sdk.frameworks.CoreFoundation
   ];
 
   makeFlags = [ "linux" ];
