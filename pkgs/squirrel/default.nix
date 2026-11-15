@@ -1,7 +1,8 @@
-{ lib
-, stdenv
-, fetchFromGitHub
-, cmake
+{
+  lib,
+  stdenv,
+  fetchFromGitHub,
+  cmake,
 }:
 
 stdenv.mkDerivation rec {
@@ -22,8 +23,6 @@ stdenv.mkDerivation rec {
     (lib.cmakeFeature "CMAKE_POLICY_VERSION_MINIMUM" "3.5")
   ];
 
-  # No postInstall needed - cmake handles everything
-
   meta = {
     description = "A light-weight scripting language";
     longDescription = ''
@@ -33,6 +32,7 @@ stdenv.mkDerivation rec {
     '';
     homepage = "http://squirrel-lang.org/";
     license = lib.licenses.mit;
+    mainProgram = "sq";
     maintainers = with lib.maintainers; [ ];
     platforms = lib.platforms.all;
   };
