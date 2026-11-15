@@ -12,14 +12,21 @@ stdenv.mkDerivation rec {
   version = "3";
 
   src = fetchurl {
-    url = "http://www.canonical.org/~kragen/sw/urscheme/urscheme-${version}.tar.gz";
+    url = "https://www.canonical.org/~kragen/sw/urscheme/urscheme-${version}.tar.gz";
     sha256 = "sha256-GWrVdlhOpJ0Ix9ojovv/rMH3OtvzvwoqcIRzVrL82R0=";
   };
 
-  nativeBuildInputs = [ guile ];
-  buildInputs = lib.optionals stdenv.is64bit [ pkgsi686Linux.glibc ];
+  postPatch = ''
+    substituteInPlace runtests \
+      --replace-fail /bin/rm ${coreutils}/bin/rm
+    patchShebangs runtests runscheme test-read-char
+  '';
 
-  # Skip tests during build since they require the compiler to be built first
+  nativeBuildInputs = [ guile ];
+  buildInputs = lib.optionals stdenv.hostPlatform.is64bit [ pkgsi686Linux.glibc ];
+
+  # Generated assembly uses absolute addresses and cannot run as a PIE.
+  env.NIX_CFLAGS_COMPILE = "-no-pie";
   buildPhase = ''
     runHook preBuild
 
@@ -43,14 +50,22 @@ stdenv.mkDerivation rec {
     runHook postInstall
   '';
 
-  # Disable tests for now - they appear to have issues with the "not a procedure" error
-  doCheck = false;
+  doCheck = true;
+  checkPhase = ''
+    runHook preCheck
+    make tests stage2-test
+    runHook postCheck
+  '';
 
   meta = {
     description = "A Scheme compiler that generates x86 assembly";
-    homepage = "http://www.canonical.org/~kragen/sw/urscheme/";
+    homepage = "https://www.canonical.org/~kragen/sw/urscheme/";
     license = lib.licenses.gpl3Plus;
     maintainers = with lib.maintainers; [ siraben ];
-    platforms = lib.platforms.linux;
+    platforms = [
+      "i686-linux"
+      "x86_64-linux"
+    ];
+    mainProgram = "urscheme-compiler";
   };
 }
