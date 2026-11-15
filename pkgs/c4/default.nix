@@ -15,7 +15,7 @@ stdenv.mkDerivation rec {
   };
 
   # Upstream's 64-bit support prevents pointer truncation on native builds.
-  patches = [
+  patches = lib.optionals stdenv.hostPlatform.is64bit [
     (fetchpatch {
       url = "https://github.com/rswier/c4/commit/2feb8c0a142b2e513be69442c24af82dbaf41a25.patch";
       hash = "sha256-Z5qmSFm3ZPai/XUzuOqmE9eJ0J5BZxT5u02X2U8tvr4=";
