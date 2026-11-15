@@ -2,6 +2,7 @@
   stdenv,
   lib,
   fetchFromGitHub,
+  fetchpatch,
 }:
 
 stdenv.mkDerivation rec {
@@ -12,6 +13,14 @@ stdenv.mkDerivation rec {
     rev = "3f098f3ea825f7865a2fbffd770df4ab72978622";
     sha256 = "sha256-34fYlKf10fkvTWBKjbgxwOzEQ/4b13PSa4LjNDjXZ/8=";
   };
+
+  # Upstream's 64-bit support prevents pointer truncation on native builds.
+  patches = [
+    (fetchpatch {
+      url = "https://github.com/rswier/c4/commit/2feb8c0a142b2e513be69442c24af82dbaf41a25.patch";
+      hash = "sha256-Z5qmSFm3ZPai/XUzuOqmE9eJ0J5BZxT5u02X2U8tvr4=";
+    })
+  ];
 
   buildPhase = ''
     ${stdenv.cc.targetPrefix}cc -O2 -o c4 c4.c
@@ -27,5 +36,6 @@ stdenv.mkDerivation rec {
     license = lib.licenses.gpl2;
     maintainers = with lib.maintainers; [ siraben ];
     platforms = lib.platforms.all;
+    mainProgram = "c4";
   };
 }
