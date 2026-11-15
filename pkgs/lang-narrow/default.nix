@@ -16,14 +16,21 @@ buildDunePackage rec {
     sha256 = "1afd93cd6yj7yzhn0rd5rf0mz04h3f16hpgylwbjp3brjga4vprf";
   };
 
+  outputs = [ "out" ];
+
   nativeBuildInputs = [ menhir ];
 
   buildPhase = ''
+    runHook preBuild
     dune build src/main.exe
+    runHook postBuild
   '';
 
   installPhase = ''
-    cp _build/default/src/main.exe $out
+    runHook preInstall
+    install -Dm755 _build/default/src/main.exe $out/bin/lang-narrow
+    install -Dm644 src/runtime.c $out/share/lang-narrow/src/runtime.c
+    runHook postInstall
   '';
 
   meta = {
@@ -31,5 +38,6 @@ buildDunePackage rec {
     homepage = "https://github.com/ayazhafiz/lang_narrow";
     maintainers = with lib.maintainers; [ siraben ];
     platforms = lib.platforms.unix;
+    mainProgram = "lang-narrow";
   };
 }
