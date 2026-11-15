@@ -17,10 +17,11 @@ python3Packages.buildPythonPackage rec {
     hash = "sha256-EJdfrlQZ4ySKJfj05s2G4L3eOsiMoRnM7a15Aqmn/K4=";
   };
 
-  # Fix moviepy v2 import (moviepy.editor was removed)
+  # MoviePy 2 removed moviepy.editor and renamed set_audio to with_audio.
   postPatch = ''
     substituteInPlace src/binary_waterfall/outputs.py \
-      --replace-fail "from moviepy.editor import " "from moviepy import "
+      --replace-fail "from moviepy.editor import " "from moviepy import " \
+      --replace-fail "sequence_clip.set_audio(audio_clip)" "sequence_clip.with_audio(audio_clip)"
   '';
 
   nativeBuildInputs = [
