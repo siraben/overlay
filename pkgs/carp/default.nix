@@ -4,7 +4,9 @@
   fetchFromGitHub,
   haskell,
   makeWrapper,
+  pkg-config,
   clang,
+  libGL,
   SDL2,
   SDL2_image,
   SDL2_mixer,
@@ -13,25 +15,41 @@
 }:
 
 let
+  # The v0.6.0 release retains upstream's 0.5.5.0 Cabal version and 0.5.5 REPL banner.
+  version = "0.6.0";
+  sdlLibraries = [
+    SDL2
+    SDL2_image
+    SDL2_mixer
+    SDL2_ttf
+  ];
+  graphicsLibraries = sdlLibraries ++ [ glfw ] ++ lib.optionals stdenv.hostPlatform.isLinux [ libGL ];
+
   # Use GHC 9.4 for compatibility (mtl 2.2 re-exports Control.Monad)
   hp = haskell.packages.ghc94;
 
   carp-lang = hp.mkDerivation {
     pname = "carp";
-    version = "0-unstable-2024-09-16";
+    inherit version;
 
     src = fetchFromGitHub {
       owner = "carp-lang";
       repo = "Carp";
-      rev = "62adb3012bdbfec0ca00a22939d89fad0eccc863";
-      hash = "sha256-ns5Kf3//Co9ICV/z6hq8ov81InS7U+OhY/RqZTjhJd0=";
+      rev = "v${version}";
+      hash = "sha256-oJixF7SjEUIkUxfP0gF/aaMxBZFoNUCm1XQwLHDZlnQ=";
     };
 
     isLibrary = false;
     isExecutable = true;
-    doCheck = false;
+    doCheck = true;
+    testHaskellDepends = with hp; [
+      base
+      HUnit
+      containers
+    ];
 
     executableHaskellDepends = with hp; [
+      array
       base
       parsec
       mtl
@@ -75,19 +93,13 @@ let
 in
 stdenv.mkDerivation {
   pname = "carp";
-  version = "0-unstable-2024-09-16";
+  inherit version;
 
   dontUnpack = true;
 
   nativeBuildInputs = [ makeWrapper ];
 
-  buildInputs = [
-    SDL2
-    SDL2_image
-    SDL2_mixer
-    SDL2_ttf
-    glfw
-  ];
+  buildInputs = graphicsLibraries;
 
   installPhase = ''
     runHook preInstall
@@ -97,8 +109,14 @@ stdenv.mkDerivation {
 
     for prog in $out/bin/*; do
       wrapProgram "$prog" \
-        --prefix C_INCLUDE_PATH : "${SDL2.dev}/include/SDL2:${SDL2_image}/include/SDL2:${SDL2_mixer}/include/SDL2:${SDL2_ttf}/include/SDL2:${glfw}/include" \
-        --prefix LIBRARY_PATH : "${lib.makeLibraryPath [ SDL2 SDL2_image SDL2_mixer SDL2_ttf glfw ]}"
+        --prefix PATH : "${lib.makeBinPath [ pkg-config ]}" \
+        --prefix PKG_CONFIG_PATH : "${
+          lib.makeSearchPathOutput "dev" "lib/pkgconfig" graphicsLibraries
+        }" \
+        --prefix C_INCLUDE_PATH : "${lib.makeSearchPathOutput "dev" "include" graphicsLibraries}:${
+          lib.makeSearchPathOutput "dev" "include/SDL2" sdlLibraries
+        }" \
+        --prefix LIBRARY_PATH : "${lib.makeLibraryPath graphicsLibraries}"
     done
     runHook postInstall
   '';
