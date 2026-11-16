@@ -1,10 +1,8 @@
 {
   lib,
-  stdenv,
   python3Packages,
   fetchFromGitHub,
   ffmpeg,
-  procps,
 }:
 
 python3Packages.buildPythonApplication rec {
@@ -18,6 +16,8 @@ python3Packages.buildPythonApplication rec {
     tag = "v${version}";
     hash = "sha256-tscMjgJ1YxJ96BMGbxlsa12bXJtFRTAjyxsFuvNkzYI=";
   };
+
+  patches = [ ./stop-only-tracked-playback.patch ];
 
   build-system = with python3Packages; [
     setuptools
@@ -45,7 +45,7 @@ python3Packages.buildPythonApplication rec {
     "--prefix"
     "PATH"
     ":"
-    (lib.makeBinPath ([ ffmpeg ] ++ lib.optional stdenv.hostPlatform.isLinux procps))
+    (lib.makeBinPath [ ffmpeg ])
   ];
 
   pythonImportsCheck = [ "lue" ];

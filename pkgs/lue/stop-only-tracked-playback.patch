@@ -1,0 +1,26 @@
+Stop only playback children tracked by this reader
+
+Downstream safety fix for lue 0.5.0; not submitted upstream.
+The existing helpers already stop their tracked playback children. Global
+pkill patterns additionally terminate unrelated same-user ffplay processes
+on navigation and shutdown. Remove only those two global kill blocks,
+retaining tracked-child cancellation/termination, queue and buffer cleanup.
+
+Original source: https://github.com/paulilaaso/lue/tree/v0.5.0/lue
+Canonical HEAD still contains both blocks as of this audit.
+
+--- a/lue/input_handler.py
++++ b/lue/input_handler.py
+@@ -239,5 +238,0 @@
+-    try:
+-        subprocess.run(['pkill', '-f', 'ffplay'], check=False, 
+-                     stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+-    except (subprocess.CalledProcessError, FileNotFoundError):
+-        pass
+--- a/lue/audio.py
++++ b/lue/audio.py
+@@ -66,4 +65,0 @@
+-    try:
+-        pkill_proc = await asyncio.create_subprocess_exec('pkill', '-9', '-f', 'ffplay.*buffer_', stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+-        await asyncio.wait_for(pkill_proc.wait(), timeout=0.3)
+-    except (FileNotFoundError, asyncio.TimeoutError): pass
