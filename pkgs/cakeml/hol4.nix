@@ -76,7 +76,8 @@ stdenv.mkDerivation (finalAttrs: {
     description = "HOL4 interactive theorem prover (CakeML-compatible build)";
     homepage = "https://hol-theorem-prover.org";
     license = lib.licenses.bsd3;
-    platforms = lib.platforms.unix;
+    # This shared build tree requires the Linux sandbox's /build layout.
+    platforms = lib.platforms.linux;
     maintainers = with lib.maintainers; [ ];
   };
 })
