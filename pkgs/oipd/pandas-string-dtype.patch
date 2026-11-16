@@ -1,0 +1,21 @@
+Support pandas StringDtype in numeric-string cleaning
+
+Downstream compatibility fix for retained oipd 1.0.2; not submitted upstream.
+Pandas 3 infers StringDtype instead of object for strings. Keep the original
+object-dtype branch and extend it only to pandas.StringDtype, applying the
+same comma removal and numeric conversion. No pricing behavior changes.
+
+Original code: https://github.com/Open-Lemma/options-implied-probability/blob/v1.0.2/oipd/io/reader.py
+Upstream HEAD 180748f6a78e1eef22794add0de55e1d775be47e still has the object-only guard.
+
+--- a/oipd/io/reader.py
++++ b/oipd/io/reader.py
+@@ -150,5 +150,7 @@
+         for col in columns_to_clean:
+             # Handle string columns that might have commas in numbers
+-            if raw_data[col].dtype == "object":
++            if raw_data[col].dtype == "object" or isinstance(
++                raw_data[col].dtype, pd.StringDtype
++            ):
+                 # Remove commas from numeric strings (e.g., "1,200" -> "1200")
+                 raw_data[col] = (

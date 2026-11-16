@@ -47,6 +47,8 @@ python3Packages.buildPythonPackage rec {
     hash = "sha256-Q4xqZp2Dj04SHvTt42KPAdMh2pR4nY/HL3vJvJ8yJ6w=";
   };
 
+  patches = [ ./pandas-string-dtype.patch ];
+
   build-system = with python3Packages; [ setuptools ];
 
   dependencies = with python3Packages; [
