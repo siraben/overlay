@@ -17,6 +17,12 @@ python3Packages.buildPythonApplication rec {
 
   pyproject = true;
 
+  postPatch = ''
+    substituteInPlace rmrl/constants.py \
+      --replace-fail "import pkg_resources" "from importlib.metadata import version" \
+      --replace-fail "pkg_resources.get_distribution('rmrl').version" "version('rmrl')"
+  '';
+
   build-system = with python3Packages; [
     poetry-core
     pythonRelaxDepsHook
@@ -26,7 +32,6 @@ python3Packages.buildPythonApplication rec {
     reportlab
     svglib
     pdfrw
-    pkg-resources-backport
     pillow
     xdg
   ];
