@@ -41,7 +41,7 @@ python3Packages.buildPythonPackage rec {
   pyproject = true;
 
   src = fetchFromGitHub {
-    owner = "tyrneh";
+    owner = "Open-Lemma";
     repo = "options-implied-probability";
     rev = "v${version}";
     hash = "sha256-Q4xqZp2Dj04SHvTt42KPAdMh2pR4nY/HL3vJvJ8yJ6w=";
@@ -63,8 +63,8 @@ python3Packages.buildPythonPackage rec {
 
   meta = {
     description = "Computes the market's expectations about the probable future prices of an asset, based on information contained in options data";
-    homepage = "https://github.com/tyrneh/options-implied-probability";
-    license = lib.licenses.mit;
+    homepage = "https://github.com/Open-Lemma/options-implied-probability";
+    license = lib.licenses.asl20;
     maintainers = with lib.maintainers; [ siraben ];
   };
 }
