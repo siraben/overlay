@@ -30,6 +30,16 @@ stdenv.mkDerivation {
       bsd3
       isc
     ];
-    platforms = lib.platforms.linux;
+    platforms = [
+      "aarch64-linux"
+      "armv5tel-linux"
+      "armv6l-linux"
+      "armv7a-linux"
+      "armv7l-linux"
+      "i686-linux"
+      "m68k-linux"
+      "powerpc-linux"
+      "x86_64-linux"
+    ];
   };
 }

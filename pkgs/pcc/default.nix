@@ -4,6 +4,7 @@
   fetchFromGitHub,
   bison,
   flex,
+  buildPackages,
   callPackage,
   wrapCCWith,
 }:
@@ -26,6 +27,15 @@ let
       flex
     ];
 
+    depsBuildBuild = [ buildPackages.stdenv.cc ];
+
+    makeFlags = [ "CC_FOR_BUILD=${buildPackages.stdenv.cc}/bin/cc" ];
+
+    # The preprocessor must stat store directories with 64-bit inode numbers.
+    env = lib.optionalAttrs (stdenv.hostPlatform.isLinux && stdenv.hostPlatform.is32bit) {
+      NIX_CFLAGS_COMPILE = "-D_FILE_OFFSET_BITS=64";
+    };
+
     enableParallelBuilding = true;
 
     meta = {
@@ -40,11 +50,24 @@ let
       ];
       mainProgram = "pcc";
       maintainers = with lib.maintainers; [ siraben ];
-      platforms = lib.platforms.linux;
+      platforms = [
+        "aarch64-linux"
+        "armv5tel-linux"
+        "armv6l-linux"
+        "armv7a-linux"
+        "armv7l-linux"
+        "i686-linux"
+        "m68k-linux"
+        "mips64-linux"
+        "mips64el-linux"
+        "mipsel-linux"
+        "powerpc-linux"
+        "x86_64-linux"
+      ];
     };
   };
 in
-wrapCCWith {
+(wrapCCWith {
   cc = unwrapped;
   extraPackages = [ pccLibs ];
   extraBuildCommands = ''
@@ -60,4 +83,10 @@ wrapCCWith {
       --replace-quiet "-mtls-dialect=gnu2" "" \
       --replace-quiet "-mno-omit-leaf-frame-pointer" ""
   '';
-}
+}).overrideAttrs
+  (old: {
+    meta = old.meta // {
+      mainProgram = "pcc";
+      platforms = lib.intersectLists unwrapped.meta.platforms pccLibs.meta.platforms;
+    };
+  })
