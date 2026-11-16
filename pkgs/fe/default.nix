@@ -5,6 +5,9 @@
   libiconv,
   pkg-config,
   openssl,
+  makeWrapper,
+  gnutar,
+  gzip,
   tree-sitter,
   nodejs,
 }:
@@ -22,6 +25,7 @@ rustPlatform.buildRustPackage rec {
 
   nativeBuildInputs = [
     pkg-config
+    makeWrapper
     tree-sitter
     nodejs
   ];
@@ -33,6 +37,15 @@ rustPlatform.buildRustPackage rec {
   cargoHash = "sha256-42d1DNH2qo6P5A0XJHhGsABSmuJl2GON0HRs6nrbvug=";
 
   doCheck = false;
+
+  postInstall = ''
+    wrapProgram $out/bin/fe --prefix PATH : ${
+      lib.makeBinPath [
+        gnutar
+        gzip
+      ]
+    }
+  '';
 
   meta = {
     description = "A statically typed smart contract language for the Ethereum Virtual Machine";
