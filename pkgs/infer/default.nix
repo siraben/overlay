@@ -1,6 +1,7 @@
 {
   lib,
   stdenv,
+  gcc14,
   callPackage,
   fetchurl,
   pkgs,
@@ -25,13 +26,16 @@
 
 let
   version = "1.2.0";
+  # Infer's Clang 18 cannot parse GCC 16's libstdc++ headers during model capture.
+  modelCompiler =
+    if stdenv.cc.isGNU && lib.versionAtLeast stdenv.cc.cc.version "16" then gcc14.cc else stdenv.cc.cc;
   modelSysroot = symlinkJoin {
     name = "infer-model-capture-sysroot";
     paths = [
       stdenv.cc.libc
       stdenv.cc.libc.dev
-      stdenv.cc.cc
-      stdenv.cc.cc.lib
+      modelCompiler
+      modelCompiler.lib
     ];
   };
   modelClangFlags = "--sysroot=${modelSysroot} --gcc-toolchain=${modelSysroot}";
