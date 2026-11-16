@@ -2,6 +2,7 @@
   lib,
   buildGoModule,
   fetchFromGitHub,
+  makeWrapper,
   openssh,
   rsync,
 }:
@@ -24,6 +25,8 @@ buildGoModule rec {
 
   env.CGO_ENABLED = "0";
 
+  nativeBuildInputs = [ makeWrapper ];
+
   nativeCheckInputs = [
     openssh
     rsync
@@ -33,6 +36,15 @@ buildGoModule rec {
     runHook preCheck
     go test ./...
     runHook postCheck
+  '';
+
+  postInstall = ''
+    wrapProgram $out/bin/runpodctl --prefix PATH : ${
+      lib.makeBinPath [
+        openssh
+        rsync
+      ]
+    }
   '';
 
   ldflags = [
