@@ -1,52 +1,54 @@
-{ lib
-, stdenv
-, fetchurl
-, makeWrapper
-, pkg-config
-, autoconf
-, automake
-, libtool
-, intltool
-, glib
-, gtk3
-, cairo
-, pango
-, curl
-, sqlite
-, libxml2
-, libxslt
-, bzip2
-, zlib
-, pcre
-, libx11
-, libxext
-, libxtst
-, qt5
-, SDL2
-, libGL
-, libGLU
-, poppler
-, postgresql
-, libmysqlclient
-, unixodbc
-, gettext
-, dbus
-, gsl
-, imlib2
-, v4l-utils
-, librsvg
-, gdk-pixbuf
-, gst_all_1
-, gmime3
+{
+  lib,
+  stdenv,
+  fetchurl,
+  makeWrapper,
+  coreutils,
+  pkg-config,
+  autoconf,
+  automake,
+  libtool,
+  intltool,
+  glib,
+  gtk3,
+  cairo,
+  pango,
+  curl,
+  sqlite,
+  libxml2,
+  libxslt,
+  bzip2,
+  zlib,
+  pcre2,
+  libx11,
+  libxext,
+  libxtst,
+  qt6,
+  SDL2,
+  libGL,
+  libGLU,
+  poppler,
+  postgresql,
+  libmysqlclient,
+  unixodbc,
+  gettext,
+  dbus,
+  gsl,
+  imlib2,
+  v4l-utils,
+  librsvg,
+  gdk-pixbuf,
+  gst_all_1,
+  gmime3,
 }:
 
 stdenv.mkDerivation rec {
   pname = "gambas3";
-  version = "3.21.5";
+  version = "3.22.2";
 
   src = fetchurl {
     url = "https://gitlab.com/gambas/gambas/-/archive/${version}/gambas-${version}.tar.bz2";
-    sha256 = "sha256-3SzUJyAe7bsxMFAXzFfz/jQGXC0buaNO0sAlIH/marM=";
+    hash = "sha256-+l17XdBFynu/3Zozil/UDn8At7WLAyQqvtaq9R9yJQA=";
   };
 
   nativeBuildInputs = [
@@ -56,7 +58,7 @@ stdenv.mkDerivation rec {
     automake
     libtool
     intltool
-    qt5.wrapQtAppsHook
+    qt6.wrapQtAppsHook
   ];
 
   buildInputs = [
@@ -70,13 +72,13 @@ stdenv.mkDerivation rec {
     libxslt
     bzip2
     zlib
-    pcre
+    pcre2
     libx11
     libxext
     libxtst
-    qt5.qtbase
-    qt5.qtsvg
-    qt5.qtx11extras
+    qt6.qtbase
+    qt6.qtsvg
+    qt6.qtwebengine
     SDL2
     libGL
     libGLU
@@ -100,21 +102,11 @@ stdenv.mkDerivation rec {
     ./reconf-all
   '';
 
-  # Poppler 25.10 removed GooString::getLength(); lower the compat threshold
-  postPatch = ''
-    substituteInPlace gb.pdf/configure.ac \
-      --replace-fail '--atleast-version=25.11.0 poppler' '--atleast-version=25.10.0 poppler'
-    substituteInPlace gb.pdf/configure.ac gb.pdf/src/CPdfDocument.cpp \
-      --replace-fail 'POPPLER_VERSION_25_11_0' 'POPPLER_VERSION_25_10_0'
-    # Remove WebView dependency (requires QtWebEngine)
-    sed -i '/WebView/d' comp/src/gb.form.editor/.src/test/FTestEditor.form \
-      comp/src/gb.form.editor/.src/test/FTestEditor.class
-  '';
-
   configureFlags = [
+    "--with-inotify-includes=${lib.getDev stdenv.cc.libc}/include"
     "--enable-intl"
     "--enable-conv"
-    "--enable-qt5"
+    "--enable-qt6"
     "--enable-gtk3"
     "--enable-mysql"
     "--enable-postgresql"
@@ -128,19 +120,23 @@ stdenv.mkDerivation rec {
     "--enable-dbus"
     "--disable-gtk"
     "--disable-qt4"
+    "--disable-qt5"
   ];
 
   enableParallelBuilding = true;
 
   postInstall = ''
-    # Fix broken symlink
-    rm -f $out/bin/gambas3
-    
-    # Create wrapper script for gbs3
-    if [ -f $out/bin/gbs3.gambas ]; then
-      makeWrapper $out/bin/gbs3.gambas $out/bin/gbs3 \
-        --prefix PATH : $out/bin
-    fi
+    # The archive interpreter selects its mode from argv[0].
+    rm -f $out/bin/gbr3
+    makeWrapper $out/bin/gbx3 $out/bin/gbr3 --argv0 gbr3
+
+    for program in gambas3 gbs3; do
+      test -f $out/bin/$program.gambas
+      rm -f $out/bin/$program
+      makeWrapper $out/bin/gbr3 $out/bin/$program \
+        --add-flags "$out/bin/$program.gambas" \
+        --prefix PATH : "$out/bin:${lib.makeBinPath [ coreutils ]}"
+    done
   '';
 
   meta = {
@@ -150,9 +146,10 @@ stdenv.mkDerivation rec {
       development platform based on a Basic interpreter with object 
       extensions, as easy as Visual Basic.
     '';
-    homepage = "http://gambas.sourceforge.net/";
+    homepage = "https://gambas.sourceforge.net/";
     license = lib.licenses.gpl2Plus;
     maintainers = with lib.maintainers; [ ];
     platforms = lib.platforms.linux;
+    mainProgram = "gambas3";
   };
 }
