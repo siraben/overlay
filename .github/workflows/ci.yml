@@ -2,9 +2,19 @@ name: CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NIXPKGS_ALLOW_UNFREE: '1'
 
 jobs:
   generate-matrix:
@@ -12,83 +22,55 @@ jobs:
     outputs:
       matrix: ${{ steps.matrix.outputs.matrix }}
     steps:
-    - uses: actions/checkout@v4
-    - name: Install Nix
-      uses: cachix/install-nix-action@v31.5.2
-      with:
-        github_access_token: ${{ secrets.GITHUB_TOKEN }}
-    - name: Generate build matrix
-      id: matrix
-      run: |
-        # The single-quoted expression uses Nix interpolation, not shell expansion.
-        # shellcheck disable=SC2016
-        matrix=$(NIXPKGS_ALLOW_UNFREE=1 nix eval --impure --json --expr '
-          let
-            flake = builtins.getFlake (toString ./.);
-            systems = [
-              { system = "x86_64-linux"; os = "ubuntu-latest"; }
-              { system = "aarch64-darwin"; os = "macos-latest"; }
-            ];
-            excludedPackages = [ "infer" ];
-            hasPackage = sys: name:
-              let
-                drv = flake.packages.${sys}.${name};
-                isDrv = builtins.tryEval (drv ? drvPath);
-                platforms = drv.meta.platforms or null;
-              in
-                isDrv.success && isDrv.value &&
-                (platforms == null || builtins.elem sys (map (p: if builtins.isString p then p else p.system or "") (if builtins.isList platforms then platforms else [])));
-            entries = builtins.concatMap (s:
-              let
-                names = builtins.filter
-                  (name: !(builtins.elem name excludedPackages) && hasPackage s.system name)
-                  (builtins.attrNames flake.packages.${s.system});
-              in
-              map (name: { package = name; system = s.system; os = s.os; }) names
-            ) systems;
-          in
-            { include = entries; }
-        ')
-        echo "matrix=$matrix" >> "$GITHUB_OUTPUT"
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v31.5.2
+      - name: Generate build matrix
+        id: matrix
+        run: |
+          matrix=$(nix eval --impure --json --expr 'import ./.github/ci-matrix.nix { root = toString ./.; }')
+          printf 'matrix=%s\n' "$matrix" >> "$GITHUB_OUTPUT"
 
   build:
+    name: Build (${{ matrix.system }}, ${{ matrix.label }})
     needs: generate-matrix
     strategy:
       fail-fast: false
-      matrix: ${{ fromJson(needs.generate-matrix.outputs.matrix) }}
-
-    runs-on: ${{ matrix.os }}
-
+      matrix: ${{ fromJSON(needs.generate-matrix.outputs.matrix) }}
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 360
     steps:
-    - uses: actions/checkout@v4
-
-    - name: Install Nix
-      uses: cachix/install-nix-action@v31.5.2
-      with:
-        github_access_token: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Setup Cachix
-      uses: cachix/cachix-action@v12
-      with:
-        name: siraben
-        authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
-
-    - name: Build ${{ matrix.package }}
-      run: |
-        echo "Building ${{ matrix.package }} for ${{ matrix.system }}..."
-        NIXPKGS_ALLOW_UNFREE=1 nix build --impure .#${{ matrix.package }} --no-link --print-build-logs
-
-    - name: Push to Cachix
-      run: |
-        NIXPKGS_ALLOW_UNFREE=1 nix build --impure .#${{ matrix.package }} --no-link --print-out-paths | cachix push siraben
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v31.5.2
+      - uses: cachix/cachix-action@v16
+        with:
+          name: siraben
+          skipPush: true
+      - name: Build package shard
+        env:
+          PACKAGES: ${{ matrix.packages }}
+          SYSTEM: ${{ matrix.system }}
+          BUILD_TIMEOUT: ${{ matrix.timeout }}
+        run: bash .github/build-packages.sh
+      - name: Cache successful outputs
+        if: ${{ !cancelled() && github.event_name == 'push' && github.ref == 'refs/heads/master' }}
+        env:
+          CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_AUTH_TOKEN }}
+        shell: bash
+        run: |
+          if [[ -n "$CACHIX_AUTH_TOKEN" && -s "$RUNNER_TEMP/package-store-paths" ]]; then
+            if ! sort -u "$RUNNER_TEMP/package-store-paths" | cachix push siraben; then
+              echo '::warning::Could not publish successful build outputs to Cachix'
+            fi
+          fi
 
   check:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - name: Install Nix
-      uses: cachix/install-nix-action@v31.5.2
-      with:
-        github_access_token: ${{ secrets.GITHUB_TOKEN }}
-    - name: Check flake
-      run: NIXPKGS_ALLOW_UNFREE=1 nix flake check --impure
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v31.5.2
+      - uses: cachix/cachix-action@v16
+        with:
+          name: siraben
+          skipPush: true
+      - name: Check flake
+        run: nix flake check --impure --no-build
