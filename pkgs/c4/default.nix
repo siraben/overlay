@@ -20,6 +20,11 @@ stdenv.mkDerivation rec {
       url = "https://github.com/rswier/c4/commit/2feb8c0a142b2e513be69442c24af82dbaf41a25.patch";
       hash = "sha256-Z5qmSFm3ZPai/XUzuOqmE9eJ0J5BZxT5u02X2U8tvr4=";
     })
+    # Keep the standard main signature without changing the VM's word size.
+    (fetchpatch {
+      url = "https://github.com/rswier/c4/commit/547c5085a5f6f65a7c767eeef74e6decfdfb7d80.patch";
+      hash = "sha256-tYxfWEZNF1PYcqwXhgzt8A8j+/4c0muXIPpN9ZfnYxc=";
+    })
   ];
 
   buildPhase = ''
