@@ -21,7 +21,6 @@ let
   ];
   # Keep potentially long builds from consuming another package's time budget.
   heavy = [
-    "cakeml"
     "carbonyl"
     "gambas3"
     "hermes-agent"
@@ -37,9 +36,11 @@ let
       size,
     }:
     let
-      names = builtins.filter (name: name != "infer" || system == "x86_64-linux") (
-        builtins.attrNames flake.packages.${system}
-      );
+      names = builtins.filter (
+        name:
+        # The full proof build exceeds the hosted runner's six-hour limit.
+        name != "cakeml" && (name != "infer" || system == "x86_64-linux")
+      ) (builtins.attrNames flake.packages.${system});
       split = lib.partition (name: builtins.elem name heavy) names;
       shards = lib.genList (i: lib.sublist (i * size) size split.wrong) (
         builtins.div (builtins.length split.wrong + size - 1) size
